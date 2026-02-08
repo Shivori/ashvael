@@ -2876,40 +2876,6 @@
             openSpellCastOptions(spellId, baseLevel, actionType, false, '');
         }
 
-            // If only one option and no higher level text, cast directly
-            if (Object.keys(availableSlots).length === 1 && !spell.higher) {
-                const slotLevel = parseInt(Object.keys(availableSlots)[0]);
-                castSpell(spellId, slotLevel, actionType, spell);
-                return;
-            }
-
-            let body = '<div class="form-options">';
-            body += `<p class="text-muted" style="margin-bottom:12px;">${spell.name}: Choose spell slot level</p>`;
-
-            // Check if this is a concentration spell and warn
-            if (spell.conc && state.concentration) {
-                body += `<div style="background: rgba(255,140,0,0.15); border: 1px solid var(--accent-orange); padding: 10px; border-radius: 8px; margin-bottom: 12px;">
-                    <strong style="color: var(--accent-orange);">⚠️ Concentration Warning</strong><br>
-                    <span style="font-size: 0.9em;">You are concentrating on <strong>${state.concentration.spellName}</strong>. Casting this will end that spell.</span>
-                </div>`;
-            }
-
-            for (let l = baseLevel; l <= 3; l++) {
-                if (!availableSlots[l]) continue;
-                const dmg = getSpellDamagePreview(spell, l);
-                const isUpcast = l > baseLevel;
-                body += `
-                    <div class="form-option" onclick="castSpell('${spellId}', ${l}, '${actionType}', null)">
-                        <div class="form-option-title">${l}${getOrdinal(l)} Level Slot ${isUpcast ? '(Upcast)' : ''}</div>
-                        <div class="form-option-desc">${availableSlots[l]} slot${availableSlots[l] > 1 ? 's' : ''} remaining${dmg ? ' | ' + dmg : ''}</div>
-                    </div>
-                `;
-            }
-
-            body += '</div>';
-            showModal(`Cast ${spell.name}`, body);
-        }
-
         function castSpell(spellId, slotLevel, actionType, spellOverride) {
             // Find the spell
             let spell = spellOverride;
@@ -3292,7 +3258,8 @@
                 const hasDescription = ABILITY_DESCRIPTIONS[abilityName];
 
                 if (hasDescription) {
-                    html += `<span onclick="showAbilityDescription('${abilityName.replace(/'/g, "\\'")}')" style="background: rgba(123,104,238,0.2); border: 1px solid var(--accent-purple); padding: 3px 8px; border-radius: 12px; cursor: pointer; color: var(--accent-purple); font-size: 0.85em;">${abilityName}</span>`;
+                    const escapedName = abilityName.replace(/'/g, "\\'");
+                    html += `<span onclick="showAbilityDescription('${escapedName}')" style="background: rgba(123,104,238,0.2); border: 1px solid var(--accent-purple); padding: 3px 8px; border-radius: 12px; cursor: pointer; color: var(--accent-purple); font-size: 0.85em;">${abilityName}</span>`;
                 } else {
                     // Just display the full text for abilities without descriptions
                     html += `<span style="background: rgba(100,100,100,0.2); border: 1px solid var(--border-color); padding: 3px 8px; border-radius: 12px; color: var(--text-secondary); font-size: 0.85em;">${ability}</span>`;
