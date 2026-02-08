@@ -1094,6 +1094,163 @@
             color: var(--text-primary);
         }
 
+        /* Equipment Slots Styles */
+        .equipment-slots-section {
+            margin-bottom: 15px;
+        }
+
+        .slot-header {
+            font-size: 0.85em;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .equipment-slots-row {
+            display: flex;
+            gap: 10px;
+        }
+
+        .equipment-slots-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+
+        .equipment-slot {
+            flex: 1;
+            padding: 12px;
+            background: var(--bg-card-hover);
+            border: 2px dashed var(--border-color);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            min-height: 60px;
+        }
+
+        .equipment-slot:hover {
+            border-color: var(--accent-purple);
+            background: rgba(123, 104, 238, 0.1);
+        }
+
+        .equipment-slot.wide {
+            flex: 1;
+        }
+
+        .equipment-slot.small {
+            padding: 8px;
+            min-height: 50px;
+        }
+
+        .equipment-slot.filled {
+            border-style: solid;
+            border-color: var(--accent-green);
+            background: rgba(80, 200, 120, 0.1);
+        }
+
+        .equipment-slot.magic {
+            border-color: var(--accent-purple);
+            background: rgba(123, 104, 238, 0.15);
+        }
+
+        .slot-label {
+            font-size: 0.75em;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        .slot-content {
+            font-size: 0.9em;
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .slot-content.empty {
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        .attunement-section {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .attuned-list {
+            font-size: 0.9em;
+            color: var(--text-secondary);
+        }
+
+        .add-btn {
+            background: var(--accent-purple);
+            border: none;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        .add-btn:hover {
+            background: var(--accent-blue);
+        }
+
+        /* Add Equipment Modal */
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: var(--text-secondary);
+            font-size: 0.9em;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px;
+            background: var(--bg-dark);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            color: var(--text-primary);
+            font-size: 1em;
+        }
+
+        .form-group select {
+            cursor: pointer;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 10px;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+        }
+
+        .magic-options {
+            padding: 12px;
+            background: rgba(123, 104, 238, 0.1);
+            border: 1px solid var(--accent-purple);
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+
         /* Features Styles */
         .feature-list {
             display: flex;
@@ -1639,15 +1796,83 @@
 
         <!-- INVENTORY SECTION -->
         <div id="inventory" class="section">
+            <!-- Equipment Slots -->
             <div class="card">
-                <h2 class="card-title">Equipment <span class="card-title-badge" id="acDisplay">AC: 15</span></h2>
-                <div id="equipmentList" class="inventory-list"></div>
-                <div class="add-item-row">
-                    <input type="text" id="newEquipment" class="add-item-input" placeholder="Add equipment...">
-                    <button class="add-item-btn" onclick="addInventoryItem('equipment')">+</button>
+                <h2 class="card-title">Equipped <span class="card-title-badge" id="acDisplay">AC: 15</span></h2>
+
+                <!-- Weapon Slots -->
+                <div class="equipment-slots-section">
+                    <div class="slot-header">Weapons</div>
+                    <div class="equipment-slots-row">
+                        <div class="equipment-slot" id="slot-mainHand" onclick="showSlotOptions('mainHand')">
+                            <div class="slot-label">Main Hand</div>
+                            <div class="slot-content" id="mainHandContent">Empty</div>
+                        </div>
+                        <div class="equipment-slot" id="slot-offHand" onclick="showSlotOptions('offHand')">
+                            <div class="slot-label">Off Hand</div>
+                            <div class="slot-content" id="offHandContent">Empty</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Armor Slot -->
+                <div class="equipment-slots-section">
+                    <div class="slot-header">Armor</div>
+                    <div class="equipment-slots-row">
+                        <div class="equipment-slot wide" id="slot-armor" onclick="showSlotOptions('armor')">
+                            <div class="slot-label">Body Armor</div>
+                            <div class="slot-content" id="armorContent">Empty</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Accessory Slots -->
+                <div class="equipment-slots-section">
+                    <div class="slot-header">Accessories</div>
+                    <div class="equipment-slots-grid">
+                        <div class="equipment-slot small" id="slot-head" onclick="showSlotOptions('head')">
+                            <div class="slot-label">Head</div>
+                            <div class="slot-content" id="headContent">-</div>
+                        </div>
+                        <div class="equipment-slot small" id="slot-neck" onclick="showSlotOptions('neck')">
+                            <div class="slot-label">Neck</div>
+                            <div class="slot-content" id="neckContent">-</div>
+                        </div>
+                        <div class="equipment-slot small" id="slot-hands" onclick="showSlotOptions('hands')">
+                            <div class="slot-label">Hands</div>
+                            <div class="slot-content" id="handsContent">-</div>
+                        </div>
+                        <div class="equipment-slot small" id="slot-feet" onclick="showSlotOptions('feet')">
+                            <div class="slot-label">Feet</div>
+                            <div class="slot-content" id="feetContent">-</div>
+                        </div>
+                        <div class="equipment-slot small" id="slot-ring1" onclick="showSlotOptions('ring1')">
+                            <div class="slot-label">Ring 1</div>
+                            <div class="slot-content" id="ring1Content">-</div>
+                        </div>
+                        <div class="equipment-slot small" id="slot-ring2" onclick="showSlotOptions('ring2')">
+                            <div class="slot-label">Ring 2</div>
+                            <div class="slot-content" id="ring2Content">-</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Attunement -->
+                <div class="attunement-section">
+                    <div class="slot-header">Attunement <span id="attunementCount">(0/3)</span></div>
+                    <div id="attunedItems" class="attuned-list">No attuned items</div>
                 </div>
             </div>
 
+            <!-- Inventory List (unequipped items) -->
+            <div class="card">
+                <h2 class="card-title">Inventory
+                    <button class="add-btn" onclick="openAddEquipmentModal()">+ Add</button>
+                </h2>
+                <div id="inventoryList" class="inventory-list"></div>
+            </div>
+
+            <!-- Adventuring Gear -->
             <div class="card">
                 <h2 class="card-title">Adventuring Gear</h2>
                 <div id="gearList" class="inventory-list"></div>
@@ -1657,12 +1882,13 @@
                 </div>
             </div>
 
+            <!-- Currency -->
             <div class="card">
                 <h2 class="card-title">Currency</h2>
                 <div class="currency-row">
                     <div class="currency-item"><label>CP</label><input type="number" id="currencyCP" value="0" min="0"></div>
                     <div class="currency-item"><label>SP</label><input type="number" id="currencySP" value="0" min="0"></div>
-                    <div class="currency-item"><label>GP</label><input type="number" id="currencyGP" value="10" min="0"></div>
+                    <div class="currency-item"><label>GP</label><input type="number" id="currencyGP" value="3" min="0"></div>
                     <div class="currency-item"><label>PP</label><input type="number" id="currencyPP" value="0" min="0"></div>
                 </div>
             </div>
@@ -4188,54 +4414,141 @@
         }
 
         // ===== INVENTORY =====
-        const DEFAULT_EQUIPMENT = [
-            { id: 'hide-armor', name: 'Hide Armor', equipped: true, acBonus: 14, info: 'AC 12 + Dex (max 2). Medium armor.' },
-            { id: 'shield', name: 'Wooden Shield', equipped: true, acBonus: 2, info: '+2 AC when wielded.' },
-            { id: 'scimitar', name: 'Scimitar', equipped: false, info: '1d6+2 slashing, finesse, light.' },
-            { id: 'star-map', name: 'Star Map', equipped: true, info: 'Spellcasting focus. Free Guiding Bolt casts.' }
+        // ===== EQUIPMENT SYSTEM =====
+
+        // Default starting inventory
+        const DEFAULT_INVENTORY = [
+            // Weapons
+            { id: 'scimitar', type: 'weapon', name: 'Scimitar', weaponType: 'melee', hands: 'one',
+              damageDie: '1d6', damageType: 'slashing', modifier: 'finesse', properties: ['light', 'finesse'],
+              isMagic: false, equipped: 'mainHand' },
+            { id: 'shield', type: 'shield', name: 'Wooden Shield', acBonus: 2, isMagic: false, equipped: 'offHand' },
+            { id: 'shortbow', type: 'weapon', name: 'Shortbow', weaponType: 'ranged', hands: 'two',
+              damageDie: '1d6', damageType: 'piercing', modifier: 'dex', range: '80/320',
+              properties: ['ammunition', 'two-handed'], isMagic: false, equipped: null },
+            // Armor
+            { id: 'hide-armor', type: 'armor', name: 'Hide Armor', armorType: 'medium',
+              baseAC: 12, maxDex: 2, stealthDisadvantage: false, isMagic: false, equipped: 'armor' },
+            // Focus
+            { id: 'star-map', type: 'focus', name: 'Star Map', isMagic: true, equipped: null,
+              description: 'Spellcasting focus. Grants free Guiding Bolt casts (4/long rest).' },
+            // Ammunition
+            { id: 'arrows', type: 'ammo', name: 'Arrows', quantity: 20 }
         ];
 
         const DEFAULT_GEAR = [
             { id: 'backpack', name: 'Backpack', qty: 1 },
             { id: 'bedroll', name: 'Bedroll', qty: 1 },
-            { id: 'mess-kit', name: 'Mess Kit', qty: 1 },
+            { id: 'quiver', name: 'Quiver', qty: 1 },
+            { id: 'tent', name: 'Tent', qty: 1 },
+            { id: 'travelers-clothes', name: "Traveler's Clothes", qty: 1 },
+            { id: 'cartographers-tools', name: "Cartographer's Tools", qty: 1 },
             { id: 'tinderbox', name: 'Tinderbox', qty: 1 },
-            { id: 'torches', name: 'Torches', qty: 10 },
             { id: 'rations', name: 'Rations (days)', qty: 10 },
             { id: 'waterskin', name: 'Waterskin', qty: 1 },
             { id: 'rope', name: 'Hempen Rope (50 ft)', qty: 1 }
         ];
 
         function initInventory() {
-            if (!state.equipment || state.equipment.length === 0) {
-                state.equipment = [...DEFAULT_EQUIPMENT];
+            if (!state.inventory || state.inventory.length === 0) {
+                state.inventory = JSON.parse(JSON.stringify(DEFAULT_INVENTORY));
             }
             if (!state.gear || state.gear.length === 0) {
                 state.gear = [...DEFAULT_GEAR];
             }
         }
 
+        function getEquippedInSlot(slot) {
+            if (!state.inventory) return null;
+            return state.inventory.find(item => item.equipped === slot);
+        }
+
         function renderInventory() {
             initInventory();
+            renderEquipmentSlots();
+            renderInventoryList();
+            renderGearList();
+            renderAttunement();
+            updateACFromEquipment();
+        }
 
-            const equipList = document.getElementById('equipmentList');
-            equipList.innerHTML = state.equipment.map((item, i) => `
-                <div class="inventory-item ${item.equipped ? 'equipped' : ''}">
-                    <div class="inventory-item-left">
-                        <input type="checkbox" class="equip-checkbox" ${item.equipped ? 'checked' : ''} onchange="toggleEquip(${i})">
-                        <span class="inventory-item-name" onclick="showItemInfo('equipment', ${i})">${item.name}</span>
-                    </div>
-                    <div class="inventory-item-actions">
-                        <button class="delete-btn" onclick="deleteItem('equipment', ${i})">✕</button>
-                    </div>
-                </div>
-            `).join('');
+        function renderEquipmentSlots() {
+            const slots = ['mainHand', 'offHand', 'armor', 'head', 'neck', 'hands', 'feet', 'ring1', 'ring2'];
 
+            slots.forEach(slot => {
+                const item = getEquippedInSlot(slot);
+                const contentEl = document.getElementById(slot + 'Content');
+                const slotEl = document.getElementById('slot-' + slot);
+
+                if (!contentEl || !slotEl) return;
+
+                if (item) {
+                    let displayText = item.name;
+                    if (item.type === 'weapon') {
+                        displayText += ` (${item.damageDie})`;
+                    } else if (item.type === 'armor') {
+                        displayText += ` (AC ${item.baseAC})`;
+                    } else if (item.type === 'shield') {
+                        displayText += ` (+${item.acBonus} AC)`;
+                    }
+                    contentEl.textContent = displayText;
+                    contentEl.classList.remove('empty');
+                    slotEl.classList.add('filled');
+                    if (item.isMagic) slotEl.classList.add('magic');
+                    else slotEl.classList.remove('magic');
+                } else {
+                    contentEl.textContent = slot === 'mainHand' || slot === 'offHand' || slot === 'armor' ? 'Empty' : '-';
+                    contentEl.classList.add('empty');
+                    slotEl.classList.remove('filled', 'magic');
+                }
+            });
+        }
+
+        function renderInventoryList() {
+            const listEl = document.getElementById('inventoryList');
+            if (!listEl) return;
+
+            const unequipped = state.inventory.filter(item => !item.equipped);
+
+            if (unequipped.length === 0) {
+                listEl.innerHTML = '<div class="text-muted" style="padding: 10px;">No unequipped items</div>';
+                return;
+            }
+
+            listEl.innerHTML = unequipped.map(item => {
+                let subtitle = '';
+                if (item.type === 'weapon') {
+                    subtitle = `${item.damageDie} ${item.damageType}, ${item.hands}-handed`;
+                } else if (item.type === 'armor') {
+                    subtitle = `AC ${item.baseAC} + DEX (max ${item.maxDex})`;
+                } else if (item.type === 'shield') {
+                    subtitle = `+${item.acBonus} AC`;
+                } else if (item.type === 'ammo') {
+                    subtitle = `Qty: ${item.quantity}`;
+                }
+
+                return `
+                    <div class="inventory-item ${item.isMagic ? 'magic' : ''}" onclick="showItemOptions('${item.id}')">
+                        <div class="inventory-item-left">
+                            <span class="inventory-item-name">${item.name}</span>
+                            <span style="font-size: 0.8em; color: var(--text-muted);">${subtitle}</span>
+                        </div>
+                        <div class="inventory-item-actions">
+                            <button class="delete-btn" onclick="event.stopPropagation(); deleteInventoryItem('${item.id}')">✕</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderGearList() {
             const gearList = document.getElementById('gearList');
+            if (!gearList) return;
+
             gearList.innerHTML = state.gear.map((item, i) => `
                 <div class="inventory-item">
                     <div class="inventory-item-left">
-                        <span class="inventory-item-name" onclick="showItemInfo('gear', ${i})">${item.name}</span>
+                        <span class="inventory-item-name">${item.name}</span>
                     </div>
                     <div class="inventory-item-actions">
                         <span style="color: var(--text-muted);">×${item.qty || 1}</span>
@@ -4243,58 +4556,658 @@
                     </div>
                 </div>
             `).join('');
-
-            updateACDisplay();
         }
 
-        function toggleEquip(index) {
+        function renderAttunement() {
+            const attuned = state.inventory.filter(item => item.attuned);
+            const countEl = document.getElementById('attunementCount');
+            const listEl = document.getElementById('attunedItems');
+
+            if (countEl) countEl.textContent = `(${attuned.length}/3)`;
+            if (listEl) {
+                if (attuned.length === 0) {
+                    listEl.innerHTML = '<span class="text-muted">No attuned items</span>';
+                } else {
+                    listEl.innerHTML = attuned.map(item => `<div style="color: var(--accent-purple);">✦ ${item.name}</div>`).join('');
+                }
+            }
+        }
+
+        function updateACFromEquipment() {
+            const dexMod = 2; // Character's DEX modifier
+            let ac = 10 + dexMod; // Base AC (unarmored)
+
+            const armor = getEquippedInSlot('armor');
+            const shield = getEquippedInSlot('offHand');
+
+            if (armor && armor.type === 'armor') {
+                const maxDex = armor.maxDex !== undefined ? armor.maxDex : 99;
+                const dexBonus = Math.min(dexMod, maxDex);
+                ac = armor.baseAC + dexBonus;
+                if (armor.magicBonus) ac += armor.magicBonus;
+            }
+
+            if (shield && shield.type === 'shield') {
+                ac += shield.acBonus;
+                if (shield.magicBonus) ac += shield.magicBonus;
+            }
+
+            const displayACEl = document.getElementById('displayAC');
+            const acDisplayEl = document.getElementById('acDisplay');
+            if (displayACEl) displayACEl.textContent = ac;
+            if (acDisplayEl) acDisplayEl.textContent = 'AC: ' + ac;
+        }
+
+        function showSlotOptions(slot) {
+            const currentItem = getEquippedInSlot(slot);
+            let validItems = [];
+
+            // Filter items that can go in this slot
+            if (slot === 'mainHand') {
+                validItems = state.inventory.filter(item => item.type === 'weapon' && !item.equipped);
+            } else if (slot === 'offHand') {
+                validItems = state.inventory.filter(item =>
+                    ((item.type === 'weapon' && item.hands === 'one') || item.type === 'shield') && !item.equipped
+                );
+            } else if (slot === 'armor') {
+                validItems = state.inventory.filter(item => item.type === 'armor' && !item.equipped);
+            } else {
+                validItems = state.inventory.filter(item =>
+                    item.type === 'accessory' && item.slotType === slot && !item.equipped
+                );
+            }
+
+            let body = '<div class="form-options">';
+
+            if (currentItem) {
+                body += `<div class="form-option" onclick="unequipFromSlot('${slot}')">
+                    <div class="form-option-title" style="color: var(--accent-red);">✕ Unequip ${currentItem.name}</div>
+                </div><hr style="border-color: var(--border-color); margin: 10px 0;">`;
+            }
+
+            if (validItems.length === 0) {
+                body += '<p class="text-muted">No items available for this slot</p>';
+            } else {
+                validItems.forEach(item => {
+                    let subtitle = '';
+                    if (item.type === 'weapon') subtitle = `${item.damageDie} ${item.damageType}`;
+                    else if (item.type === 'armor') subtitle = `AC ${item.baseAC}`;
+                    else if (item.type === 'shield') subtitle = `+${item.acBonus} AC`;
+
+                    body += `<div class="form-option" onclick="equipToSlot('${item.id}', '${slot}')">
+                        <div class="form-option-title">${item.name}</div>
+                        <div class="form-option-desc">${subtitle}</div>
+                    </div>`;
+                });
+            }
+
+            body += '</div>';
+            showModal(getSlotLabel(slot), body);
+        }
+
+        function getSlotLabel(slot) {
+            const labels = {
+                mainHand: 'Main Hand', offHand: 'Off Hand', armor: 'Body Armor',
+                head: 'Head', neck: 'Neck', hands: 'Hands', feet: 'Feet',
+                ring1: 'Ring 1', ring2: 'Ring 2'
+            };
+            return labels[slot] || slot;
+        }
+
+        function equipToSlot(itemId, slot) {
             saveForUndo();
-            state.equipment[index].equipped = !state.equipment[index].equipped;
+            const item = state.inventory.find(i => i.id === itemId);
+            if (!item) return;
+
+            // Handle two-handed weapons
+            if (item.hands === 'two') {
+                // Unequip both hand slots (automatic - no confirmation per user preference)
+                state.inventory.forEach(i => {
+                    if (i.equipped === 'mainHand' || i.equipped === 'offHand') {
+                        i.equipped = null;
+                    }
+                });
+                item.equipped = 'mainHand';
+                // Mark off-hand as blocked
+                const offHandContent = document.getElementById('offHandContent');
+                if (offHandContent) offHandContent.textContent = '(Two-handed)';
+            } else {
+                // Unequip current item in slot
+                state.inventory.forEach(i => {
+                    if (i.equipped === slot) i.equipped = null;
+                });
+                item.equipped = slot;
+            }
+
+            closeModal();
+            renderInventory();
+            updateAttackOptions();
+            saveState();
+        }
+
+        function unequipFromSlot(slot) {
+            saveForUndo();
+            state.inventory.forEach(item => {
+                if (item.equipped === slot) item.equipped = null;
+            });
+            closeModal();
+            renderInventory();
+            updateAttackOptions();
+            saveState();
+        }
+
+        function showItemOptions(itemId) {
+            const item = state.inventory.find(i => i.id === itemId);
+            if (!item) return;
+
+            let body = '<div class="form-options">';
+
+            // Equip options based on item type
+            if (item.type === 'weapon') {
+                body += `<div class="form-option" onclick="equipToSlot('${itemId}', 'mainHand')">
+                    <div class="form-option-title">⚔️ Equip to Main Hand</div>
+                </div>`;
+                if (item.hands === 'one') {
+                    body += `<div class="form-option" onclick="equipToSlot('${itemId}', 'offHand')">
+                        <div class="form-option-title">🛡️ Equip to Off Hand</div>
+                    </div>`;
+                }
+            } else if (item.type === 'shield') {
+                body += `<div class="form-option" onclick="equipToSlot('${itemId}', 'offHand')">
+                    <div class="form-option-title">🛡️ Equip Shield</div>
+                </div>`;
+            } else if (item.type === 'armor') {
+                body += `<div class="form-option" onclick="equipToSlot('${itemId}', 'armor')">
+                    <div class="form-option-title">🛡️ Equip Armor</div>
+                </div>`;
+            }
+
+            // Info
+            body += `<hr style="border-color: var(--border-color); margin: 10px 0;">`;
+            body += `<div style="padding: 10px; font-size: 0.9em;">`;
+            body += `<strong>${item.name}</strong><br>`;
+            if (item.type === 'weapon') {
+                body += `Damage: ${item.damageDie} ${item.damageType}<br>`;
+                body += `Type: ${item.weaponType}, ${item.hands}-handed<br>`;
+                if (item.range) body += `Range: ${item.range} ft<br>`;
+                if (item.properties) body += `Properties: ${item.properties.join(', ')}`;
+            } else if (item.type === 'armor') {
+                body += `AC: ${item.baseAC} + DEX (max ${item.maxDex})<br>`;
+                body += `Type: ${item.armorType}`;
+            }
+            if (item.isMagic) {
+                body += `<br><span style="color: var(--accent-purple);">✦ Magic Item</span>`;
+                if (item.description) body += `<br>${item.description}`;
+            }
+            body += `</div>`;
+
+            // Delete
+            body += `<hr style="border-color: var(--border-color); margin: 10px 0;">`;
+            body += `<div class="form-option" onclick="deleteInventoryItem('${itemId}')" style="border-color: var(--accent-red);">
+                <div class="form-option-title" style="color: var(--accent-red);">🗑️ Delete Item</div>
+            </div>`;
+
+            body += '</div>';
+            showModal(item.name, body);
+        }
+
+        function deleteInventoryItem(itemId) {
+            if (!confirm('Delete this item?')) return;
+            saveForUndo();
+            state.inventory = state.inventory.filter(item => item.id !== itemId);
+            closeModal();
+            renderInventory();
+            updateAttackOptions();
+            saveState();
+        }
+
+        function updateAttackOptions() {
+            // This will update the attack menu to reflect equipped weapons
+            // Called when weapons are equipped/unequipped
+        }
+
+        // Add Equipment Modal
+        function openAddEquipmentModal() {
+            const body = `
+                <div class="form-options">
+                    <div class="form-option" onclick="openAddWeaponForm()">
+                        <div class="form-option-title">⚔️ Add Weapon</div>
+                        <div class="form-option-desc">Melee, ranged, or thrown weapons</div>
+                    </div>
+                    <div class="form-option" onclick="openAddArmorForm()">
+                        <div class="form-option-title">🛡️ Add Armor</div>
+                        <div class="form-option-desc">Body armor (light, medium, heavy)</div>
+                    </div>
+                    <div class="form-option" onclick="openAddShieldForm()">
+                        <div class="form-option-title">🛡️ Add Shield</div>
+                        <div class="form-option-desc">Shields and bucklers</div>
+                    </div>
+                    <div class="form-option" onclick="openAddAccessoryForm()">
+                        <div class="form-option-title">💍 Add Accessory</div>
+                        <div class="form-option-desc">Rings, amulets, boots, etc.</div>
+                    </div>
+                </div>
+            `;
+            showModal('Add Equipment', body);
+        }
+
+        function openAddWeaponForm() {
+            const body = `
+                <div class="form-group">
+                    <label>Weapon Name</label>
+                    <input type="text" id="weaponName" placeholder="e.g., Longsword">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Type</label>
+                        <select id="weaponType">
+                            <option value="melee">Melee</option>
+                            <option value="ranged">Ranged</option>
+                            <option value="thrown">Thrown</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Hands</label>
+                        <select id="weaponHands">
+                            <option value="one">One-handed</option>
+                            <option value="two">Two-handed</option>
+                            <option value="versatile">Versatile</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Damage Die</label>
+                        <select id="weaponDamageDie">
+                            <option value="1d4">1d4</option>
+                            <option value="1d6" selected>1d6</option>
+                            <option value="1d8">1d8</option>
+                            <option value="1d10">1d10</option>
+                            <option value="1d12">1d12</option>
+                            <option value="2d6">2d6</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Damage Type</label>
+                        <select id="weaponDamageType">
+                            <option value="slashing">Slashing</option>
+                            <option value="piercing">Piercing</option>
+                            <option value="bludgeoning">Bludgeoning</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Modifier</label>
+                    <select id="weaponModifier">
+                        <option value="str">Strength</option>
+                        <option value="dex">Dexterity</option>
+                        <option value="finesse">Finesse (STR or DEX)</option>
+                    </select>
+                </div>
+                <div class="form-group" id="rangeGroup" style="display:none;">
+                    <label>Range (normal/long)</label>
+                    <input type="text" id="weaponRange" placeholder="e.g., 80/320">
+                </div>
+                <div class="form-group">
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="weaponMagic">
+                        <label>Magic Item</label>
+                    </div>
+                </div>
+                <div id="magicWeaponOptions" class="magic-options" style="display:none;">
+                    <div class="form-group">
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="weaponAttunement">
+                            <label>Requires Attunement</label>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Attack Bonus</label>
+                            <select id="weaponAttackBonus">
+                                <option value="0">+0</option>
+                                <option value="1">+1</option>
+                                <option value="2">+2</option>
+                                <option value="3">+3</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Damage Bonus</label>
+                            <select id="weaponDamageBonus">
+                                <option value="0">+0</option>
+                                <option value="1">+1</option>
+                                <option value="2">+2</option>
+                                <option value="3">+3</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Special Effect (optional)</label>
+                        <input type="text" id="weaponEffect" placeholder="e.g., Deals extra 1d6 fire damage">
+                    </div>
+                </div>
+                <div style="margin-top: 15px;">
+                    <button onclick="saveNewWeapon()" style="width: 100%; padding: 12px; background: var(--accent-green); border: none; border-radius: 6px; color: white; font-weight: bold; cursor: pointer;">Add Weapon</button>
+                </div>
+            `;
+            showModal('Add Weapon', body);
+
+            // Show/hide range based on weapon type
+            setTimeout(() => {
+                document.getElementById('weaponType').addEventListener('change', function() {
+                    document.getElementById('rangeGroup').style.display = this.value === 'ranged' || this.value === 'thrown' ? 'block' : 'none';
+                });
+                document.getElementById('weaponMagic').addEventListener('change', function() {
+                    document.getElementById('magicWeaponOptions').style.display = this.checked ? 'block' : 'none';
+                });
+            }, 100);
+        }
+
+        function saveNewWeapon() {
+            const name = document.getElementById('weaponName').value.trim();
+            if (!name) { alert('Please enter a weapon name'); return; }
+
+            const weapon = {
+                id: 'weapon-' + Date.now(),
+                type: 'weapon',
+                name: name,
+                weaponType: document.getElementById('weaponType').value,
+                hands: document.getElementById('weaponHands').value,
+                damageDie: document.getElementById('weaponDamageDie').value,
+                damageType: document.getElementById('weaponDamageType').value,
+                modifier: document.getElementById('weaponModifier').value,
+                isMagic: document.getElementById('weaponMagic').checked,
+                equipped: null
+            };
+
+            if (weapon.weaponType === 'ranged' || weapon.weaponType === 'thrown') {
+                weapon.range = document.getElementById('weaponRange').value || '20/60';
+            }
+
+            if (weapon.isMagic) {
+                weapon.requiresAttunement = document.getElementById('weaponAttunement').checked;
+                weapon.attackBonus = parseInt(document.getElementById('weaponAttackBonus').value) || 0;
+                weapon.damageBonus = parseInt(document.getElementById('weaponDamageBonus').value) || 0;
+                weapon.effect = document.getElementById('weaponEffect').value;
+            }
+
+            saveForUndo();
+            state.inventory.push(weapon);
+            closeModal();
             renderInventory();
             saveState();
         }
 
-        function updateACDisplay() {
-            let ac = 10 + 2; // Base + Dex
-            state.equipment.forEach(item => {
-                if (item.equipped && item.acBonus) {
-                    if (item.name.includes('Armor')) ac = item.acBonus;
-                    else ac += item.acBonus;
-                }
-            });
-            document.getElementById('displayAC').textContent = ac;
-            document.getElementById('acDisplay').textContent = 'AC: ' + ac;
+        function openAddArmorForm() {
+            const body = `
+                <div class="form-group">
+                    <label>Armor Name</label>
+                    <input type="text" id="armorName" placeholder="e.g., Chain Mail">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Armor Type</label>
+                        <select id="armorType">
+                            <option value="light">Light</option>
+                            <option value="medium">Medium</option>
+                            <option value="heavy">Heavy</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Base AC</label>
+                        <select id="armorBaseAC">
+                            <option value="11">11 (Padded/Leather)</option>
+                            <option value="12">12 (Studded/Hide)</option>
+                            <option value="13">13 (Chain Shirt)</option>
+                            <option value="14">14 (Scale/Breastplate)</option>
+                            <option value="15">15 (Half Plate)</option>
+                            <option value="16">16 (Ring/Chain)</option>
+                            <option value="17">17 (Splint)</option>
+                            <option value="18">18 (Plate)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Max DEX Bonus</label>
+                    <select id="armorMaxDex">
+                        <option value="99">No limit (Light)</option>
+                        <option value="2">+2 (Medium)</option>
+                        <option value="0">+0 (Heavy)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="armorStealth">
+                        <label>Disadvantage on Stealth</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="armorMagic">
+                        <label>Magic Armor</label>
+                    </div>
+                </div>
+                <div id="magicArmorOptions" class="magic-options" style="display:none;">
+                    <div class="form-group">
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="armorAttunement">
+                            <label>Requires Attunement</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>AC Bonus</label>
+                        <select id="armorACBonus">
+                            <option value="0">+0</option>
+                            <option value="1">+1</option>
+                            <option value="2">+2</option>
+                            <option value="3">+3</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Special Effect (optional)</label>
+                        <input type="text" id="armorEffect" placeholder="e.g., Resistance to fire damage">
+                    </div>
+                </div>
+                <div style="margin-top: 15px;">
+                    <button onclick="saveNewArmor()" style="width: 100%; padding: 12px; background: var(--accent-green); border: none; border-radius: 6px; color: white; font-weight: bold; cursor: pointer;">Add Armor</button>
+                </div>
+            `;
+            showModal('Add Armor', body);
+
+            setTimeout(() => {
+                document.getElementById('armorMagic').addEventListener('change', function() {
+                    document.getElementById('magicArmorOptions').style.display = this.checked ? 'block' : 'none';
+                });
+            }, 100);
+        }
+
+        function saveNewArmor() {
+            const name = document.getElementById('armorName').value.trim();
+            if (!name) { alert('Please enter an armor name'); return; }
+
+            const armor = {
+                id: 'armor-' + Date.now(),
+                type: 'armor',
+                name: name,
+                armorType: document.getElementById('armorType').value,
+                baseAC: parseInt(document.getElementById('armorBaseAC').value),
+                maxDex: parseInt(document.getElementById('armorMaxDex').value),
+                stealthDisadvantage: document.getElementById('armorStealth').checked,
+                isMagic: document.getElementById('armorMagic').checked,
+                equipped: null
+            };
+
+            if (armor.isMagic) {
+                armor.requiresAttunement = document.getElementById('armorAttunement').checked;
+                armor.magicBonus = parseInt(document.getElementById('armorACBonus').value) || 0;
+                armor.effect = document.getElementById('armorEffect').value;
+            }
+
+            saveForUndo();
+            state.inventory.push(armor);
+            closeModal();
+            renderInventory();
+            saveState();
+        }
+
+        function openAddShieldForm() {
+            const body = `
+                <div class="form-group">
+                    <label>Shield Name</label>
+                    <input type="text" id="shieldName" placeholder="e.g., Wooden Shield" value="Shield">
+                </div>
+                <div class="form-group">
+                    <label>AC Bonus</label>
+                    <select id="shieldACBonus">
+                        <option value="1">+1</option>
+                        <option value="2" selected>+2</option>
+                        <option value="3">+3</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="shieldMagic">
+                        <label>Magic Shield</label>
+                    </div>
+                </div>
+                <div id="magicShieldOptions" class="magic-options" style="display:none;">
+                    <div class="form-group">
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="shieldAttunement">
+                            <label>Requires Attunement</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Additional AC Bonus</label>
+                        <select id="shieldMagicBonus">
+                            <option value="0">+0</option>
+                            <option value="1">+1</option>
+                            <option value="2">+2</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Special Effect (optional)</label>
+                        <input type="text" id="shieldEffect" placeholder="e.g., Can cast Shield spell 1/day">
+                    </div>
+                </div>
+                <div style="margin-top: 15px;">
+                    <button onclick="saveNewShield()" style="width: 100%; padding: 12px; background: var(--accent-green); border: none; border-radius: 6px; color: white; font-weight: bold; cursor: pointer;">Add Shield</button>
+                </div>
+            `;
+            showModal('Add Shield', body);
+
+            setTimeout(() => {
+                document.getElementById('shieldMagic').addEventListener('change', function() {
+                    document.getElementById('magicShieldOptions').style.display = this.checked ? 'block' : 'none';
+                });
+            }, 100);
+        }
+
+        function saveNewShield() {
+            const name = document.getElementById('shieldName').value.trim() || 'Shield';
+
+            const shield = {
+                id: 'shield-' + Date.now(),
+                type: 'shield',
+                name: name,
+                acBonus: parseInt(document.getElementById('shieldACBonus').value),
+                isMagic: document.getElementById('shieldMagic').checked,
+                equipped: null
+            };
+
+            if (shield.isMagic) {
+                shield.requiresAttunement = document.getElementById('shieldAttunement').checked;
+                shield.magicBonus = parseInt(document.getElementById('shieldMagicBonus').value) || 0;
+                shield.effect = document.getElementById('shieldEffect').value;
+            }
+
+            saveForUndo();
+            state.inventory.push(shield);
+            closeModal();
+            renderInventory();
+            saveState();
+        }
+
+        function openAddAccessoryForm() {
+            const body = `
+                <div class="form-group">
+                    <label>Item Name</label>
+                    <input type="text" id="accessoryName" placeholder="e.g., Ring of Protection">
+                </div>
+                <div class="form-group">
+                    <label>Slot</label>
+                    <select id="accessorySlot">
+                        <option value="head">Head</option>
+                        <option value="neck">Neck</option>
+                        <option value="hands">Hands</option>
+                        <option value="feet">Feet</option>
+                        <option value="ring1">Ring</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="accessoryAttunement">
+                        <label>Requires Attunement</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Description / Effect</label>
+                    <input type="text" id="accessoryEffect" placeholder="e.g., +1 to AC">
+                </div>
+                <div style="margin-top: 15px;">
+                    <button onclick="saveNewAccessory()" style="width: 100%; padding: 12px; background: var(--accent-green); border: none; border-radius: 6px; color: white; font-weight: bold; cursor: pointer;">Add Accessory</button>
+                </div>
+            `;
+            showModal('Add Accessory', body);
+        }
+
+        function saveNewAccessory() {
+            const name = document.getElementById('accessoryName').value.trim();
+            if (!name) { alert('Please enter an item name'); return; }
+
+            const accessory = {
+                id: 'accessory-' + Date.now(),
+                type: 'accessory',
+                name: name,
+                slotType: document.getElementById('accessorySlot').value,
+                requiresAttunement: document.getElementById('accessoryAttunement').checked,
+                effect: document.getElementById('accessoryEffect').value,
+                isMagic: true,
+                equipped: null
+            };
+
+            saveForUndo();
+            state.inventory.push(accessory);
+            closeModal();
+            renderInventory();
+            saveState();
         }
 
         function addInventoryItem(type) {
-            const inputId = type === 'equipment' ? 'newEquipment' : 'newGear';
-            const input = document.getElementById(inputId);
-            const name = input.value.trim();
-            if (!name) return;
+            if (type === 'gear') {
+                const input = document.getElementById('newGear');
+                const name = input.value.trim();
+                if (!name) return;
 
-            saveForUndo();
-            if (type === 'equipment') {
-                state.equipment.push({ id: Date.now(), name, equipped: false, info: 'Custom item' });
-            } else {
+                saveForUndo();
                 state.gear.push({ id: Date.now(), name, qty: 1 });
+                input.value = '';
+                renderInventory();
+                saveState();
             }
-            input.value = '';
-            renderInventory();
-            saveState();
         }
 
         function deleteItem(type, index) {
             if (!confirm('Delete this item?')) return;
             saveForUndo();
-            if (type === 'equipment') state.equipment.splice(index, 1);
-            else state.gear.splice(index, 1);
+            if (type === 'gear') state.gear.splice(index, 1);
             renderInventory();
             saveState();
         }
 
         function showItemInfo(type, index) {
-            const item = type === 'equipment' ? state.equipment[index] : state.gear[index];
-            showModal(item.name, `<p>${item.info || 'No additional information.'}</p>`);
+            const item = type === 'gear' ? state.gear[index] : null;
+            if (item) showModal(item.name, `<p>${item.info || 'Adventuring gear'}</p>`);
         }
 
         // ===== NOTES =====

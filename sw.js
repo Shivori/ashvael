@@ -1,5 +1,5 @@
 // Ashvael Character Sheet - Service Worker
-const CACHE_NAME = 'ashvael-v5';
+const CACHE_NAME = 'ashvael-v6';
 const urlsToCache = [
   './',
   './index.html',
