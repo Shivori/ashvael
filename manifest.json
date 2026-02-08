@@ -1,0 +1,21 @@
+{
+  "name": "Ashvael - Circle of Stars Druid",
+  "short_name": "Ashvael",
+  "description": "D&D 5e Character Sheet for Ashvael, a Level 5 Circle of Stars Druid",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0a0a12",
+  "theme_color": "#c9a227",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%230a0a12' width='100' height='100' rx='20'/><text x='50' y='65' text-anchor='middle' fill='%23c9a227' font-size='50'>⭐</text></svg>",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["games", "entertainment"],
+  "lang": "en",
+  "dir": "ltr"
+}
