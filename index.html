@@ -1505,13 +1505,12 @@
                         <div class="action-list" id="actionList">
                             <div class="action-item" onclick="openAttackSelection()">Attack</div>
                             <div class="action-item" onclick="openCastSpellSelection('action')">Cast Spell (Action)</div>
-                            <div class="action-item" onclick="useGuidingBoltFree()">Guiding Bolt (Free)</div>
+                            <div class="action-item" onclick="openWildCompanion()">Wild Companion</div>
                             <div class="action-item" onclick="openHealingHands()">Healing Hands</div>
                             <div class="action-item" onclick="useAction('action', this)">Dash</div>
                             <div class="action-item" onclick="useAction('action', this)">Dodge</div>
                             <div class="action-item" onclick="useAction('action', this)">Help</div>
                             <div class="action-item" onclick="useAction('action', this)">Hide</div>
-                            <div class="action-item" onclick="openWildCompanion()">Wild Companion</div>
                         </div>
                     </div>
                     <div class="action-category bonus">
@@ -1520,7 +1519,6 @@
                             <div class="action-item" onclick="openFormSelection()">Wild Shape / Starry Form</div>
                             <div class="action-item" onclick="openCelestialRevelation()">Celestial Revelation</div>
                             <div class="action-item" onclick="openCastSpellSelection('bonus')">Cast Spell (Bonus)</div>
-                            <div class="action-item" onclick="useHealingWordFree()">Healing Word (Free)</div>
                             <div class="action-item archer-action" style="display:none" onclick="useArcherAttack()">Archer Attack (1d8+4)</div>
                         </div>
                     </div>
@@ -1824,7 +1822,7 @@
             inventory: [],
             notes: { sessions: [], cities: [], npcs: [], other: [] },
             concentration: null,
-            companion: null
+            companions: []  // Array to support multiple companions (familiar + summon beast)
         };
 
         let state = JSON.parse(JSON.stringify(DEFAULT_STATE));
@@ -2004,8 +2002,14 @@
             const container = document.getElementById('preparedDisplay');
             const counter = document.getElementById('preparedCounter');
 
+            // Always prepared spells (from features/feats)
             let html = `<div class="prepared-spell-chip always" onclick="showSpellInfo('guiding-bolt')">
                 <span class="spell-level-dot">1</span><span>Guiding Bolt</span>
+                <span style="font-size:0.7em; color:var(--text-muted);">(Star Map)</span>
+            </div>`;
+            html += `<div class="prepared-spell-chip always" onclick="showSpellInfo('healing-word')">
+                <span class="spell-level-dot">1</span><span>Healing Word</span>
+                <span style="font-size:0.7em; color:var(--text-muted);">(Magic Init.)</span>
             </div>`;
 
             state.preparedSpells.forEach(spell => {
@@ -2153,13 +2157,17 @@
             const abilitiesDiv = document.getElementById('wildShapeAbilities');
             const abilitiesContent = document.getElementById('beastAbilitiesContent');
 
+            // Safety check - if elements don't exist, skip
+            if (!abilitiesDiv || !abilitiesContent) return;
+
             if (inWildShape) {
                 const beast = BEAST_FORMS.find(b => b.id === state.activeForm.beastId);
                 if (beast) {
-                    // Update combat stats
-                    document.getElementById('displayAC').textContent = beast.ac;
-                    document.getElementById('displaySpeed').textContent = beast.speed.split(',')[0];
-                    document.getElementById('displaySpeedAction').textContent = beast.speed.split(',')[0].replace(' ft', '');
+                    // Update combat stats (with safety checks)
+                    const acEl = document.getElementById('displayAC');
+                    const speedEl = document.getElementById('displaySpeed');
+                    if (acEl) acEl.textContent = beast.ac;
+                    if (speedEl) speedEl.textContent = beast.speed.split(',')[0];
 
                     // Update physical ability scores (STR, DEX, CON)
                     updateAbilityScore('str', beast.str);
@@ -2167,25 +2175,32 @@
                     updateAbilityScore('con', beast.con);
 
                     // Add visual indicator
-                    document.getElementById('strBox').classList.add('wild-shape');
-                    document.getElementById('dexBox').classList.add('wild-shape');
-                    document.getElementById('conBox').classList.add('wild-shape');
+                    const strBox = document.getElementById('strBox');
+                    const dexBox = document.getElementById('dexBox');
+                    const conBox = document.getElementById('conBox');
+                    if (strBox) strBox.classList.add('wild-shape');
+                    if (dexBox) dexBox.classList.add('wild-shape');
+                    if (conBox) conBox.classList.add('wild-shape');
 
                     // Update senses
-                    document.getElementById('darkvisionDisplay').textContent = beast.senses;
+                    const darkvisionEl = document.getElementById('darkvisionDisplay');
+                    if (darkvisionEl) darkvisionEl.textContent = beast.senses;
 
-                    // Show beast abilities
+                    // Show beast abilities with attacks
                     abilitiesDiv.style.display = 'block';
                     abilitiesContent.innerHTML = formatBeastAbilities(beast);
 
                     // Update skills display
                     updateSkillsForWildShape(beast);
+
+                    // Disable spell casting while in Wild Shape
+                    updateSpellButtonsForWildShape(true);
                 }
             } else {
                 // Restore original stats
                 updateACDisplay();
-                document.getElementById('displaySpeed').textContent = '30ft';
-                document.getElementById('displaySpeedAction').textContent = '30';
+                const speedEl = document.getElementById('displaySpeed');
+                if (speedEl) speedEl.textContent = '30ft';
 
                 // Restore original ability scores
                 updateAbilityScore('str', 8);
@@ -2193,20 +2208,47 @@
                 updateAbilityScore('con', 15);
 
                 // Remove visual indicator
-                document.getElementById('strBox').classList.remove('wild-shape');
-                document.getElementById('dexBox').classList.remove('wild-shape');
-                document.getElementById('conBox').classList.remove('wild-shape');
+                const strBox = document.getElementById('strBox');
+                const dexBox = document.getElementById('dexBox');
+                const conBox = document.getElementById('conBox');
+                if (strBox) strBox.classList.remove('wild-shape');
+                if (dexBox) dexBox.classList.remove('wild-shape');
+                if (conBox) conBox.classList.remove('wild-shape');
 
                 // Restore senses
-                document.getElementById('darkvisionDisplay').textContent = '60 ft';
-                document.getElementById('passivePerceptionDisplay').textContent = '17';
+                const darkvisionEl = document.getElementById('darkvisionDisplay');
+                const passiveEl = document.getElementById('passivePerceptionDisplay');
+                if (darkvisionEl) darkvisionEl.textContent = '60 ft';
+                if (passiveEl) passiveEl.textContent = '17';
 
                 // Hide beast abilities
                 abilitiesDiv.style.display = 'none';
 
                 // Restore normal skills
                 restoreNormalSkills();
+
+                // Re-enable spell casting
+                updateSpellButtonsForWildShape(false);
             }
+        }
+
+        function updateSpellButtonsForWildShape(disabled) {
+            // This will be called to enable/disable spell buttons during Wild Shape
+            const castSpellButtons = document.querySelectorAll('.action-item');
+            castSpellButtons.forEach(btn => {
+                const text = btn.textContent || '';
+                if (text.includes('Cast Spell')) {
+                    if (disabled) {
+                        btn.classList.add('disabled');
+                        btn.style.opacity = '0.4';
+                        btn.style.pointerEvents = 'none';
+                    } else {
+                        btn.classList.remove('disabled');
+                        btn.style.opacity = '1';
+                        btn.style.pointerEvents = 'auto';
+                    }
+                }
+            });
         }
 
         // Ability descriptions for beasts, familiars, and companions
@@ -2580,17 +2622,17 @@
                         <div class="form-option-title">Scimitar</div>
                         <div class="form-option-desc">+4 to hit, 1d6+2 slashing (finesse)</div>
                     </div>
-                    <div class="form-option" onclick="useAction('action', {textContent:'Thorn Whip (+7, 1d6)'}); closeModal();">
+                    <div class="form-option" onclick="useAction('action', {textContent:'Thorn Whip (+7, 2d6)'}); closeModal();">
                         <div class="form-option-title">Thorn Whip (Cantrip)</div>
-                        <div class="form-option-desc">+7 to hit, 30ft, 1d6 piercing, pull 10ft</div>
+                        <div class="form-option-desc">+7 to hit, 30ft, 2d6 piercing, pull 10ft</div>
                     </div>
-                    <div class="form-option" onclick="useAction('action', {textContent:'Produce Flame (+7, 1d8)'}); closeModal();">
+                    <div class="form-option" onclick="useAction('action', {textContent:'Produce Flame (+7, 2d8)'}); closeModal();">
                         <div class="form-option-title">Produce Flame (Cantrip)</div>
-                        <div class="form-option-desc">+7 to hit, 30ft, 1d8 fire</div>
+                        <div class="form-option-desc">+7 to hit, 30ft, 2d8 fire</div>
                     </div>
-                    <div class="form-option" onclick="useAction('action', {textContent:'Starry Wisp (+7, 1d8)'}); closeModal();">
+                    <div class="form-option" onclick="useAction('action', {textContent:'Starry Wisp (+7, 2d8)'}); closeModal();">
                         <div class="form-option-title">Starry Wisp (Cantrip)</div>
-                        <div class="form-option-desc">+7 to hit, 60ft, 1d8 radiant, reveals invisible</div>
+                        <div class="form-option-desc">+7 to hit, 60ft, 2d8 radiant, reveals invisible</div>
                     </div>
                 `;
             }
@@ -3134,7 +3176,12 @@
             const form = FAMILIAR_FORMS.find(f => f.id === formId);
             if (!form) return;
 
-            state.companion = {
+            // Remove existing familiar if any (can only have one familiar)
+            state.companions = state.companions.filter(c => c.type !== 'familiar');
+
+            // Add new familiar
+            state.companions.push({
+                id: 'familiar-' + Date.now(),
                 type: 'familiar',
                 name: form.name + ' (Familiar)',
                 formId: formId,
@@ -3142,7 +3189,7 @@
                 ac: form.ac,
                 speed: form.speed,
                 abilities: form.abilities
-            };
+            });
 
             closeModal();
             updateCompanionDisplay();
@@ -3184,7 +3231,12 @@
             const hp = 20 + 5 * (slotLevel - 2);
             const ac = 11 + slotLevel;
 
-            state.companion = {
+            // Remove existing beast if any (Summon Beast requires concentration, so only one)
+            state.companions = state.companions.filter(c => c.type !== 'beast');
+
+            // Add new beast companion
+            state.companions.push({
+                id: 'beast-' + Date.now(),
                 type: 'beast',
                 name: spirit.name,
                 environment: environment,
@@ -3195,7 +3247,7 @@
                 abilities: spirit.ability,
                 attackMod: 3 + slotLevel,
                 damage: `1d8+${2 + slotLevel}`
-            };
+            });
 
             closeModal();
             updateCompanionDisplay();
@@ -3205,7 +3257,14 @@
         function updateCompanionDisplay() {
             let companionSection = document.getElementById('companionSection');
 
-            if (!state.companion) {
+            // Handle legacy state (single companion) to array conversion
+            if (state.companion && !state.companions) {
+                state.companions = [state.companion];
+                delete state.companion;
+            }
+            if (!state.companions) state.companions = [];
+
+            if (state.companions.length === 0) {
                 if (companionSection) companionSection.style.display = 'none';
                 return;
             }
@@ -3219,32 +3278,39 @@
                 hpSection.appendChild(companionSection);
             }
 
-            const c = state.companion;
+            // Build HTML for all companions
+            let html = '';
+            state.companions.forEach((c, index) => {
+                const borderColor = c.type === 'familiar' ? 'var(--accent-blue)' : 'var(--accent-purple)';
+                const bgColor = c.type === 'familiar' ? 'rgba(74,144,217,0.1)' : 'rgba(123,104,238,0.1)';
+                html += `
+                    <div style="background: ${bgColor}; border: 1px solid ${borderColor}; border-radius: 8px; padding: 12px; margin-top: 10px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                            <strong style="color: ${borderColor};">${c.type === 'familiar' ? '🦉' : '🐾'} ${c.name}</strong>
+                            <button onclick="dismissCompanion('${c.id}')" style="background: var(--accent-red); color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.8em;">Dismiss</button>
+                        </div>
+                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; font-size: 0.85em; margin-bottom: 8px;">
+                            <div><strong>AC:</strong> ${c.ac}</div>
+                            <div><strong>Speed:</strong> ${c.speed}</div>
+                            <div style="display: flex; align-items: center; gap: 5px;">
+                                <strong>HP:</strong>
+                                <input type="number" value="${c.hp.current}" min="0" max="${c.hp.max}" style="width: 40px; background: var(--bg-dark); border: 1px solid var(--border-color); color: var(--text-primary); border-radius: 4px; padding: 2px 4px;" onchange="updateCompanionHP('${c.id}', this.value)">
+                                <span>/ ${c.hp.max}</span>
+                            </div>
+                        </div>
+                        ${c.type === 'beast' ? `<div style="font-size: 0.85em; margin-bottom: 5px;"><strong>Attack:</strong> +${c.attackMod} to hit, ${c.damage} damage</div>` : ''}
+                        <div style="font-size: 0.8em; margin-top: 8px;">
+                            <strong>Abilities:</strong>
+                            <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 5px;">
+                                ${formatCompanionAbilities(c.abilities)}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
             companionSection.style.display = 'block';
-            companionSection.innerHTML = `
-                <div style="background: rgba(123,104,238,0.1); border: 1px solid var(--accent-purple); border-radius: 8px; padding: 12px; margin-top: 15px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                        <strong style="color: var(--accent-purple);">${c.type === 'familiar' ? '🦉' : '🐾'} ${c.name}</strong>
-                        <button onclick="dismissCompanion()" style="background: var(--accent-red); color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.8em;">Dismiss</button>
-                    </div>
-                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; font-size: 0.85em; margin-bottom: 8px;">
-                        <div><strong>AC:</strong> ${c.ac}</div>
-                        <div><strong>Speed:</strong> ${c.speed}</div>
-                        <div style="display: flex; align-items: center; gap: 5px;">
-                            <strong>HP:</strong>
-                            <input type="number" id="companionHP" value="${c.hp.current}" min="0" max="${c.hp.max}" style="width: 40px; background: var(--bg-dark); border: 1px solid var(--border-color); color: var(--text-primary); border-radius: 4px; padding: 2px 4px;" onchange="updateCompanionHP(this.value)">
-                            <span>/ ${c.hp.max}</span>
-                        </div>
-                    </div>
-                    ${c.type === 'beast' ? `<div style="font-size: 0.85em; margin-bottom: 5px;"><strong>Attack:</strong> +${c.attackMod} to hit, ${c.damage} damage</div>` : ''}
-                    <div style="font-size: 0.8em; margin-top: 8px;">
-                        <strong>Abilities:</strong>
-                        <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 5px;">
-                            ${formatCompanionAbilities(c.abilities)}
-                        </div>
-                    </div>
-                </div>
-            `;
+            companionSection.innerHTML = html;
         }
 
         function formatCompanionAbilities(abilitiesString) {
@@ -3276,24 +3342,30 @@
             }
         }
 
-        function updateCompanionHP(value) {
-            if (!state.companion) return;
-            const hp = parseInt(value) || 0;
-            state.companion.hp.current = Math.max(0, Math.min(hp, state.companion.hp.max));
+        function updateCompanionHP(companionId, value) {
+            if (!state.companions) return;
+            const companion = state.companions.find(c => c.id === companionId);
+            if (!companion) return;
 
-            if (state.companion.hp.current <= 0) {
-                if (state.inBattle) addBattleLog(`${state.companion.name} dropped to 0 HP and disappeared!`);
-                state.companion = null;
+            const hp = parseInt(value) || 0;
+            companion.hp.current = Math.max(0, Math.min(hp, companion.hp.max));
+
+            if (companion.hp.current <= 0) {
+                if (state.inBattle) addBattleLog(`${companion.name} dropped to 0 HP and disappeared!`);
+                state.companions = state.companions.filter(c => c.id !== companionId);
                 updateCompanionDisplay();
             }
             saveState();
         }
 
-        function dismissCompanion() {
-            if (!state.companion) return;
-            if (confirm(`Dismiss your ${state.companion.name}?`)) {
-                if (state.inBattle) addBattleLog(`Dismissed ${state.companion.name}`);
-                state.companion = null;
+        function dismissCompanion(companionId) {
+            if (!state.companions) return;
+            const companion = state.companions.find(c => c.id === companionId);
+            if (!companion) return;
+
+            if (confirm(`Dismiss your ${companion.name}?`)) {
+                if (state.inBattle) addBattleLog(`Dismissed ${companion.name}`);
+                state.companions = state.companions.filter(c => c.id !== companionId);
                 updateCompanionDisplay();
                 saveState();
             }
@@ -3360,9 +3432,9 @@
             if (!state.concentration) return;
             const spellName = state.concentration.spellName;
 
-            // If it was Summon Beast, dismiss the companion
-            if (state.concentration.spellId === 'summon-beast' && state.companion && state.companion.type === 'beast') {
-                state.companion = null;
+            // If it was Summon Beast, dismiss only beast companions (not familiars)
+            if (state.concentration.spellId === 'summon-beast' && state.companions) {
+                state.companions = state.companions.filter(c => c.type !== 'beast');
                 updateCompanionDisplay();
             }
 
@@ -3625,10 +3697,10 @@
                 { id: 'cure-wounds', name: 'Cure Wounds', school: 'Abjuration', conc: false, ritual: false, time: 'Action', range: 'Touch', dur: 'Instant', comp: 'V, S',
                   desc: 'A creature you touch regains a number of Hit Points equal to 2d8 + your spellcasting ability modifier. This spell has no effect on Constructs or Undead.',
                   higher: 'The healing increases by 2d8 for each spell slot level above 1.' },
-                { id: 'healing-word', name: 'Healing Word', school: 'Abjuration', conc: false, ritual: false, time: 'Bonus Action', range: '60 ft', dur: 'Instant', comp: 'V',
+                { id: 'healing-word', name: 'Healing Word', always: true, school: 'Abjuration', conc: false, ritual: false, time: 'Bonus Action', range: '60 ft', dur: 'Instant', comp: 'V',
                   desc: 'A creature of your choice that you can see within range regains Hit Points equal to 2d4 + your spellcasting ability modifier. This spell has no effect on Constructs or Undead.',
                   higher: 'The healing increases by 2d4 for each spell slot level above 1.',
-                  note: '⭐ FREE 1/day from Magic Initiate' },
+                  note: '⭐ FREE 1/day from Magic Initiate (always prepared)' },
                 { id: 'entangle', name: 'Entangle', school: 'Conjuration', conc: true, ritual: false, time: 'Action', range: '90 ft', dur: '1 min', comp: 'V, S',
                   desc: 'Grasping weeds and vines sprout from the ground in a 20-foot square starting from a point within range. For the duration, these plants turn the ground in the area into Difficult Terrain. A creature in the area when you cast the spell must succeed on a Strength saving throw or be Restrained by the entangling plants until the spell ends. A creature Restrained by the plants can take an action to make a Strength check against your spell save DC. On a success, it frees itself. When the spell ends, the conjured plants wilt away.' },
                 { id: 'faerie-fire', name: 'Faerie Fire', school: 'Evocation', conc: true, ritual: false, time: 'Action', range: '60 ft', dur: '1 min', comp: 'V',
