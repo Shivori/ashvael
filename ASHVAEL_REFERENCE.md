@@ -397,11 +397,12 @@ Druids choose Magician or Warden at level 1.
 
 **What Changes in Wild Shape:**
 - Gain beast's STR, DEX, CON
-- Gain beast's HP as Temp HP (Level 5: gain 5 temp HP)
+- Gain **Temp HP equal to Druid level** (5 temp HP at level 5)
 - Gain beast's AC (natural armor)
 - Gain beast's Speed
 - Gain beast's attacks and special abilities
 - Skills recalculate using new ability scores
+- **Keep your own HP** (temp HP acts as buffer)
 
 **What Stays the Same:**
 - INT, WIS, CHA scores
@@ -569,9 +570,18 @@ Uses = Proficiency Bonus per Long Rest
 | Sense | Range | Description |
 |-------|-------|-------------|
 | Darkvision | 60 ft | See dim light as bright, darkness as dim (grayscale only) |
-| Passive Perception | 14 | 10 + Perception modifier (+4) |
+| Passive Perception | 17 | 10 + Perception modifier (+7, proficient) |
 | Passive Investigation | 9 | 10 + Investigation modifier (-1) |
 | Passive Insight | 14 | 10 + Insight modifier (+4) |
+
+## Languages
+
+| Language | Source |
+|----------|--------|
+| Common | Standard |
+| Druidic | Druid class (secret language) |
+| Celestial | Aasimar heritage |
+| Infernal | Tiefling heritage |
 
 ---
 
