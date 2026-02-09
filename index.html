@@ -6381,6 +6381,30 @@
                                 </select>
                             </div>
                         </div>
+                        <div class="effect-form-row" style="margin-top:8px;">
+                            <div>
+                                <label>Save DC (optional)</label>
+                                <select id="${itemType}EffectSaveDC" onchange="toggleExtraDamageDC('${itemType}')">
+                                    <option value="">No save (automatic)</option>
+                                    <option value="character">Character's DC (15)</option>
+                                    <option value="STR">STR save</option>
+                                    <option value="DEX">DEX save</option>
+                                    <option value="CON">CON save</option>
+                                    <option value="custom">Custom DC...</option>
+                                </select>
+                            </div>
+                            <div id="${itemType}ExtraDmgDCInput" style="display:none;">
+                                <label>DC Value</label>
+                                <input type="number" id="${itemType}EffectCustomDC" value="15" min="1" max="30" style="width:60px;">
+                            </div>
+                        </div>
+                        <div id="${itemType}ExtraDmgSaveEffect" style="display:none; margin-top:8px;">
+                            <label>On Save</label>
+                            <select id="${itemType}EffectOnSave">
+                                <option value="half">Half damage</option>
+                                <option value="none">No damage</option>
+                            </select>
+                        </div>
                         <label style="margin-top:8px;">Activation</label>
                         <select id="${itemType}EffectActivation">
                             <option value="always">Always Active</option>
@@ -6767,6 +6791,14 @@
                     effect.dice = document.getElementById(itemType + 'EffectDice').value;
                     effect.damageType = document.getElementById(itemType + 'EffectValue').value;
                     effect.activation = document.getElementById(itemType + 'EffectActivation').value;
+                    const saveDC = document.getElementById(itemType + 'EffectSaveDC').value;
+                    if (saveDC) {
+                        effect.saveDC = saveDC;
+                        if (saveDC === 'custom') {
+                            effect.customDC = parseInt(document.getElementById(itemType + 'EffectCustomDC').value) || 15;
+                        }
+                        effect.onSave = document.getElementById(itemType + 'EffectOnSave').value;
+                    }
                     break;
                 case 'extraDamageVs':
                     effect.dice = document.getElementById(itemType + 'EffectDice').value;
@@ -6898,9 +6930,13 @@
                 case 'immunity': return `Immunity to ${effect.damageType} damage`;
                 case 'conditionImmunity': return `Immunity to ${effect.condition}`;
                 case 'extraDamage':
-                    return effect.activation === 'always'
-                        ? `+${effect.dice} ${effect.damageType} damage`
-                        : `+${effect.dice} ${effect.damageType} (command word)`;
+                    let dmgDesc = `+${effect.dice} ${effect.damageType}`;
+                    if (effect.saveDC) {
+                        const dcVal = effect.saveDC === 'character' ? '15' : (effect.saveDC === 'custom' ? effect.customDC : effect.saveDC);
+                        const saveType = effect.saveDC === 'character' || effect.saveDC === 'custom' ? '' : ` ${effect.saveDC}`;
+                        dmgDesc += ` (DC ${dcVal}${saveType} save, ${effect.onSave === 'half' ? 'half on save' : 'none on save'})`;
+                    }
+                    return effect.activation === 'always' ? dmgDesc : `${dmgDesc} (command word)`;
                 case 'extraDamageVs': return `+${effect.dice} damage vs ${effect.creatureType}`;
                 case 'speed': return `${effect.speedType} speed ${effect.value} ft`;
                 case 'advantage':
@@ -7059,6 +7095,17 @@
             const dcInput = document.getElementById(itemType + 'CustomSpellDCValue');
             if (saveSelect && dcInput) {
                 dcInput.style.display = saveSelect.value === 'custom' ? 'block' : 'none';
+            }
+        }
+
+        function toggleExtraDamageDC(itemType) {
+            const saveSelect = document.getElementById(itemType + 'EffectSaveDC');
+            const dcInput = document.getElementById(itemType + 'ExtraDmgDCInput');
+            const saveEffect = document.getElementById(itemType + 'ExtraDmgSaveEffect');
+            if (saveSelect) {
+                const hasSave = saveSelect.value !== '';
+                if (dcInput) dcInput.style.display = saveSelect.value === 'custom' ? 'block' : 'none';
+                if (saveEffect) saveEffect.style.display = hasSave ? 'block' : 'none';
             }
         }
 
