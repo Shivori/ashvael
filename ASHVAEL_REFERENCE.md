@@ -306,9 +306,7 @@ Club, Dagger, Greatclub, Handaxe, Javelin, Light Hammer, Mace, Quarterstaff, Sic
 **Martial Weapons (NOT Proficient):**
 Battleaxe, Flail, Glaive, Greataxe, Greatsword, Halberd, Lance, Longsword, Maul, Morningstar, Pike, Rapier, Scimitar, Shortsword, Trident, War Pick, Warhammer, Whip, Blowgun, Hand Crossbow, Heavy Crossbow, Longbow, Net
 
-> **CORRECTION NEEDED**: Scimitar is a MARTIAL weapon. Ashvael is NOT proficient with Scimitar.
-> Attack with Scimitar: +2 (DEX only, no proficiency bonus)
-> Should replace with Sickle (simple, 1d4 slashing) per official Druid starting equipment.
+> **CORRECTED (Session 8)**: Scimitar replaced with Sickle (simple weapon).
 
 #### Tool Proficiencies
 - **Herbalism Kit** - Proficient (from Druid class)
@@ -321,7 +319,7 @@ Battleaxe, Flail, Glaive, Greataxe, Greatsword, Halberd, Lance, Longsword, Maul,
 #### Skills (Choose 2 from Druid list)
 Druids choose from: Arcana, Animal Handling, Insight, Medicine, Nature, Perception, Religion, Survival
 
-> **CHOICE MADE**: (Need to confirm which 2 skills were chosen from Druid class)
+> **CHOICE MADE**: Nature, Perception
 > Background (Guide) grants: Stealth, Survival
 
 ### Druid Starting Equipment (Official 2024)
@@ -538,29 +536,31 @@ Uses = Proficiency Bonus per Long Rest
 
 ## Skill Proficiencies
 
-| Skill | Ability | Proficient? | Modifier |
-|-------|---------|-------------|----------|
-| Acrobatics | DEX | No | +2 |
-| Animal Handling | WIS | No | +4 |
-| Arcana | INT | No | -1 |
-| Athletics | STR | No | -1 |
-| Deception | CHA | No | +1 |
-| History | INT | No | -1 |
-| Insight | WIS | No | +4 |
-| Intimidation | CHA | No | +1 |
-| Investigation | INT | No | -1 |
-| Medicine | WIS | No | +4 |
-| Nature | INT | No | -1 |
-| Perception | WIS | No | +4 |
-| Performance | CHA | No | +1 |
-| Persuasion | CHA | No | +1 |
-| Religion | INT | No | -1 |
-| Sleight of Hand | DEX | No | +2 |
-| Stealth | DEX | **YES** | +5 |
-| Survival | WIS | **YES** | +7 |
+| Skill | Ability | Proficient? | Modifier | Source |
+|-------|---------|-------------|----------|--------|
+| Acrobatics | DEX | No | +2 | |
+| Animal Handling | WIS | No | +4 | |
+| Arcana | INT | No | +3 | +4 from Magician (WIS mod) |
+| Athletics | STR | No | -1 | |
+| Deception | CHA | No | +1 | |
+| History | INT | No | -1 | |
+| Insight | WIS | No | +4 | |
+| Intimidation | CHA | No | +1 | |
+| Investigation | INT | No | -1 | |
+| Medicine | WIS | No | +4 | |
+| Nature | INT | **YES** | +6 | Druid class + Magician (+4 WIS) |
+| Perception | WIS | **YES** | +7 | Druid class |
+| Performance | CHA | No | +1 | |
+| Persuasion | CHA | No | +1 | |
+| Religion | INT | No | -1 | |
+| Sleight of Hand | DEX | No | +2 | |
+| Stealth | DEX | **YES** | +5 | Guide background |
+| Survival | WIS | **YES** | +7 | Guide background |
 
-> **NOTE**: Need to confirm which 2 skills were chosen from Druid class list.
-> Currently only showing Guide background proficiencies (Stealth, Survival).
+> **SKILLS CONFIRMED**:
+> - From Druid class: Nature, Perception
+> - From Guide background: Stealth, Survival
+> - Magician feature adds WIS mod (+4) to Arcana and Nature checks
 
 ---
 
@@ -760,16 +760,16 @@ IF inStarryForm:
   KEEP spell casting ENABLED
 ```
 
-## Inventory Corrections Needed
+## Inventory Corrections (All Fixed in Session 8)
 
-| Current Item | Issue | Correction |
-|--------------|-------|------------|
-| Scimitar | Martial weapon, not proficient | Replace with Sickle (simple) |
-| Hide Armor | Medium armor, not proficient | Replace with Leather Armor (light) |
-| Missing | — | Add Quarterstaff (Druidic Focus) |
-| Missing | — | Add Herbalism Kit |
-| Missing | — | Add Mess Kit |
-| Missing | — | Add proper gear descriptions |
+| Issue | Status |
+|-------|--------|
+| Scimitar → Sickle | ✓ Fixed |
+| Hide Armor → Leather Armor | ✓ Fixed |
+| Add Quarterstaff | ✓ Fixed |
+| Add Herbalism Kit | ✓ Fixed |
+| Add Mess Kit | ✓ Fixed |
+| Gear descriptions | ✓ Fixed |
 
 ---
 
@@ -830,12 +830,12 @@ IF inStarryForm:
 
 # PART 8: QUESTIONS/CONFIRMATIONS NEEDED
 
-1. **Druid Skill Proficiencies**: Which 2 skills were chosen from Druid class?
-   - Options: Arcana, Animal Handling, Insight, Medicine, Nature, Perception, Religion, Survival
+1. ~~**Druid Skill Proficiencies**~~ → **ANSWERED**: Nature + Perception
 
 2. **Currently Prepared Spells**: What 9 spells are currently prepared?
 
 3. **Shortbow/Dagger**: Did you add these separately, or should they not be in inventory?
    - Official Druid starting equipment doesn't include ranged weapons
+   - (Keeping them as common simple weapon additions)
 
 4. **Tiefling Traits**: What specific Infernal Legacy features (if any) from the Tiefling half?

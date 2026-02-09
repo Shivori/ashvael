@@ -28,15 +28,6 @@
 - **Wild Companion (Find Familiar)**: Select familiar form when summoning
 - When concentration ends, companion stat block should disappear automatically
 
-### Wild Shape
-- Must update ALL of the following when transforming:
-  - STR, DEX, CON scores
-  - Skill modifiers (recalculate based on new ability scores)
-  - AC (use beast's AC)
-  - Speed (use beast's speed)
-  - HP display (show temp HP from Wild Shape)
-- Keep INT, WIS, CHA and proficiency bonuses
-
 ### Companion Stat Block
 - Show: Name, AC, HP (editable), Speed
 - Show: Attack information (to-hit, damage)
