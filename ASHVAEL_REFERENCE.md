@@ -153,10 +153,12 @@ Spell slots are expended when casting spells and recover on Long Rest.
 
 ### Upcasting
 
-Many spells can be cast at higher levels for increased effect:
-- Healing Word: 1d4+WIS per level above 1st
-- Guiding Bolt: 1d6 per level above 1st
-- Cure Wounds: 1d8 per level above 1st
+Many spells can be cast at higher levels for increased effect (2024 PHB):
+- Healing Word: Base 2d4+WIS, **+2d4** per level above 1st
+- Guiding Bolt: Base 4d6, +1d6 per level above 1st
+- Cure Wounds: Base 2d8+WIS, **+2d8** per level above 1st
+- Thunderwave: Base 2d8, +1d8 per level above 1st
+- Moonbeam: Base 2d10, +1d10 per level above 2nd
 
 ### Spellcasting Focus
 
@@ -505,7 +507,7 @@ Uses = Proficiency Bonus per Long Rest
 **1st Level Spell (1):**
 | Spell | Effect |
 |-------|--------|
-| Healing Word | Bonus Action, 60 ft, heal 1d4+WIS (can upcast) |
+| Healing Word | Bonus Action, 60 ft, heal 2d4+WIS (2024), +2d4 per upcast level |
 
 - Spell can be cast 1/Long Rest free OR with spell slots
 - Always prepared (doesn't count against prepared limit)
@@ -528,7 +530,7 @@ Uses = Proficiency Bonus per Long Rest
 | Resource | Uses | Recharge | Source | Effect |
 |----------|------|----------|--------|--------|
 | Guiding Bolt | 4 | Long Rest | Star Map | 4d6 radiant, grants Advantage on next attack |
-| Healing Word | 1 | Long Rest | Magic Initiate | 1d4+WIS healing, Bonus Action, 60 ft |
+| Healing Word | 1 | Long Rest | Magic Initiate | 2d4+WIS healing, Bonus Action, 60 ft |
 | Healing Hands | 1 | Long Rest | Aasimar | Touch, heal 1d4 x Prof Bonus (3d4) HP |
 | Celestial Revelation | 1 | Long Rest | Aasimar (3+) | Transform 1 min (Wings/Radiance/Shroud) |
 | Wild Shape | 2 | Short/Long Rest | Druid | Transform into beast or use for Starry Form/Wild Companion |
