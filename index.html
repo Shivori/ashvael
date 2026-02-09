@@ -2524,6 +2524,8 @@
                 updateConcentrationDisplay();
                 updateCompanionDisplay();
                 updateItemChargesDisplay();
+                renderInventory();
+                updateReclaimButton();
             } catch (e) {
                 console.error('Error in updateAllDisplays:', e);
             }
