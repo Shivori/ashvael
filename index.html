@@ -277,6 +277,36 @@
             color: white;
         }
 
+        /* Collapsible Cards */
+        .card-title.collapsible {
+            cursor: pointer;
+            user-select: none;
+        }
+        .card-title.collapsible:hover {
+            color: var(--accent-gold-light, #f0d890);
+        }
+        .card-title .collapse-toggle {
+            font-size: 0.8em;
+            transition: transform 0.2s ease;
+            margin-left: auto;
+            padding-left: 10px;
+        }
+        .card-content {
+            transition: max-height 0.3s ease, opacity 0.2s ease;
+            overflow: hidden;
+        }
+        .card-content.collapsed {
+            max-height: 0 !important;
+            opacity: 0;
+            margin: 0;
+            padding: 0;
+        }
+        .card.collapsed .card-title {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
         /* Combat Stats Row */
         .combat-row {
             display: grid;
@@ -1251,6 +1281,257 @@
             margin-top: 10px;
         }
 
+        /* Effects Builder */
+        .effects-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .effect-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 6px;
+            font-size: 0.85em;
+        }
+
+        .effect-item .effect-icon {
+            font-size: 1.1em;
+        }
+
+        .effect-item .effect-text {
+            flex: 1;
+        }
+
+        .effect-item .effect-remove {
+            color: var(--accent-red);
+            cursor: pointer;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .effect-item .effect-remove:hover {
+            background: rgba(255,100,100,0.2);
+        }
+
+        .add-effect-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 10px;
+            background: rgba(123, 104, 238, 0.2);
+            border: 1px dashed var(--accent-purple);
+            border-radius: 6px;
+            color: var(--accent-purple);
+            cursor: pointer;
+            font-size: 0.9em;
+        }
+
+        .add-effect-btn:hover {
+            background: rgba(123, 104, 238, 0.3);
+        }
+
+        .effect-form {
+            padding: 10px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 6px;
+            margin-top: 8px;
+        }
+
+        .effect-form select, .effect-form input {
+            width: 100%;
+            padding: 8px;
+            margin-top: 4px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            color: var(--text-primary);
+        }
+
+        .effect-form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .effect-form-buttons {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .effect-form-buttons button {
+            flex: 1;
+            padding: 8px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        /* Item Charges Display */
+        .item-charges-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 12px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 6px;
+            margin-bottom: 6px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .item-charges-row:hover {
+            background: rgba(0,0,0,0.3);
+        }
+        .item-charges-name {
+            flex: 1;
+            font-weight: 500;
+            color: var(--accent-purple);
+        }
+        .item-charges-bar {
+            width: 80px;
+            height: 8px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .item-charges-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-purple), var(--accent-gold));
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+        .item-charges-count {
+            font-size: 0.85em;
+            color: var(--text-secondary);
+            min-width: 40px;
+            text-align: right;
+        }
+        .item-spell-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 12px;
+            background: rgba(123, 104, 238, 0.1);
+            border-radius: 6px;
+            margin-bottom: 6px;
+            cursor: pointer;
+            border-left: 3px solid var(--accent-purple);
+        }
+        .item-spell-row:hover {
+            background: rgba(123, 104, 238, 0.2);
+        }
+        .item-spell-row.used {
+            opacity: 0.5;
+            border-left-color: var(--text-muted);
+        }
+        .item-spell-name {
+            flex: 1;
+            font-weight: 500;
+        }
+        .item-spell-usage {
+            font-size: 0.85em;
+            color: var(--text-secondary);
+        }
+        .no-charges {
+            color: var(--text-muted);
+            text-align: center;
+            padding: 10px;
+            font-style: italic;
+        }
+        /* Item Charges Modal */
+        .item-charges-modal .charges-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .item-charges-modal .recharge-info {
+            font-size: 0.85em;
+            color: var(--text-secondary);
+        }
+        .charges-bar-large {
+            height: 12px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 6px;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+        .charges-fill-large {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-purple), var(--accent-gold));
+            border-radius: 6px;
+            transition: width 0.3s ease;
+        }
+        .charge-spells-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .charge-spell-option {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            background: rgba(123, 104, 238, 0.15);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .charge-spell-option:hover {
+            background: rgba(123, 104, 238, 0.3);
+            transform: translateX(4px);
+        }
+        .charge-spell-name {
+            font-weight: 500;
+        }
+        .charge-spell-cost {
+            font-size: 0.9em;
+            color: var(--accent-gold);
+        }
+
+        /* Resistances Display */
+        .resistances-section {
+            margin-top: 15px;
+            padding: 12px;
+            background: var(--bg-card-hover);
+            border-radius: 8px;
+        }
+
+        .resistances-title {
+            font-size: 0.85em;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+
+        .resistance-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .resistance-tag {
+            padding: 4px 10px;
+            background: rgba(80, 200, 120, 0.15);
+            border: 1px solid var(--accent-green);
+            border-radius: 12px;
+            font-size: 0.8em;
+            color: var(--accent-green);
+        }
+
+        .immunity-tag {
+            background: rgba(201, 162, 39, 0.15);
+            border-color: var(--accent-gold);
+            color: var(--accent-gold);
+        }
+
         /* Features Styles */
         .feature-list {
             display: flex;
@@ -1506,6 +1787,14 @@
                 </div>
             </div>
 
+            <!-- Resistances & Immunities -->
+            <div class="card" id="resistancesCard">
+                <h2 class="card-title">Resistances & Immunities</h2>
+                <div id="resistancesDisplay">
+                    <!-- Populated dynamically -->
+                </div>
+            </div>
+
             <!-- Ability Scores -->
             <div class="card">
                 <h2 class="card-title">Ability Scores</h2>
@@ -1612,129 +1901,161 @@
                 </div>
             </div>
 
-            <!-- Wild Shape Slots -->
-            <div class="card">
-                <h2 class="card-title">Resource Slots</h2>
-                <div style="display: flex; gap: 20px; flex-wrap: wrap;">
-                    <div class="slot-group">
-                        <span class="slot-label">Wild Shape</span>
-                        <div class="slot-boxes" id="wildShapeSlots">
-                            <div class="slot-box" onclick="toggleWildShapeSlot(this)" style="border-color: var(--accent-green)">●</div>
-                            <div class="slot-box" onclick="toggleWildShapeSlot(this)" style="border-color: var(--accent-green)">●</div>
+            <!-- Resource Slots (includes Item Charges) -->
+            <div class="card" id="resourceSlotsCard">
+                <h2 class="card-title collapsible" onclick="toggleCard('resourceSlotsCard')">
+                    <span>Resource Slots</span>
+                    <span class="collapse-toggle">▼</span>
+                </h2>
+                <div class="card-content">
+                    <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+                        <div class="slot-group">
+                            <span class="slot-label">Wild Shape</span>
+                            <div class="slot-boxes" id="wildShapeSlots">
+                                <div class="slot-box" onclick="toggleWildShapeSlot(this)" style="border-color: var(--accent-green)">●</div>
+                                <div class="slot-box" onclick="toggleWildShapeSlot(this)" style="border-color: var(--accent-green)">●</div>
+                            </div>
+                        </div>
+                        <div class="slot-group">
+                            <span class="slot-label">Guiding Bolt</span>
+                            <div class="slot-boxes" id="guidingBoltSlots">
+                                <div class="slot-box" onclick="toggleGBSlot(this)" style="border-color: var(--accent-gold)">●</div>
+                                <div class="slot-box" onclick="toggleGBSlot(this)" style="border-color: var(--accent-gold)">●</div>
+                                <div class="slot-box" onclick="toggleGBSlot(this)" style="border-color: var(--accent-gold)">●</div>
+                                <div class="slot-box" onclick="toggleGBSlot(this)" style="border-color: var(--accent-gold)">●</div>
+                            </div>
+                        </div>
+                        <div class="slot-group">
+                            <span class="slot-label">Healing Word (Free)</span>
+                            <div class="slot-boxes" id="healingWordFreeSlot">
+                                <div class="slot-box" onclick="toggleHWFreeSlot(this)" style="border-color: var(--accent-green)">●</div>
+                            </div>
+                        </div>
+                        <div class="slot-group">
+                            <span class="slot-label">Healing Hands</span>
+                            <div class="slot-boxes" id="healingHandsSlot">
+                                <div class="slot-box" onclick="toggleHHSlot(this)" style="border-color: var(--accent-purple)">●</div>
+                            </div>
+                        </div>
+                        <div class="slot-group">
+                            <span class="slot-label">Celestial Rev.</span>
+                            <div class="slot-boxes" id="celestialRevSlot">
+                                <div class="slot-box" onclick="toggleCRSlot(this)" style="border-color: var(--accent-orange)">●</div>
+                            </div>
                         </div>
                     </div>
-                    <div class="slot-group">
-                        <span class="slot-label">Guiding Bolt</span>
-                        <div class="slot-boxes" id="guidingBoltSlots">
-                            <div class="slot-box" onclick="toggleGBSlot(this)" style="border-color: var(--accent-gold)">●</div>
-                            <div class="slot-box" onclick="toggleGBSlot(this)" style="border-color: var(--accent-gold)">●</div>
-                            <div class="slot-box" onclick="toggleGBSlot(this)" style="border-color: var(--accent-gold)">●</div>
-                            <div class="slot-box" onclick="toggleGBSlot(this)" style="border-color: var(--accent-gold)">●</div>
-                        </div>
-                    </div>
-                    <div class="slot-group">
-                        <span class="slot-label">Healing Word (Free)</span>
-                        <div class="slot-boxes" id="healingWordFreeSlot">
-                            <div class="slot-box" onclick="toggleHWFreeSlot(this)" style="border-color: var(--accent-green)">●</div>
-                        </div>
-                    </div>
-                    <div class="slot-group">
-                        <span class="slot-label">Healing Hands</span>
-                        <div class="slot-boxes" id="healingHandsSlot">
-                            <div class="slot-box" onclick="toggleHHSlot(this)" style="border-color: var(--accent-purple)">●</div>
-                        </div>
-                    </div>
-                    <div class="slot-group">
-                        <span class="slot-label">Celestial Rev.</span>
-                        <div class="slot-boxes" id="celestialRevSlot">
-                            <div class="slot-box" onclick="toggleCRSlot(this)" style="border-color: var(--accent-orange)">●</div>
-                        </div>
+                    <!-- Item Charges (integrated into Resource Slots) -->
+                    <div id="itemChargesDisplay" style="margin-top: 12px; border-top: 1px solid var(--border-color); padding-top: 12px; display: none;">
+                        <!-- Populated dynamically -->
                     </div>
                 </div>
             </div>
 
             <!-- Actions -->
             <div class="card" id="actionsCard">
-                <h2 class="card-title">Actions</h2>
-                <div class="actions-grid">
-                    <div class="action-category">
-                        <div class="action-category-title">⚔️ Action</div>
-                        <div class="action-list" id="actionList">
-                            <div class="action-item" onclick="openAttackSelection()">Attack</div>
-                            <div class="action-item" onclick="openCastSpellSelection('action')">Cast Spell (Action)</div>
-                            <div class="action-item" onclick="openWildCompanion()">Wild Companion</div>
-                            <div class="action-item" onclick="openHealingHands()">Healing Hands</div>
-                            <div class="action-item" onclick="useAction('action', this)">Dash</div>
-                            <div class="action-item" onclick="useAction('action', this)">Dodge</div>
-                            <div class="action-item" onclick="useAction('action', this)">Help</div>
-                            <div class="action-item" onclick="useAction('action', this)">Hide</div>
+                <h2 class="card-title collapsible" onclick="toggleCard('actionsCard')">
+                    <span>Actions</span>
+                    <span class="collapse-toggle">▼</span>
+                </h2>
+                <div class="card-content">
+                    <div class="actions-grid">
+                        <div class="action-category">
+                            <div class="action-category-title">⚔️ Action</div>
+                            <div class="action-list" id="actionList">
+                                <div class="action-item" onclick="openAttackSelection()">Attack</div>
+                                <div class="action-item" onclick="openCastSpellSelection('action')">Cast Spell (Action)</div>
+                                <div class="action-item" onclick="openWildCompanion()">Wild Companion</div>
+                                <div class="action-item" onclick="openHealingHands()">Healing Hands</div>
+                                <div class="action-item" onclick="useAction('action', this)">Dash</div>
+                                <div class="action-item" onclick="useAction('action', this)">Dodge</div>
+                                <div class="action-item" onclick="useAction('action', this)">Help</div>
+                                <div class="action-item" onclick="useAction('action', this)">Hide</div>
+                            </div>
+                        </div>
+                        <div class="action-category bonus">
+                            <div class="action-category-title">⚡ Bonus Action</div>
+                            <div class="action-list" id="bonusActionList">
+                                <div class="action-item" onclick="openFormSelection()">Wild Shape / Starry Form</div>
+                                <div class="action-item" onclick="openCelestialRevelation()">Celestial Revelation</div>
+                                <div class="action-item" onclick="openCastSpellSelection('bonus')">Cast Spell (Bonus)</div>
+                                <div class="action-item archer-action" style="display:none" onclick="useArcherAttack()">Archer Attack (1d8+4)</div>
+                            </div>
+                        </div>
+                        <div class="action-category reaction">
+                            <div class="action-category-title">🛡️ Reaction</div>
+                            <div class="action-list" id="reactionList">
+                                <div class="action-item" onclick="useAction('reaction', this)">Opportunity Attack</div>
+                                <div class="action-item" onclick="openWarCasterSpell()">War Caster Spell</div>
+                                <div class="action-item" onclick="useAbsorbElements()">Absorb Elements</div>
+                            </div>
                         </div>
                     </div>
-                    <div class="action-category bonus">
-                        <div class="action-category-title">⚡ Bonus Action</div>
-                        <div class="action-list" id="bonusActionList">
-                            <div class="action-item" onclick="openFormSelection()">Wild Shape / Starry Form</div>
-                            <div class="action-item" onclick="openCelestialRevelation()">Celestial Revelation</div>
-                            <div class="action-item" onclick="openCastSpellSelection('bonus')">Cast Spell (Bonus)</div>
-                            <div class="action-item archer-action" style="display:none" onclick="useArcherAttack()">Archer Attack (1d8+4)</div>
-                        </div>
-                    </div>
-                    <div class="action-category reaction">
-                        <div class="action-category-title">🛡️ Reaction</div>
-                        <div class="action-list" id="reactionList">
-                            <div class="action-item" onclick="useAction('reaction', this)">Opportunity Attack</div>
-                            <div class="action-item" onclick="openWarCasterSpell()">War Caster Spell</div>
-                            <div class="action-item" onclick="useAbsorbElements()">Absorb Elements</div>
-                        </div>
-                    </div>
-                </div>
 
-                <!-- Battle Log -->
-                <div class="battle-log" id="battleLog">
-                    <div class="text-small text-muted mb-10">Battle Log:</div>
-                    <div id="battleLogContent"></div>
+                    <!-- Battle Log -->
+                    <div class="battle-log" id="battleLog">
+                        <div class="text-small text-muted mb-10">Battle Log:</div>
+                        <div id="battleLogContent"></div>
+                    </div>
                 </div>
             </div>
 
             <!-- Skills -->
-            <div class="card">
-                <h2 class="card-title">Skills</h2>
-                <div class="skills-grid">
-                    <div class="skill-item" id="skill-acrobatics"><span>Acrobatics</span><span class="skill-mod" id="skillMod-acrobatics">+2</span></div>
-                    <div class="skill-item"><span>Animal H.</span><span class="skill-mod">+4</span></div>
-                    <div class="skill-item"><span>Arcana*</span><span class="skill-mod">+3</span></div>
-                    <div class="skill-item" id="skill-athletics"><span>Athletics</span><span class="skill-mod" id="skillMod-athletics">-1</span></div>
-                    <div class="skill-item"><span>Deception</span><span class="skill-mod">+1</span></div>
-                    <div class="skill-item"><span>History</span><span class="skill-mod">-1</span></div>
-                    <div class="skill-item proficient"><span>Insight</span><span class="skill-mod proficient">+7</span></div>
-                    <div class="skill-item"><span>Intimidation</span><span class="skill-mod">+1</span></div>
-                    <div class="skill-item"><span>Investigation</span><span class="skill-mod">-1</span></div>
-                    <div class="skill-item"><span>Medicine</span><span class="skill-mod">+4</span></div>
-                    <div class="skill-item proficient"><span>Nature*</span><span class="skill-mod proficient">+6</span></div>
-                    <div class="skill-item proficient"><span>Perception</span><span class="skill-mod proficient">+7</span></div>
-                    <div class="skill-item"><span>Performance</span><span class="skill-mod">+1</span></div>
-                    <div class="skill-item"><span>Persuasion</span><span class="skill-mod">+1</span></div>
-                    <div class="skill-item"><span>Religion</span><span class="skill-mod">-1</span></div>
-                    <div class="skill-item" id="skill-sleight"><span>Sleight of H.</span><span class="skill-mod" id="skillMod-sleight">+2</span></div>
-                    <div class="skill-item" id="skill-stealth"><span>Stealth</span><span class="skill-mod" id="skillMod-stealth">+2</span></div>
-                    <div class="skill-item proficient"><span>Survival</span><span class="skill-mod proficient">+7</span></div>
+            <div class="card" id="skillsCard">
+                <h2 class="card-title collapsible" onclick="toggleCard('skillsCard')">
+                    <span>Skills</span>
+                    <span class="collapse-toggle">▼</span>
+                </h2>
+                <div class="card-content">
+                    <div class="skills-grid">
+                        <div class="skill-item" id="skill-acrobatics"><span>Acrobatics</span><span class="skill-mod" id="skillMod-acrobatics">+2</span></div>
+                        <div class="skill-item" id="skill-animal"><span>Animal H.</span><span class="skill-mod" id="skillMod-animal">+4</span></div>
+                        <div class="skill-item" id="skill-arcana"><span>Arcana*</span><span class="skill-mod" id="skillMod-arcana">+3</span></div>
+                        <div class="skill-item" id="skill-athletics"><span>Athletics</span><span class="skill-mod" id="skillMod-athletics">-1</span></div>
+                        <div class="skill-item" id="skill-deception"><span>Deception</span><span class="skill-mod" id="skillMod-deception">+1</span></div>
+                        <div class="skill-item" id="skill-history"><span>History</span><span class="skill-mod" id="skillMod-history">-1</span></div>
+                        <div class="skill-item" id="skill-insight"><span>Insight</span><span class="skill-mod" id="skillMod-insight">+4</span></div>
+                        <div class="skill-item" id="skill-intimidation"><span>Intimidation</span><span class="skill-mod" id="skillMod-intimidation">+1</span></div>
+                        <div class="skill-item" id="skill-investigation"><span>Investigation</span><span class="skill-mod" id="skillMod-investigation">-1</span></div>
+                        <div class="skill-item" id="skill-medicine"><span>Medicine</span><span class="skill-mod" id="skillMod-medicine">+4</span></div>
+                        <div class="skill-item proficient" id="skill-nature"><span>Nature*</span><span class="skill-mod proficient" id="skillMod-nature">+6</span></div>
+                        <div class="skill-item proficient" id="skill-perception"><span>Perception</span><span class="skill-mod proficient" id="skillMod-perception">+7</span></div>
+                        <div class="skill-item" id="skill-performance"><span>Performance</span><span class="skill-mod" id="skillMod-performance">+1</span></div>
+                        <div class="skill-item" id="skill-persuasion"><span>Persuasion</span><span class="skill-mod" id="skillMod-persuasion">+1</span></div>
+                        <div class="skill-item" id="skill-religion"><span>Religion</span><span class="skill-mod" id="skillMod-religion">-1</span></div>
+                        <div class="skill-item" id="skill-sleight"><span>Sleight of H.</span><span class="skill-mod" id="skillMod-sleight">+2</span></div>
+                        <div class="skill-item proficient" id="skill-stealth"><span>Stealth</span><span class="skill-mod proficient" id="skillMod-stealth">+5</span></div>
+                        <div class="skill-item proficient" id="skill-survival"><span>Survival</span><span class="skill-mod proficient" id="skillMod-survival">+7</span></div>
+                    </div>
+                    <div class="text-small text-muted mt-10">* Magician adds +4 (Wis) to Arcana/Nature</div>
                 </div>
-                <div class="text-small text-muted mt-10">* Magician adds +4 (Wis) to Arcana/Nature</div>
             </div>
 
-            <!-- Defenses -->
-            <div class="card">
-                <h2 class="card-title">Defenses & Senses</h2>
-                <div id="defensesNormal" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 0.9em;">
-                    <div><strong style="color: var(--accent-green)">Resistances:</strong> Necrotic, Radiant</div>
-                    <div><strong style="color: var(--accent-purple)">Darkvision:</strong> <span id="darkvisionDisplay">60 ft</span></div>
-                    <div><strong style="color: var(--accent-blue)">Passive Perception:</strong> <span id="passivePerceptionDisplay">17</span></div>
-                    <div><strong style="color: var(--accent-gold)">Languages:</strong> Common, Druidic, Celestial, Infernal</div>
-                </div>
-                <!-- Wild Shape abilities display -->
-                <div id="wildShapeAbilities" style="display: none; margin-top: 15px; padding: 12px; background: rgba(80, 200, 120, 0.1); border: 1px solid var(--accent-green); border-radius: 8px;">
-                    <div style="font-weight: bold; color: var(--accent-green); margin-bottom: 8px;">🐾 Beast Abilities</div>
-                    <div id="beastAbilitiesContent" style="font-size: 0.9em; line-height: 1.6;"></div>
+            <!-- Character Info -->
+            <div class="card" id="charInfoCard">
+                <h2 class="card-title collapsible" onclick="toggleCard('charInfoCard')">
+                    <span>Character Info</span>
+                    <span class="collapse-toggle">▼</span>
+                </h2>
+                <div class="card-content">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 0.9em;">
+                        <div><strong style="color: var(--accent-purple);">Size:</strong> Medium</div>
+                        <div><strong style="color: var(--accent-gold);">Background:</strong> Guide</div>
+                        <div><strong style="color: var(--accent-purple);">Darkvision:</strong> <span id="darkvisionDisplay">60 ft</span></div>
+                        <div><strong style="color: var(--accent-blue);">Passive Perception:</strong> <span id="passivePerceptionDisplay">17</span></div>
+                    </div>
+                    <div style="margin-top: 10px; font-size: 0.9em;">
+                        <div><strong style="color: var(--accent-gold);">Languages:</strong> Common, Druidic, Celestial, Infernal</div>
+                    </div>
+                    <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border-color); font-size: 0.85em;">
+                        <div style="margin-bottom: 6px;"><strong style="color: var(--text-muted);">Armor:</strong> Light Armor, Shields (no metal)</div>
+                        <div style="margin-bottom: 6px;"><strong style="color: var(--text-muted);">Weapons:</strong> Simple Weapons</div>
+                        <div><strong style="color: var(--text-muted);">Tools:</strong> Herbalism Kit, Cartographer's Tools</div>
+                    </div>
+                    <!-- Wild Shape abilities display -->
+                    <div id="wildShapeAbilities" style="display: none; margin-top: 15px; padding: 12px; background: rgba(80, 200, 120, 0.1); border: 1px solid var(--accent-green); border-radius: 8px;">
+                        <div style="font-weight: bold; color: var(--accent-green); margin-bottom: 8px;">🐾 Beast Abilities</div>
+                        <div id="beastAbilitiesContent" style="font-size: 0.9em; line-height: 1.6;"></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1867,19 +2188,20 @@
             <!-- Inventory List (unequipped items) -->
             <div class="card">
                 <h2 class="card-title">Inventory
-                    <button class="add-btn" onclick="openAddEquipmentModal()">+ Add</button>
+                    <div style="display: flex; gap: 8px;">
+                        <button class="add-btn" onclick="openAddEquipmentModal()">+ Add</button>
+                        <button class="add-btn" onclick="openAddAmmoModal()" style="background: var(--accent-green);">+ Ammo</button>
+                    </div>
                 </h2>
                 <div id="inventoryList" class="inventory-list"></div>
             </div>
 
             <!-- Adventuring Gear -->
             <div class="card">
-                <h2 class="card-title">Adventuring Gear</h2>
+                <h2 class="card-title">Adventuring Gear
+                    <button class="add-btn" onclick="openAddGearModal()">+ Add</button>
+                </h2>
                 <div id="gearList" class="inventory-list"></div>
-                <div class="add-item-row">
-                    <input type="text" id="newGear" class="add-item-input" placeholder="Add gear...">
-                    <button class="add-item-btn" onclick="addInventoryItem('gear')">+</button>
-                </div>
             </div>
 
             <!-- Currency -->
@@ -1897,20 +2219,28 @@
         <!-- FEATURES SECTION -->
         <div id="features" class="section">
             <div class="card">
-                <h2 class="card-title">Mixed Ancestry (Aasimar/Tiefling)</h2>
+                <h2 class="card-title">Background</h2>
+                <div class="feature-list" id="backgroundFeatures"></div>
+            </div>
+            <div class="card">
+                <h2 class="card-title">Species: Half-Aasimar/Half-Tiefling</h2>
                 <div class="feature-list" id="ancestryFeatures"></div>
             </div>
             <div class="card">
-                <h2 class="card-title">Druid Features</h2>
+                <h2 class="card-title">Class: Druid (Level 5)</h2>
                 <div class="feature-list" id="druidFeatures"></div>
             </div>
             <div class="card">
-                <h2 class="card-title">Circle of Stars Features</h2>
+                <h2 class="card-title">Subclass: Circle of Stars</h2>
                 <div class="feature-list" id="starsFeatures"></div>
             </div>
             <div class="card">
                 <h2 class="card-title">Feats</h2>
                 <div class="feature-list" id="featFeatures"></div>
+            </div>
+            <div class="card">
+                <h2 class="card-title">Proficiencies & Skills</h2>
+                <div class="feature-list" id="skillsFeatures"></div>
             </div>
         </div>
 
@@ -2027,6 +2357,89 @@
     </div>
 
     <script>
+        // ===== CHARACTER BASE STATS =====
+        const PROFICIENCY_BONUS = 3; // Level 5
+
+        const BASE_ABILITY_SCORES = {
+            str: 8,   // -1
+            dex: 14,  // +2
+            con: 14,  // +2
+            int: 8,   // -1
+            wis: 18,  // +4
+            cha: 13   // +1
+        };
+
+        // Skills with their governing ability and proficiency status
+        // expertise = double proficiency bonus
+        const SKILLS = {
+            acrobatics:     { ability: 'dex', proficient: false, expertise: false, id: 'skill-acrobatics', modId: 'skillMod-acrobatics' },
+            animalHandling: { ability: 'wis', proficient: false, expertise: false, id: 'skill-animal', modId: 'skillMod-animal' },
+            arcana:         { ability: 'int', proficient: false, expertise: false, id: 'skill-arcana', modId: 'skillMod-arcana', bonus: 4 }, // +4 from Magician (adds WIS mod)
+            athletics:      { ability: 'str', proficient: false, expertise: false, id: 'skill-athletics', modId: 'skillMod-athletics' },
+            deception:      { ability: 'cha', proficient: false, expertise: false, id: 'skill-deception', modId: 'skillMod-deception' },
+            history:        { ability: 'int', proficient: false, expertise: false, id: 'skill-history', modId: 'skillMod-history' },
+            insight:        { ability: 'wis', proficient: false, expertise: false, id: 'skill-insight', modId: 'skillMod-insight' },
+            intimidation:   { ability: 'cha', proficient: false, expertise: false, id: 'skill-intimidation', modId: 'skillMod-intimidation' },
+            investigation:  { ability: 'int', proficient: false, expertise: false, id: 'skill-investigation', modId: 'skillMod-investigation' },
+            medicine:       { ability: 'wis', proficient: false, expertise: false, id: 'skill-medicine', modId: 'skillMod-medicine' },
+            nature:         { ability: 'int', proficient: true,  expertise: false, id: 'skill-nature', modId: 'skillMod-nature', bonus: 4 }, // Proficient + Magician bonus (+4 WIS)
+            perception:     { ability: 'wis', proficient: true,  expertise: false, id: 'skill-perception', modId: 'skillMod-perception' },
+            performance:    { ability: 'cha', proficient: false, expertise: false, id: 'skill-performance', modId: 'skillMod-performance' },
+            persuasion:     { ability: 'cha', proficient: false, expertise: false, id: 'skill-persuasion', modId: 'skillMod-persuasion' },
+            religion:       { ability: 'int', proficient: false, expertise: false, id: 'skill-religion', modId: 'skillMod-religion' },
+            sleightOfHand:  { ability: 'dex', proficient: false, expertise: false, id: 'skill-sleight', modId: 'skillMod-sleight' },
+            stealth:        { ability: 'dex', proficient: true,  expertise: false, id: 'skill-stealth', modId: 'skillMod-stealth' },
+            survival:       { ability: 'wis', proficient: true,  expertise: false, id: 'skill-survival', modId: 'skillMod-survival' }
+        };
+
+        // Calculate ability modifier from score
+        function getAbilityMod(score) {
+            return Math.floor((score - 10) / 2);
+        }
+
+        // Calculate skill modifier given ability scores
+        function calculateSkillMod(skillName, abilityScores) {
+            const skill = SKILLS[skillName];
+            if (!skill) return 0;
+
+            const abilityMod = getAbilityMod(abilityScores[skill.ability]);
+            let profBonus = 0;
+
+            if (skill.expertise) {
+                profBonus = PROFICIENCY_BONUS * 2;
+            } else if (skill.proficient) {
+                profBonus = PROFICIENCY_BONUS;
+            }
+
+            // Add any static bonus (like from items or features)
+            const staticBonus = skill.bonus || 0;
+
+            return abilityMod + profBonus + staticBonus;
+        }
+
+        // Format modifier as string (+X or -X)
+        function formatMod(mod) {
+            return mod >= 0 ? '+' + mod : '' + mod;
+        }
+
+        // Get current ability scores (considers Wild Shape)
+        function getCurrentAbilityScores() {
+            if (state.activeForm && state.activeForm.type === 'wild-shape') {
+                const beast = BEAST_FORMS ? BEAST_FORMS.find(b => b.id === state.activeForm.beastId) : null;
+                if (beast) {
+                    return {
+                        str: beast.str,
+                        dex: beast.dex,
+                        con: beast.con || 12, // Default if not specified
+                        int: BASE_ABILITY_SCORES.int,  // Keep mental stats
+                        wis: BASE_ABILITY_SCORES.wis,
+                        cha: BASE_ABILITY_SCORES.cha
+                    };
+                }
+            }
+            return { ...BASE_ABILITY_SCORES };
+        }
+
         // ===== STATE MANAGEMENT =====
         const STATE_VERSION = 2; // Increment to force state reset
 
@@ -2048,7 +2461,10 @@
             inventory: [],
             notes: { sessions: [], cities: [], npcs: [], other: [] },
             concentration: null,
-            companions: []  // Array to support multiple companions (familiar + summon beast)
+            companions: [],  // Array to support multiple companions (familiar + summon beast)
+            itemCharges: {},  // Track charges for magic items: { itemId: { current: N, usedToday: [] } }
+            itemSpellsUsed: {},  // Track 1/day spell usage: { itemId_spellName: true }
+            thrownWeapons: []  // Track weapons that have been thrown and can be reclaimed
         };
 
         let state = JSON.parse(JSON.stringify(DEFAULT_STATE));
@@ -2106,6 +2522,7 @@
                 updateBattleUI();
                 updateConcentrationDisplay();
                 updateCompanionDisplay();
+                updateItemChargesDisplay();
             } catch (e) {
                 console.error('Error in updateAllDisplays:', e);
             }
@@ -2424,7 +2841,7 @@
                 }
             } else {
                 // Restore original stats
-                updateACDisplay();
+                updateACFromEquipment();
                 const speedEl = document.getElementById('displaySpeed');
                 if (speedEl) speedEl.textContent = '30ft';
 
@@ -2544,59 +2961,107 @@
         }
 
         function updateSkillsForWildShape(beast) {
-            // Calculate beast's ability modifiers
-            const beastDexMod = Math.floor((beast.dex - 10) / 2);
-            const beastStrMod = Math.floor((beast.str - 10) / 2);
+            // Create ability scores with beast's physical stats
+            const wildShapeScores = {
+                str: beast.str,
+                dex: beast.dex,
+                con: beast.con || 12,
+                int: BASE_ABILITY_SCORES.int,  // Keep mental stats
+                wis: BASE_ABILITY_SCORES.wis,
+                cha: BASE_ABILITY_SCORES.cha
+            };
 
-            // Format modifier string
-            const formatMod = (mod) => mod >= 0 ? '+' + mod : '' + mod;
+            // Update all physical-based skills (STR and DEX)
+            const physicalSkills = ['athletics', 'acrobatics', 'sleightOfHand', 'stealth'];
 
-            // Update STR-based skills (use beast's STR)
-            document.getElementById('skillMod-athletics').textContent = formatMod(beastStrMod);
-            document.getElementById('skill-athletics').classList.add('wild-shape');
+            physicalSkills.forEach(skillName => {
+                const skill = SKILLS[skillName];
+                if (!skill) return;
 
-            // Update DEX-based skills (use beast's DEX)
-            document.getElementById('skillMod-acrobatics').textContent = formatMod(beastDexMod);
-            document.getElementById('skill-acrobatics').classList.add('wild-shape');
+                const newMod = calculateSkillMod(skillName, wildShapeScores);
+                const modEl = document.getElementById(skill.modId);
+                const skillEl = document.getElementById(skill.id);
 
-            document.getElementById('skillMod-sleight').textContent = formatMod(beastDexMod);
-            document.getElementById('skill-sleight').classList.add('wild-shape');
-
-            document.getElementById('skillMod-stealth').textContent = formatMod(beastDexMod);
-            document.getElementById('skill-stealth').classList.add('wild-shape');
+                if (modEl) modEl.textContent = formatMod(newMod);
+                if (skillEl) skillEl.classList.add('wild-shape');
+            });
 
             // Update passive perception to note beast's senses
-            const yourWisMod = 4; // Your Wis mod
-            const profBonus = 3;
-            const basePassive = 10 + yourWisMod + profBonus; // 17 normally
-            document.getElementById('passivePerceptionDisplay').textContent = basePassive + ' (+ beast senses)';
+            const passiveEl = document.getElementById('passivePerceptionDisplay');
+            if (passiveEl) {
+                const perceptionMod = calculateSkillMod('perception', wildShapeScores);
+                passiveEl.textContent = (10 + perceptionMod) + ' (+ beast senses)';
+            }
         }
 
         function restoreNormalSkills() {
-            // Restore original skill values (your DEX is 14 = +2, STR is 8 = -1)
-            document.getElementById('skillMod-athletics').textContent = '-1';
-            document.getElementById('skill-athletics').classList.remove('wild-shape');
+            // Restore all physical-based skills using base ability scores
+            const physicalSkills = ['athletics', 'acrobatics', 'sleightOfHand', 'stealth'];
 
-            document.getElementById('skillMod-acrobatics').textContent = '+2';
-            document.getElementById('skill-acrobatics').classList.remove('wild-shape');
+            physicalSkills.forEach(skillName => {
+                const skill = SKILLS[skillName];
+                if (!skill) return;
 
-            document.getElementById('skillMod-sleight').textContent = '+2';
-            document.getElementById('skill-sleight').classList.remove('wild-shape');
+                const normalMod = calculateSkillMod(skillName, BASE_ABILITY_SCORES);
+                const modEl = document.getElementById(skill.modId);
+                const skillEl = document.getElementById(skill.id);
 
-            document.getElementById('skillMod-stealth').textContent = '+2';
-            document.getElementById('skill-stealth').classList.remove('wild-shape');
+                if (modEl) modEl.textContent = formatMod(normalMod);
+                if (skillEl) skillEl.classList.remove('wild-shape');
+            });
 
             // Restore passive perception
-            document.getElementById('passivePerceptionDisplay').textContent = '17';
+            const passiveEl = document.getElementById('passivePerceptionDisplay');
+            if (passiveEl) {
+                const perceptionMod = calculateSkillMod('perception', BASE_ABILITY_SCORES);
+                passiveEl.textContent = '' + (10 + perceptionMod);
+            }
+        }
+
+        // Update all skill displays based on current ability scores
+        function updateAllSkillDisplays() {
+            const currentScores = getCurrentAbilityScores();
+            const isWildShape = state.activeForm && state.activeForm.type === 'wild-shape';
+
+            Object.keys(SKILLS).forEach(skillName => {
+                const skill = SKILLS[skillName];
+                const mod = calculateSkillMod(skillName, currentScores);
+
+                const modEl = document.getElementById(skill.modId);
+                const skillEl = document.getElementById(skill.id);
+
+                if (modEl) modEl.textContent = formatMod(mod);
+
+                // Mark physical skills as wild-shape affected
+                if (skillEl) {
+                    if (isWildShape && (skill.ability === 'str' || skill.ability === 'dex')) {
+                        skillEl.classList.add('wild-shape');
+                    } else {
+                        skillEl.classList.remove('wild-shape');
+                    }
+                }
+            });
+
+            // Update passive perception
+            const passiveEl = document.getElementById('passivePerceptionDisplay');
+            if (passiveEl) {
+                const perceptionMod = calculateSkillMod('perception', currentScores);
+                const passiveValue = 10 + perceptionMod;
+                passiveEl.textContent = isWildShape ? passiveValue + ' (+ beast senses)' : '' + passiveValue;
+            }
         }
 
         function updateAbilityScore(ability, score) {
             const mod = Math.floor((score - 10) / 2);
             const modStr = mod >= 0 ? '+' + mod : '' + mod;
 
-            document.getElementById(ability + 'Score').textContent = score;
-            document.getElementById(ability + 'Mod').textContent = modStr;
-            document.getElementById(ability + 'Save').textContent = modStr;
+            const scoreEl = document.getElementById(ability + 'Score');
+            const modEl = document.getElementById(ability + 'Mod');
+            const saveEl = document.getElementById(ability + 'Save');
+
+            if (scoreEl) scoreEl.textContent = score;
+            if (modEl) modEl.textContent = modStr;
+            if (saveEl) saveEl.textContent = modStr;
         }
 
         function updateFormIndicator() {
@@ -2740,11 +3205,25 @@
             state.resources.wildShape = 2;
             state.activeForm = null;
             state.originalStats = null;
+
+            // Recharge magic items that recharge on short rest
+            const recharged = rechargeItems('shortRest');
+
             updateFormIndicator();
             updateResourceSlots();
             updateWildShapeDisplay();
+            updateItemChargesDisplay();
             saveState();
-            alert('Short rest complete! Wild Shape restored.');
+
+            // Build message
+            let msg = 'Short rest complete! Wild Shape restored.';
+            if (recharged.length > 0) {
+                msg += '\n\nMagic items recharged:';
+                recharged.forEach(r => {
+                    msg += `\n• ${r.item}: +${r.gained} charges (${r.current}/${r.max})`;
+                });
+            }
+            alert(msg);
         }
 
         function longRest() {
@@ -2757,9 +3236,24 @@
             state.activeForm = null;
             state.originalStats = null;
             state.celestialForm = null;
+
+            // Recharge magic items (both longRest and dawn items)
+            const rechargedLR = rechargeItems('longRest');
+            const rechargedDawn = rechargeItems('dawn');
+
             updateAllDisplays();
             saveState();
-            alert('Long rest complete! All resources restored.');
+
+            // Build recharge message
+            let msg = 'Long rest complete! All resources restored.';
+            const allRecharged = [...rechargedLR, ...rechargedDawn];
+            if (allRecharged.length > 0) {
+                msg += '\n\nMagic items recharged:';
+                allRecharged.forEach(r => {
+                    msg += `\n• ${r.item}: +${r.gained} charges (${r.current}/${r.max})`;
+                });
+            }
+            alert(msg);
         }
 
         // ===== NAVIGATION =====
@@ -2843,27 +3337,280 @@
                     </div>
                 `;
             } else {
+                // Get equipped weapons from inventory
+                const equippedWeapons = state.inventory ? state.inventory.filter(item =>
+                    item.type === 'weapon' && (item.equipped === 'mainHand' || item.equipped === 'twoHanded')
+                ) : [];
+
+                // Also get unequipped ranged weapons that can be drawn
+                const rangedWeapons = state.inventory ? state.inventory.filter(item =>
+                    item.type === 'weapon' && item.weaponType === 'ranged' && !item.equipped
+                ) : [];
+
+                // Get thrown weapons that can be reclaimed
+                const thrownWeapons = state.thrownWeapons || [];
+
+                body += '<div style="color: var(--accent-gold); font-weight: bold; margin-bottom: 8px;">🗡️ Melee Weapons</div>';
+
+                // Show equipped melee and melee/thrown weapons
+                equippedWeapons.filter(w => w.weaponType === 'melee' || w.weaponType === 'melee/thrown').forEach(weapon => {
+                    const attackInfo = getWeaponAttackInfo(weapon);
+                    body += `
+                        <div class="form-option" onclick="performWeaponAttack('${weapon.id}', 'melee'); closeModal();">
+                            <div class="form-option-title">${weapon.name} ${weapon.isMagic ? '✦' : ''}</div>
+                            <div class="form-option-desc">${attackInfo}</div>
+                        </div>
+                    `;
+                });
+
+                // If no melee weapon equipped, show unarmed
+                if (equippedWeapons.filter(w => w.weaponType === 'melee' || w.weaponType === 'melee/thrown').length === 0) {
+                    body += `
+                        <div class="form-option" onclick="useAction('action', {textContent:'Unarmed Strike (+1, 1)'}); closeModal();">
+                            <div class="form-option-title">Unarmed Strike</div>
+                            <div class="form-option-desc">+1 to hit, 1 bludgeoning</div>
+                        </div>
+                    `;
+                }
+
+                body += '<hr style="border-color: var(--border-color); margin: 12px 0;">';
+                body += '<div style="color: var(--accent-blue); font-weight: bold; margin-bottom: 8px;">🏹 Ranged & Thrown</div>';
+
+                // Show equipped ranged weapons
+                equippedWeapons.filter(w => w.weaponType === 'ranged').forEach(weapon => {
+                    const attackInfo = getWeaponAttackInfo(weapon);
+                    const ammoType = getAmmoTypeForWeapon(weapon);
+                    const ammoCount = ammoType ? getAmmoCount(ammoType) : null;
+                    const ammoText = ammoCount !== null ? ` <span style="color: ${ammoCount > 0 ? 'var(--accent-green)' : 'var(--accent-red)'};">(${ammoCount} ${ammoType})</span>` : '';
+                    const isDisabled = ammoCount === 0;
+                    body += `
+                        <div class="form-option ${isDisabled ? 'disabled' : ''}" onclick="${isDisabled ? '' : `performWeaponAttack('${weapon.id}', 'ranged'); closeModal();`}" style="${isDisabled ? 'opacity: 0.5; cursor: not-allowed;' : ''}">
+                            <div class="form-option-title">${weapon.name} ${weapon.isMagic ? '✦' : ''}${ammoText}</div>
+                            <div class="form-option-desc">${attackInfo}</div>
+                        </div>
+                    `;
+                });
+
+                // Show equipped thrown and melee/thrown weapons as throw option
+                equippedWeapons.filter(w => w.weaponType === 'thrown' || w.weaponType === 'melee/thrown').forEach(weapon => {
+                    const attackInfo = getWeaponAttackInfo(weapon, true); // true = thrown attack
+                    body += `
+                        <div class="form-option" onclick="throwWeapon('${weapon.id}'); closeModal();" style="border-left: 3px solid var(--accent-orange);">
+                            <div class="form-option-title">🎯 Throw ${weapon.name} ${weapon.isMagic ? '✦' : ''}</div>
+                            <div class="form-option-desc">${attackInfo} (unequips weapon)</div>
+                        </div>
+                    `;
+                });
+
+                // Show unequipped ranged weapons (need to equip first)
+                rangedWeapons.forEach(weapon => {
+                    const ammoType = getAmmoTypeForWeapon(weapon);
+                    const ammoCount = ammoType ? getAmmoCount(ammoType) : null;
+                    body += `
+                        <div class="form-option" onclick="equipAndAttack('${weapon.id}'); closeModal();" style="border-left: 2px solid var(--text-muted);">
+                            <div class="form-option-title" style="color: var(--text-muted);">${weapon.name} (not equipped)</div>
+                            <div class="form-option-desc">Click to equip and attack${ammoCount !== null ? ` (${ammoCount} ${ammoType})` : ''}</div>
+                        </div>
+                    `;
+                });
+
+                // Show reclaim option if there are thrown weapons
+                if (thrownWeapons.length > 0) {
+                    body += '<hr style="border-color: var(--border-color); margin: 12px 0;">';
+                    body += '<div style="color: var(--accent-orange); font-weight: bold; margin-bottom: 8px;">🔄 Reclaim Thrown Weapons</div>';
+                    thrownWeapons.forEach(weaponId => {
+                        const weapon = state.inventory.find(w => w.id === weaponId);
+                        if (weapon) {
+                            body += `
+                                <div class="form-option" onclick="reclaimWeapon('${weapon.id}'); closeModal();" style="background: rgba(255,165,0,0.1);">
+                                    <div class="form-option-title">↩️ Reclaim ${weapon.name}</div>
+                                    <div class="form-option-desc">Pick up and re-equip (object interaction)</div>
+                                </div>
+                            `;
+                        }
+                    });
+                    body += `
+                        <div class="form-option" onclick="reclaimAllWeapons(); closeModal();" style="background: rgba(255,165,0,0.15);">
+                            <div class="form-option-title">↩️ Reclaim All (${thrownWeapons.length})</div>
+                            <div class="form-option-desc">Pick up all thrown weapons</div>
+                        </div>
+                    `;
+                }
+
+                body += '<hr style="border-color: var(--border-color); margin: 12px 0;">';
+                body += '<div style="color: var(--accent-purple); font-weight: bold; margin-bottom: 8px;">✨ Cantrips</div>';
+
+                // Cantrip attacks
                 body += `
-                    <div class="form-option" onclick="useAction('action', {textContent:'Scimitar Attack (+4, 1d6+2)'}); closeModal();">
-                        <div class="form-option-title">Scimitar</div>
-                        <div class="form-option-desc">+4 to hit, 1d6+2 slashing (finesse)</div>
-                    </div>
                     <div class="form-option" onclick="useAction('action', {textContent:'Thorn Whip (+7, 2d6)'}); closeModal();">
-                        <div class="form-option-title">Thorn Whip (Cantrip)</div>
+                        <div class="form-option-title">Thorn Whip</div>
                         <div class="form-option-desc">+7 to hit, 30ft, 2d6 piercing, pull 10ft</div>
                     </div>
                     <div class="form-option" onclick="useAction('action', {textContent:'Produce Flame (+7, 2d8)'}); closeModal();">
-                        <div class="form-option-title">Produce Flame (Cantrip)</div>
+                        <div class="form-option-title">Produce Flame</div>
                         <div class="form-option-desc">+7 to hit, 30ft, 2d8 fire</div>
                     </div>
                     <div class="form-option" onclick="useAction('action', {textContent:'Starry Wisp (+7, 2d8)'}); closeModal();">
-                        <div class="form-option-title">Starry Wisp (Cantrip)</div>
-                        <div class="form-option-desc">+7 to hit, 60ft, 2d8 radiant, reveals invisible</div>
+                        <div class="form-option-title">Starry Wisp</div>
+                        <div class="form-option-desc">+7 to hit, 60ft, 2d8 radiant</div>
                     </div>
                 `;
             }
             body += '</div>';
             showModal('Choose Attack', body);
+        }
+
+        function getWeaponAttackInfo(weapon, asThrown = false) {
+            // Calculate attack bonus and damage
+            let attackBonus = 0;
+            let damageMod = 0;
+            const profBonus = PROFICIENCY_BONUS;
+
+            // Determine which ability modifier to use
+            // Thrown weapons can use STR or DEX (finesse-like)
+            if (weapon.modifier === 'finesse' || asThrown) {
+                // Use higher of STR or DEX
+                const strMod = getAbilityMod(BASE_ABILITY_SCORES.str);
+                const dexMod = getAbilityMod(BASE_ABILITY_SCORES.dex);
+                damageMod = Math.max(strMod, dexMod);
+            } else if (weapon.modifier === 'dex') {
+                damageMod = getAbilityMod(BASE_ABILITY_SCORES.dex);
+            } else {
+                damageMod = getAbilityMod(BASE_ABILITY_SCORES.str);
+            }
+
+            attackBonus = profBonus + damageMod;
+
+            // Add magic bonuses
+            if (weapon.isMagic) {
+                attackBonus += weapon.attackBonus || 0;
+                damageMod += weapon.damageBonus || 0;
+            }
+
+            const attackStr = attackBonus >= 0 ? '+' + attackBonus : '' + attackBonus;
+            const damageStr = damageMod >= 0 ? '+' + damageMod : '' + damageMod;
+            // Show range for thrown attacks or ranged weapons
+            const rangeStr = (asThrown || weapon.weaponType === 'ranged' || weapon.weaponType === 'thrown') && weapon.range
+                ? `, ${weapon.range} ft` : '';
+
+            return `${attackStr} to hit, ${weapon.damageDie}${damageStr} ${weapon.damageType}${rangeStr}`;
+        }
+
+        function performWeaponAttack(weaponId, attackType) {
+            const weapon = state.inventory.find(w => w.id === weaponId);
+            if (!weapon) return;
+
+            // If ranged weapon with ammo requirement, use ammo
+            if (weapon.weaponType === 'ranged' && weapon.properties && weapon.properties.includes('ammunition')) {
+                const ammoType = getAmmoTypeForWeapon(weapon);
+                if (ammoType && !useAmmo(ammoType, 1)) {
+                    return; // Failed to use ammo
+                }
+            }
+
+            const attackInfo = getWeaponAttackInfo(weapon);
+            useAction('action', { textContent: `${weapon.name} Attack (${attackInfo})` });
+        }
+
+        function equipAndAttack(weaponId) {
+            const weapon = state.inventory.find(w => w.id === weaponId);
+            if (!weapon) return;
+
+            // Equip the weapon
+            saveForUndo();
+            if (weapon.hands === 'two') {
+                // Unequip anything in both hands
+                state.inventory.forEach(item => {
+                    if (item.equipped === 'mainHand' || item.equipped === 'offHand' || item.equipped === 'twoHanded') {
+                        item.equipped = null;
+                    }
+                });
+                weapon.equipped = 'twoHanded';
+            } else {
+                weapon.equipped = 'mainHand';
+            }
+            saveState();
+            renderInventory();
+            updateACFromEquipment();
+
+            // Then attack
+            performWeaponAttack(weaponId, weapon.weaponType);
+        }
+
+        function throwWeapon(weaponId) {
+            const weapon = state.inventory.find(w => w.id === weaponId);
+            if (!weapon) return;
+
+            saveForUndo();
+
+            // Perform the attack
+            const attackInfo = getWeaponAttackInfo(weapon, true);
+            useAction('action', { textContent: `Throw ${weapon.name} (${attackInfo})` });
+
+            // Unequip the weapon
+            weapon.equipped = null;
+
+            // Add to thrown weapons list for reclaiming
+            if (!state.thrownWeapons) state.thrownWeapons = [];
+            if (!state.thrownWeapons.includes(weaponId)) {
+                state.thrownWeapons.push(weaponId);
+            }
+
+            saveState();
+            renderInventory();
+        }
+
+        function reclaimWeapon(weaponId) {
+            const weapon = state.inventory.find(w => w.id === weaponId);
+            if (!weapon) return;
+
+            saveForUndo();
+
+            // Remove from thrown list
+            if (state.thrownWeapons) {
+                state.thrownWeapons = state.thrownWeapons.filter(id => id !== weaponId);
+            }
+
+            // Re-equip the weapon if hand is free
+            const mainHand = state.inventory.find(i => i.equipped === 'mainHand');
+            const twoHanded = state.inventory.find(i => i.equipped === 'twoHanded');
+
+            if (!mainHand && !twoHanded) {
+                weapon.equipped = 'mainHand';
+            }
+            // Otherwise it just goes back to inventory
+
+            saveState();
+            renderInventory();
+        }
+
+        function reclaimAllWeapons() {
+            if (!state.thrownWeapons || state.thrownWeapons.length === 0) return;
+
+            saveForUndo();
+
+            // Reclaim all thrown weapons
+            const thrownIds = [...state.thrownWeapons];
+            let equipped = false;
+
+            thrownIds.forEach(weaponId => {
+                const weapon = state.inventory.find(w => w.id === weaponId);
+                if (weapon) {
+                    // Only equip the first one if hands are free
+                    if (!equipped) {
+                        const mainHand = state.inventory.find(i => i.equipped === 'mainHand');
+                        const twoHanded = state.inventory.find(i => i.equipped === 'twoHanded');
+                        if (!mainHand && !twoHanded) {
+                            weapon.equipped = 'mainHand';
+                            equipped = true;
+                        }
+                    }
+                }
+            });
+
+            state.thrownWeapons = [];
+            saveState();
+            renderInventory();
         }
 
         function openCastSpellSelection(actionType) {
@@ -2942,6 +3689,34 @@
                 body += '<p class="text-muted">No prepared spells with this casting time.</p>';
             }
 
+            // Add Item Spells section
+            const itemSpells = getItemSpellsForCasting(actionType);
+            if (itemSpells.length > 0) {
+                body += '<hr style="border-color: var(--border-color); margin: 12px 0;">';
+                body += '<div style="color: var(--accent-gold); font-weight: bold; margin-bottom: 8px;">✦ Item Spells</div>';
+                itemSpells.forEach(is => {
+                    let statusText = '';
+                    let isDisabled = false;
+                    if (is.type === 'charges') {
+                        const charges = state.itemCharges[is.itemId];
+                        const canCast = charges && charges.current >= is.cost;
+                        statusText = `${is.cost} charge${is.cost > 1 ? 's' : ''} (${charges ? charges.current : 0} left)`;
+                        isDisabled = !canCast;
+                    } else if (is.type === 'spell') {
+                        const usageKey = `${is.itemId}_${is.spellName}`;
+                        const used = state.itemSpellsUsed[usageKey];
+                        statusText = is.usage === 'atWill' ? 'At Will' : (used ? 'Used today' : is.usage);
+                        isDisabled = used && is.usage !== 'atWill';
+                    }
+                    body += `
+                        <div class="form-option ${isDisabled ? 'disabled' : ''}" onclick="${isDisabled ? '' : `castItemSpellFromMenu('${is.itemId}', '${is.spellName}', '${is.type}', ${is.cost || 0}, '${is.usage || ''}')`}" style="${isDisabled ? 'opacity: 0.5; cursor: not-allowed;' : ''}">
+                            <div class="form-option-title">${is.spellName} <span style="color: var(--text-muted); font-size: 0.85em;">(${is.itemName})</span></div>
+                            <div class="form-option-desc" style="color: ${isDisabled ? 'var(--accent-red)' : 'var(--accent-gold)'};">${statusText}</div>
+                        </div>
+                    `;
+                });
+            }
+
             body += '</div>';
             showModal(`Cast Spell (${timeFilter})`, body);
         }
@@ -2954,6 +3729,62 @@
                 'produce-flame': '2d8 fire'
             };
             return damageCantrips[cantrip.id] || '';
+        }
+
+        function getItemSpellsForCasting(actionType) {
+            // Collect all spells from magic items
+            const itemSpells = [];
+
+            state.inventory.forEach(item => {
+                if (!item.effects) return;
+
+                // Spells from charge-based items
+                const chargesEffect = item.effects.find(e => e.type === 'charges');
+                if (chargesEffect && chargesEffect.spells) {
+                    chargesEffect.spells.forEach(spell => {
+                        itemSpells.push({
+                            type: 'charges',
+                            itemId: item.id,
+                            itemName: item.name,
+                            spellName: spell.name,
+                            spellLevel: spell.level,
+                            cost: spell.cost
+                        });
+                    });
+                }
+
+                // Spells granted by items (spell effect type)
+                item.effects.filter(e => e.type === 'spell').forEach(effect => {
+                    itemSpells.push({
+                        type: 'spell',
+                        itemId: item.id,
+                        itemName: item.name,
+                        spellName: effect.spell,
+                        spellLevel: effect.spellLevel,
+                        usage: effect.usage
+                    });
+                });
+            });
+
+            return itemSpells;
+        }
+
+        function castItemSpellFromMenu(itemId, spellName, spellType, cost, usage) {
+            if (spellType === 'charges') {
+                if (castItemSpell(itemId, spellName, cost)) {
+                    closeModal();
+                    if (state.inBattle) {
+                        useAction('action');
+                    }
+                }
+            } else if (spellType === 'spell') {
+                if (castItemGrantedSpell(itemId, spellName, usage)) {
+                    closeModal();
+                    if (state.inBattle) {
+                        useAction('action');
+                    }
+                }
+            }
         }
 
         function getSpellDamagePreview(spell, slotLevel) {
@@ -3892,8 +4723,6 @@
         }
 
         // ===== INIT =====
-        document.addEventListener('DOMContentLoaded', loadState);
-
         // Handle Enter key for HP inputs
         document.getElementById('damageInput').addEventListener('keypress', e => { if (e.key === 'Enter') applyDamage(); });
         document.getElementById('healInput').addEventListener('keypress', e => { if (e.key === 'Enter') applyHeal(); });
@@ -4223,6 +5052,56 @@
             }
         }
 
+        // Collapsible card system
+        function toggleCard(cardId) {
+            const card = document.getElementById(cardId);
+            if (!card) return;
+
+            const content = card.querySelector('.card-content');
+            const toggle = card.querySelector('.collapse-toggle');
+
+            if (!content) return;
+
+            const isCollapsed = content.classList.contains('collapsed');
+
+            if (isCollapsed) {
+                content.classList.remove('collapsed');
+                card.classList.remove('collapsed');
+                if (toggle) toggle.textContent = '▼';
+            } else {
+                content.classList.add('collapsed');
+                card.classList.add('collapsed');
+                if (toggle) toggle.textContent = '▶';
+            }
+
+            // Save collapse state
+            saveCardCollapseState(cardId, !isCollapsed);
+        }
+
+        function saveCardCollapseState(cardId, collapsed) {
+            let collapseStates = JSON.parse(localStorage.getItem('ashvael-collapse') || '{}');
+            collapseStates[cardId] = collapsed;
+            localStorage.setItem('ashvael-collapse', JSON.stringify(collapseStates));
+        }
+
+        function loadCardCollapseStates() {
+            const collapseStates = JSON.parse(localStorage.getItem('ashvael-collapse') || '{}');
+            Object.keys(collapseStates).forEach(cardId => {
+                if (collapseStates[cardId]) {
+                    const card = document.getElementById(cardId);
+                    if (card) {
+                        const content = card.querySelector('.card-content');
+                        const toggle = card.querySelector('.collapse-toggle');
+                        if (content) {
+                            content.classList.add('collapsed');
+                            card.classList.add('collapsed');
+                            if (toggle) toggle.textContent = '▶';
+                        }
+                    }
+                }
+            });
+        }
+
         function toggleSpellExpand(el) {
             if (event.target.classList.contains('spell-checkbox')) return;
             el.classList.toggle('expanded');
@@ -4270,106 +5149,139 @@
 
         // ===== FEATURES =====
         const FEATURES = {
+            background: [
+                {
+                    name: 'Guide Background',
+                    source: 'Background',
+                    desc: '<strong>You know the wilderness like the back of your hand.</strong> Years of guiding travelers through treacherous terrain have honed your senses and survival skills.<br><br><strong style="color: var(--accent-gold);">Ability Scores:</strong> +2 Wisdom, +1 Constitution (applied to your stats)<br><br><strong style="color: var(--accent-blue);">Skill Proficiencies:</strong> <strong>Stealth</strong>, <strong>Survival</strong><br><br><strong style="color: var(--accent-purple);">Tool Proficiency:</strong> Cartographer\'s Tools<br><br><strong style="color: var(--accent-green);">Feat:</strong> Magic Initiate (Druid) - See Feats section<br><br><strong>Starting Equipment:</strong> Bedroll, Tent, Tinderbox, Traveler\'s Clothes, Waterskin, 50 ft Hempen Rope, Quiver with 20 Arrows, Cartographer\'s Tools, 3 GP'
+                }
+            ],
             ancestry: [
                 {
+                    name: 'Half-Aasimar/Half-Tiefling Heritage',
+                    source: 'Species',
+                    desc: '<strong>Creature Type:</strong> Humanoid<br><strong>Size:</strong> Medium (4-7 feet tall)<br><strong>Speed:</strong> 30 feet<br><br>You are the rare offspring of both celestial and fiendish bloodlines, bearing traits from both Aasimar and Tiefling heritage. Your unique lineage grants you abilities from both sides.'
+                },
+                {
                     name: 'Celestial Resistance',
-                    source: 'Half-Aasimar/Half-Tiefling',
-                    desc: 'You have resistance to Necrotic and Radiant damage. When you take these damage types, you only take half damage (rounded down).',
-                    detail: 'This resistance stacks with other sources like Absorb Elements temporarily.'
+                    source: 'Species Trait',
+                    desc: 'You have <strong>resistance to Necrotic damage</strong> (from Aasimar) and <strong>resistance to Radiant damage</strong> (from Tiefling adaptation). When you take these damage types, you only take half damage (rounded down).',
+                    detail: 'This resistance stacks with temporary sources like Absorb Elements.'
                 },
                 {
                     name: 'Darkvision',
-                    source: 'Half-Aasimar/Half-Tiefling',
-                    desc: 'You can see in dim light within 60 feet of yourself as if it were bright light, and in darkness as if it were dim light. You discern colors in that darkness only as shades of gray.',
-                    detail: 'Range: 60 ft. This is not true sight - you still can\'t see in magical darkness unless you have other abilities.'
+                    source: 'Species Trait',
+                    desc: 'You can see in dim light within <strong>60 feet</strong> of yourself as if it were bright light, and in darkness as if it were dim light. You discern colors in that darkness only as shades of gray.',
+                    detail: 'Does not see through magical darkness.'
                 },
                 {
                     name: 'Healing Hands',
-                    source: '1/Long Rest',
-                    desc: '<strong>Action</strong> | Touch | Once per Long Rest<br><br>You touch a creature and roll <strong>3d4</strong>. The creature regains Hit Points equal to the total rolled. You can use this feature a number of times equal to your Proficiency Bonus, and you regain all expended uses when you finish a Long Rest.',
-                    detail: 'Average healing: 7.5 HP. At your level, this equals 3d4 (your proficiency bonus dice).'
+                    source: 'Species Trait (3/Long Rest)',
+                    desc: '<strong>Action</strong> | Touch | 3 uses per Long Rest<br><br>You touch a creature and roll <strong>3d4</strong> (proficiency bonus in d4s). The creature regains Hit Points equal to the total rolled.<br><br>Average healing: 7.5 HP per use.',
+                    detail: 'Uses = Proficiency Bonus. At level 5: 3 uses.'
                 },
                 {
                     name: 'Celestial Revelation',
-                    source: '1/Long Rest',
-                    desc: '<strong>Bonus Action</strong> | 1 Minute | Once per Long Rest<br><br>When you reach 3rd level, you can use a Bonus Action to unveil your supernatural nature for 1 minute or until you end it (no action required). Choose one of the following options:<br><br><strong style="color: var(--accent-gold);">Radiant Soul:</strong> Spectral wings appear on your back. You have a Fly Speed equal to your Speed (30 ft). Once per turn when you deal Radiant or Necrotic damage, add your Proficiency Bonus (+3) to that damage.<br><br><strong style="color: var(--accent-purple);">Necrotic Shroud:</strong> Eyes become empty voids. Each creature within 10 feet must make a Charisma save (DC 13) or be Frightened of you until the end of your next turn. Once per turn when you deal Radiant or Necrotic damage, add +3.<br><br><strong style="color: var(--accent-orange);">Inner Radiance:</strong> Searing light radiates from your eyes and mouth. You shed Bright Light in 10 ft, Dim Light for 10 more. At the end of each of your turns, each creature within 10 feet takes Radiant damage equal to your Proficiency Bonus (+3).',
+                    source: 'Species Trait (Level 3+, 1/Long Rest)',
+                    desc: '<strong>Bonus Action</strong> | 1 Minute | Once per Long Rest<br><br>Unveil your supernatural nature. Choose one option each time:<br><br><strong style="color: var(--accent-gold);">☀️ Radiant Soul:</strong> Spectral wings grant Fly Speed 30 ft. Once per turn, add +3 to Radiant or Necrotic damage.<br><br><strong style="color: var(--accent-purple);">🌑 Necrotic Shroud:</strong> Creatures within 10 ft make CHA save (DC 13) or are Frightened. Once per turn, add +3 to Radiant or Necrotic damage.<br><br><strong style="color: var(--accent-orange);">✨ Inner Radiance:</strong> Shed Bright Light 10 ft, Dim 10 more. End of your turn: creatures within 10 ft take 3 Radiant damage.',
                     hasChoices: true,
-                    choices: ['Radiant Soul', 'Necrotic Shroud', 'Inner Radiance']
+                    choices: ['Radiant Soul (Fly)', 'Necrotic Shroud (Fear)', 'Inner Radiance (Aura)']
                 }
             ],
             druid: [
                 {
+                    name: 'Druid Class Features',
+                    source: 'Class Overview',
+                    desc: '<strong>Hit Dice:</strong> 1d8 per level (5d8 total)<br><strong>Hit Points:</strong> 38 (8 + 4×CON mod + 4×average roll)<br><br><strong style="color: var(--accent-gold);">Saving Throw Proficiencies:</strong><br>• <strong>Intelligence</strong> (+2)<br>• <strong>Wisdom</strong> (+7)<br><br><strong style="color: var(--accent-blue);">Skill Proficiencies (chose 2):</strong><br>• <strong>Perception</strong> (chosen)<br>• <strong>Nature</strong> (chosen)<br>• Other options: Arcana, Animal Handling, Insight, Medicine, Religion, Survival<br><br><strong style="color: var(--accent-purple);">Armor Proficiencies:</strong> Light Armor, Medium Armor, Shields (druids won\'t wear metal armor or shields)<br><br><strong style="color: var(--accent-green);">Weapon Proficiencies:</strong> Simple Weapons<br><br><strong style="color: var(--text-muted);">Tool Proficiencies:</strong> Herbalism Kit'
+                },
+                {
+                    name: 'Spellcasting',
+                    source: 'Level 1',
+                    desc: '<strong>Spell Slots (Level 5):</strong> 4 × 1st, 3 × 2nd, 2 × 3rd<br><strong>Spellcasting Ability:</strong> Wisdom<br><strong>Spell Save DC:</strong> 15 (8 + 3 + 4)<br><strong>Spell Attack Bonus:</strong> +7 (3 + 4)<br><br><strong style="color: var(--accent-gold);">Cantrips Known:</strong> 4 (class) + 1 (Magician) + 2 (Magic Initiate) = 7 total<br><br><strong style="color: var(--accent-blue);">Prepared Spells:</strong> 9 (Druid level + WIS mod)<br><br><strong style="color: var(--accent-purple);">Ritual Casting:</strong> You can cast any spell with the Ritual tag as a ritual (adds 10 minutes to casting time, doesn\'t use a spell slot).<br><br><strong style="color: var(--accent-green);">Spellcasting Focus:</strong> Druidic Focus (Star Map)'
+                },
+                {
                     name: 'Primal Order: Magician',
                     source: 'Level 1 Choice',
-                    desc: '<strong>Chosen at Level 1</strong><br><br>You know one extra cantrip from the Druid spell list (you chose Message). In addition, your mystical connection to nature gives you a bonus to your Intelligence (Arcana) and Intelligence (Nature) checks equal to your Wisdom modifier (+4).',
-                    detail: 'Other option was "Warden" which grants proficiency with martial weapons and medium armor. You chose Magician for the +4 to knowledge checks.',
+                    desc: '<strong style="color: var(--accent-gold);">Chosen at Level 1</strong><br><br>You know one extra cantrip from the Druid spell list: <strong>Message</strong><br><br>Your mystical connection to nature gives you a bonus to <strong>Intelligence (Arcana)</strong> and <strong>Intelligence (Nature)</strong> checks equal to your Wisdom modifier: <strong>+4</strong>',
+                    detail: 'Alternative: Warden (martial weapons, medium armor proficiency)',
                     hasChoices: true,
-                    choices: ['Magician (Chosen)', 'Warden']
+                    choices: ['<strong>Magician (Chosen)</strong>', 'Warden']
                 },
                 {
                     name: 'Druidic',
                     source: 'Level 1',
-                    desc: 'You know Druidic, the secret language of druids. While learning this ancient tongue, you also learned how to scribe hidden messages. You and others who know Druidic automatically spot such a message. Others spot the message\'s presence with a successful DC 15 Intelligence (Investigation) check but can\'t decipher it without magic.',
-                    detail: 'Perfect for leaving secret trail markers or communicating with other druids.'
+                    desc: 'You know <strong>Druidic</strong>, the secret language of druids. You can speak the language and use it to leave hidden messages that only druids can automatically spot.<br><br>Others can spot the message with a DC 15 Intelligence (Investigation) check but cannot decipher it without magic.'
                 },
                 {
                     name: 'Wild Shape',
-                    source: 'Level 2',
-                    desc: '<strong>Bonus Action</strong> | 2 Hours | 2/Short Rest<br><br>The power of nature allows you to assume the form of any Beast that you have seen. You can transform as a Bonus Action, expending one use of this feature.<br><br><strong style="color: var(--accent-green);">Level 5 Limits:</strong><br>• Max CR: 1/2<br>• No Flying Speed<br>• Must have seen the beast<br>• 6 known forms<br><br><strong>While Transformed:</strong><br>• Gain 5 Temporary Hit Points (Druid level)<br>• Your game statistics are replaced by the beast\'s STR, DEX, CON<br>• You keep your INT, WIS, CHA and proficiencies<br>• You can\'t cast spells (but can maintain concentration)<br>• You revert if temp HP drops to 0',
-                    detail: 'Uses recover on Short Rest. Duration is 2 hours or until you dismiss it (no action).'
+                    source: 'Level 2 (2/Short Rest)',
+                    desc: '<strong>Bonus Action</strong> | 2 Hours Duration | 2 Uses per Short Rest<br><br>Transform into any Beast you have seen.<br><br><strong style="color: var(--accent-green);">Level 5 Limits:</strong><br>• Max CR: 1/2<br>• No Flying Speed yet<br>• Must have seen the beast<br><br><strong>While Transformed:</strong><br>• Gain <strong>5 Temporary HP</strong> (= Druid level)<br>• Use beast\'s STR, DEX, CON<br>• Keep your INT, WIS, CHA, proficiencies, features<br>• <strong>Cannot cast spells</strong> (can maintain concentration)<br>• Revert when temp HP drops to 0'
                 },
                 {
                     name: 'Wild Companion',
                     source: 'Level 2',
-                    desc: '<strong>Action</strong><br><br>You can expend a spell slot OR a use of Wild Shape to cast Find Familiar without needing material components. The familiar you conjure is a <strong>Fey</strong> (not a Beast) and disappears after your next Long Rest.<br><br>The familiar can:<br>• Scout up to 100 ft away (telepathic link)<br>• Deliver touch spells for you<br>• Take the Help action in combat<br>• Cannot attack',
-                    detail: 'Great for scouting! Popular forms: Owl (flyby, darkvision 120ft), Cat (stealth), Spider (climb walls).'
+                    desc: '<strong>Action</strong> | Costs: Spell Slot OR Wild Shape use<br><br>Cast <strong>Find Familiar</strong> without material components. The familiar is a <strong>Fey</strong> creature and disappears after your next Long Rest.<br><br><strong>Familiar Benefits:</strong><br>• Telepathic link within 100 ft<br>• See through its eyes (Action)<br>• Deliver your touch spells<br>• Take Help action in combat<br>• Cannot attack'
                 },
                 {
                     name: 'Wild Resurgence',
                     source: 'Level 5',
-                    desc: '<strong>No Action Required</strong> | Once per Turn<br><br>If you have no uses of Wild Shape remaining, you can give yourself one use by expending a spell slot (no action required). You can do so only once per turn.<br><br>This means you can always access Wild Shape or Starry Form as long as you have spell slots!',
-                    detail: 'Effectively makes your spell slots a backup pool for Wild Shape uses.'
+                    desc: '<strong>No Action Required</strong> | Once per Turn<br><br>If you have no Wild Shape uses remaining, you can expend a <strong>spell slot</strong> to regain one use.<br><br>This ensures you can always access Wild Shape or Starry Form as long as you have spell slots!'
                 }
             ],
             stars: [
                 {
+                    name: 'Circle of Stars Overview',
+                    source: 'Subclass (Level 2)',
+                    desc: 'You have looked to the stars and their endless patterns for guidance. By harnessing the magic of starlight, you gain abilities that blend divination with celestial power.<br><br><strong>Subclass Features:</strong><br>• Level 2: Star Map, Starry Form<br>• Level 6: Cosmic Omen (coming soon)<br>• Level 10: Twinkling Constellations<br>• Level 14: Full of Stars'
+                },
+                {
                     name: 'Star Map',
-                    source: 'Circle of Stars Level 3',
-                    desc: '<strong>Spellcasting Focus</strong><br><br>You\'ve created a star chart as part of your study of the heavens. While holding this map, you have the following benefits:<br><br>• <strong>Guiding Bolt:</strong> You have the Guiding Bolt spell prepared and it doesn\'t count against your prepared spells.<br><br>• <strong>Free Casts:</strong> You can cast Guiding Bolt without expending a spell slot a number of times equal to your Wisdom modifier (+4), and you regain all uses on Long Rest.<br><br>The map can take the form of a scroll, crystal orb, star chart, or other object.',
-                    detail: '4 free Guiding Bolts per long rest! That\'s 4d6 radiant + advantage on next attack, no slot required.'
+                    source: 'Circle of Stars Level 2',
+                    desc: '<strong>Spellcasting Focus</strong><br><br>Your star chart is your connection to the cosmos. While holding it:<br><br><strong style="color: var(--accent-gold);">Guiding Bolt:</strong> Always prepared, doesn\'t count against your limit.<br><br><strong style="color: var(--accent-blue);">Free Casts:</strong> Cast Guiding Bolt <strong>4 times</strong> without a spell slot (WIS mod uses per Long Rest).<br><br><strong>Guiding Bolt:</strong> 4d6 radiant damage, next attack vs target has Advantage!'
                 },
                 {
                     name: 'Starry Form',
-                    source: 'Circle of Stars Level 3',
-                    desc: '<strong>Bonus Action</strong> | Uses Wild Shape | 10 Minutes<br><br>As a Bonus Action, you can expend a use of Wild Shape to take on a starry form rather than transforming into a beast. While in this form, you shed dim light in a 10-foot radius.<br><br><strong style="color: var(--accent-gold);">⭐ Archer:</strong><br>A constellation of an archer appears on you. When you activate this form and as a Bonus Action on subsequent turns, you can make a ranged spell attack, hurling a luminous arrow 60 feet at one target. On hit: 1d8+4 radiant damage.<br><br><strong style="color: var(--accent-blue);">🏆 Chalice:</strong><br>A constellation of a life-giving chalice appears. Whenever you cast a spell using a spell slot that restores HP, you or another creature within 30 feet regains HP equal to 1d8+4.<br><br><strong style="color: var(--accent-purple);">🐉 Dragon:</strong><br>A constellation of a wise dragon appears. When you make an Intelligence or Wisdom check or a Constitution saving throw to maintain concentration, you can treat a roll of 9 or lower as a 10.',
+                    source: 'Circle of Stars Level 2',
+                    desc: '<strong>Bonus Action</strong> | Uses Wild Shape | 10 Minutes<br><br>Take on a starry form instead of becoming a beast. You shed dim light 10 ft. Choose one constellation:<br><br><strong style="color: var(--accent-gold);">⭐ Archer:</strong><br>Bonus Action: Ranged spell attack, 60 ft, <strong>1d8+4 radiant</strong> damage. Can attack when you activate and each subsequent turn.<br><br><strong style="color: var(--accent-blue);">🏆 Chalice:</strong><br>When you cast a healing spell using a slot, you OR another creature within 30 ft regains <strong>1d8+4 additional HP</strong>.<br><br><strong style="color: var(--accent-purple);">🐉 Dragon:</strong><br>Treat rolls of 9 or lower as 10 on Intelligence checks, Wisdom checks, and <strong>Concentration saves</strong>. Minimum roll is 10!',
                     hasChoices: true,
-                    choices: ['Archer', 'Chalice', 'Dragon']
+                    choices: ['Archer (Bonus Action attack)', 'Chalice (Healing boost)', 'Dragon (Minimum 10 on checks)']
                 }
             ],
             feats: [
                 {
-                    name: 'War Caster',
-                    source: 'Level 4 Feat',
-                    desc: '<strong>Prerequisite: Spellcasting or Pact Magic</strong><br><br>You have practiced casting spells in combat and gain these benefits:<br><br><strong style="color: var(--accent-green);">Concentration Advantage:</strong> You have Advantage on Constitution saving throws to maintain concentration when you take damage.<br><br><strong style="color: var(--accent-blue);">Somatic Components:</strong> You can perform the Somatic components of spells even when you have weapons or a Shield in one or both hands.<br><br><strong style="color: var(--accent-purple);">Reactive Spell:</strong> When a creature provokes an Opportunity Attack by moving out of your reach, you can cast a spell at the creature instead of making the attack. The spell must have a casting time of 1 action and must target only that creature.',
-                    detail: 'Pairs perfectly with Dragon Starry Form for near-guaranteed concentration saves!'
+                    name: 'Magic Initiate: Druid',
+                    source: 'Guide Background (Level 1)',
+                    desc: '<strong>Origin Feat from Guide Background</strong><br><br><strong style="color: var(--accent-gold);">Two Cantrips:</strong><br>• <strong>Produce Flame</strong> - Bonus Action light, or hurl for 2d8 fire (60 ft)<br>• <strong>Mending</strong> - Repair small breaks/tears in objects<br><br><strong style="color: var(--accent-purple);">1st-Level Spell (Always Prepared):</strong><br>• <strong>Healing Word</strong> - 60 ft, Bonus Action, 2d4+4 healing<br>• Can cast <strong>1/day free</strong>, or use spell slots'
                 },
                 {
-                    name: 'Magic Initiate: Druid',
-                    source: 'Guide Background',
-                    desc: '<strong>From your Guide Background</strong><br><br>You have learned the basics of a magical tradition. Choose a spell list: Druid. You gain the following benefits related to that choice:<br><br><strong style="color: var(--accent-gold);">Two Cantrips:</strong> You learn two cantrips of your choice from your chosen spell list.<br>• <strong>Produce Flame</strong> (Bonus Action light source, 2d8 fire attack)<br>• <strong>Mending</strong> (Repair objects)<br><br><strong style="color: var(--accent-purple);">1st-Level Spell:</strong> Choose one 1st-level spell from the same list. You always have it prepared, and can cast it once without a spell slot, regaining the ability after a Long Rest. You can also cast it with any spell slots you have.<br>• <strong>Healing Word</strong> (60 ft range, 2d4+4 bonus action heal)',
-                    hasChoices: true,
-                    choices: ['Produce Flame', 'Mending', 'Healing Word (1/day free)']
+                    name: 'War Caster',
+                    source: 'Level 4 ASI/Feat',
+                    desc: '<strong>Taken at Level 4 instead of +2 Ability Score</strong><br><br><strong style="color: var(--accent-green);">Concentration Advantage:</strong><br>Advantage on CON saves to maintain concentration when damaged.<br><br><strong style="color: var(--accent-blue);">Somatic Components:</strong><br>Cast spells with S components while holding weapons/shield.<br><br><strong style="color: var(--accent-purple);">Reactive Spell:</strong><br>Cast a 1-action spell instead of Opportunity Attack when a creature leaves your reach.',
+                    detail: 'Synergy: Dragon Starry Form + War Caster = minimum 10 + Advantage on concentration!'
+                }
+            ],
+            skills: [
+                {
+                    name: 'Skill Proficiencies',
+                    source: 'Summary',
+                    desc: '<strong style="color: var(--accent-gold);">Proficient Skills (+3 proficiency bonus):</strong><br><br><strong>From Guide Background:</strong><br>• <strong>Stealth</strong> (DEX): +2 +3 = <strong>+5</strong><br>• <strong>Survival</strong> (WIS): +4 +3 = <strong>+7</strong><br><br><strong>From Druid Class (chose 2):</strong><br>• <strong>Nature</strong> (INT): -1 +3 +4 = <strong>+6</strong> (includes Magician +4)<br>• <strong>Perception</strong> (WIS): +4 +3 = <strong>+7</strong><br><br><strong style="color: var(--text-muted);">Arcana Note:</strong> With Magician, you add +4 to Arcana checks = <strong>+3</strong> total (-1 INT + 4 WIS)<br><br><strong style="color: var(--accent-blue);">Passive Perception:</strong> 10 + 7 = <strong>17</strong>'
                 }
             ]
         };
 
         function renderFeatures() {
             if (!FEATURES) return;
-            ['ancestry', 'druid', 'stars', 'feats'].forEach(cat => {
-                const containerId = cat === 'ancestry' ? 'ancestryFeatures' :
-                                   cat === 'druid' ? 'druidFeatures' :
-                                   cat === 'stars' ? 'starsFeatures' : 'featFeatures';
-                const container = document.getElementById(containerId);
+            const categoryMap = {
+                background: 'backgroundFeatures',
+                ancestry: 'ancestryFeatures',
+                druid: 'druidFeatures',
+                stars: 'starsFeatures',
+                feats: 'featFeatures',
+                skills: 'skillsFeatures'
+            };
+
+            Object.keys(categoryMap).forEach(cat => {
+                const container = document.getElementById(categoryMap[cat]);
                 if (!container || !FEATURES[cat]) return;
 
                 container.innerHTML = FEATURES[cat].map((f, idx) => `
@@ -4422,6 +5334,9 @@
             { id: 'scimitar', type: 'weapon', name: 'Scimitar', weaponType: 'melee', hands: 'one',
               damageDie: '1d6', damageType: 'slashing', modifier: 'finesse', properties: ['light', 'finesse'],
               isMagic: false, equipped: 'mainHand' },
+            { id: 'dagger', type: 'weapon', name: 'Dagger', weaponType: 'melee/thrown', hands: 'one',
+              damageDie: '1d4', damageType: 'piercing', modifier: 'finesse', range: '20/60',
+              properties: ['light', 'finesse', 'thrown'], isMagic: false, equipped: null },
             { id: 'shield', type: 'shield', name: 'Wooden Shield', acBonus: 2, isMagic: false, equipped: 'offHand' },
             { id: 'shortbow', type: 'weapon', name: 'Shortbow', weaponType: 'ranged', hands: 'two',
               damageDie: '1d6', damageType: 'piercing', modifier: 'dex', range: '80/320',
@@ -4437,16 +5352,36 @@
         ];
 
         const DEFAULT_GEAR = [
-            { id: 'backpack', name: 'Backpack', qty: 1 },
-            { id: 'bedroll', name: 'Bedroll', qty: 1 },
-            { id: 'quiver', name: 'Quiver', qty: 1 },
-            { id: 'tent', name: 'Tent', qty: 1 },
-            { id: 'travelers-clothes', name: "Traveler's Clothes", qty: 1 },
-            { id: 'cartographers-tools', name: "Cartographer's Tools", qty: 1 },
-            { id: 'tinderbox', name: 'Tinderbox', qty: 1 },
-            { id: 'rations', name: 'Rations (days)', qty: 10 },
-            { id: 'waterskin', name: 'Waterskin', qty: 1 },
-            { id: 'rope', name: 'Hempen Rope (50 ft)', qty: 1 }
+            { id: 'backpack', name: 'Backpack', qty: 1, weight: 5, consumable: false,
+              desc: 'A backpack can hold one cubic foot or 30 pounds of gear. You can also strap items to the outside.' },
+            { id: 'bedroll', name: 'Bedroll', qty: 1, weight: 7, consumable: false,
+              desc: 'A sleeping bag to keep you warm and comfortable while camping outdoors.' },
+            { id: 'quiver', name: 'Quiver', qty: 1, weight: 1, consumable: false,
+              desc: 'A quiver can hold up to 20 arrows.' },
+            { id: 'tent', name: 'Tent (2-person)', qty: 1, weight: 20, consumable: false,
+              desc: 'A simple, portable canvas shelter that sleeps two.' },
+            { id: 'travelers-clothes', name: "Traveler's Clothes", qty: 1, weight: 4, consumable: false,
+              desc: 'Sturdy boots, leather breeches, a belt, a shirt, and a hooded cloak.' },
+            { id: 'cartographers-tools', name: "Cartographer's Tools", qty: 1, weight: 6, consumable: false, isTool: true,
+              desc: 'These tools include a quill, ink, parchment, a pair of compasses, calipers, and a ruler.',
+              proficient: true,
+              uses: [
+                'Create accurate maps of areas you explore',
+                'Determine your position on a map (DC 10-15 WIS check)',
+                'Identify terrain features and estimate distances',
+                'Copy or forge maps (DC 15+ DEX check)'
+              ],
+              checks: 'INT (Investigation) or WIS (Survival) when navigating or mapping' },
+            { id: 'tinderbox', name: 'Tinderbox', qty: 1, weight: 1, consumable: false,
+              desc: 'This small container holds flint, fire steel, and tinder. Using it to light a torch takes an action. Lighting any other fire takes 1 minute.' },
+            { id: 'rations', name: 'Rations', qty: 10, weight: 2, consumable: true, unit: 'days',
+              desc: 'Dry foods suitable for extended travel: jerky, dried fruit, hardtack, and nuts. One day of rations weighs 2 lbs.' },
+            { id: 'waterskin', name: 'Waterskin', qty: 1, weight: 5, consumable: false,
+              desc: 'Holds 4 pints of liquid. A creature needs 1 gallon (8 pints) of water per day, or twice that in hot weather.' },
+            { id: 'rope', name: 'Hempen Rope', qty: 50, weight: 10, consumable: true, unit: 'ft',
+              desc: 'Rope has 2 HP and can be burst with DC 17 Strength. Use for climbing, tying, or improvised tools.' },
+            { id: 'torches', name: 'Torch', qty: 5, weight: 1, consumable: true, unit: 'each',
+              desc: 'Burns for 1 hour, providing bright light (20 ft) and dim light (+20 ft). Can deal 1 fire damage as improvised weapon.' }
         ];
 
         function initInventory() {
@@ -4454,12 +5389,117 @@
                 state.inventory = JSON.parse(JSON.stringify(DEFAULT_INVENTORY));
             }
             if (!state.gear || state.gear.length === 0) {
-                state.gear = [...DEFAULT_GEAR];
+                state.gear = JSON.parse(JSON.stringify(DEFAULT_GEAR));
             }
+        }
+
+        // ===== AMMUNITION SYSTEM =====
+        // Map weapon names to their required ammo type
+        const AMMO_REQUIREMENTS = {
+            'shortbow': 'arrows',
+            'longbow': 'arrows',
+            'light crossbow': 'bolts',
+            'heavy crossbow': 'bolts',
+            'hand crossbow': 'bolts',
+            'crossbow': 'bolts'
+        };
+
+        function getAmmoTypeForWeapon(weapon) {
+            if (!weapon.properties || !weapon.properties.includes('ammunition')) return null;
+            const weaponName = weapon.name.toLowerCase();
+            for (const [key, ammoType] of Object.entries(AMMO_REQUIREMENTS)) {
+                if (weaponName.includes(key)) return ammoType;
+            }
+            // Default fallback based on weapon type keywords
+            if (weaponName.includes('bow')) return 'arrows';
+            if (weaponName.includes('crossbow')) return 'bolts';
+            return 'arrows'; // Default
+        }
+
+        function getAmmoCount(ammoType) {
+            const ammoItem = state.inventory.find(item =>
+                item.type === 'ammo' && item.name.toLowerCase().includes(ammoType.toLowerCase())
+            );
+            return ammoItem ? ammoItem.quantity : 0;
+        }
+
+        function useAmmo(ammoType, amount = 1) {
+            const ammoItem = state.inventory.find(item =>
+                item.type === 'ammo' && item.name.toLowerCase().includes(ammoType.toLowerCase())
+            );
+            if (!ammoItem) {
+                alert(`No ${ammoType} in inventory!`);
+                return false;
+            }
+            if (ammoItem.quantity < amount) {
+                alert(`Not enough ${ammoType}! (have ${ammoItem.quantity})`);
+                return false;
+            }
+            saveForUndo();
+            ammoItem.quantity -= amount;
+            saveState();
+            renderInventory();
+            return true;
+        }
+
+        function addAmmo(ammoType, amount) {
+            const ammoItem = state.inventory.find(item =>
+                item.type === 'ammo' && item.name.toLowerCase().includes(ammoType.toLowerCase())
+            );
+            if (ammoItem) {
+                saveForUndo();
+                ammoItem.quantity += amount;
+                saveState();
+                renderInventory();
+            } else {
+                // Create new ammo item
+                saveForUndo();
+                const capitalizedName = ammoType.charAt(0).toUpperCase() + ammoType.slice(1);
+                state.inventory.push({
+                    id: ammoType + '-' + Date.now(),
+                    type: 'ammo',
+                    name: capitalizedName,
+                    quantity: amount
+                });
+                saveState();
+                renderInventory();
+            }
+        }
+
+        function openAddAmmoModal() {
+            const body = `
+                <div class="form-group">
+                    <label>Ammo Type</label>
+                    <select id="ammoTypeSelect">
+                        <option value="arrows">Arrows</option>
+                        <option value="bolts">Bolts</option>
+                        <option value="bullets">Sling Bullets</option>
+                        <option value="darts">Darts</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Quantity to Add</label>
+                    <input type="number" id="ammoQuantity" value="20" min="1">
+                </div>
+                <button onclick="confirmAddAmmo()" style="width: 100%; padding: 12px; background: var(--accent-green); border: none; border-radius: 6px; color: white; font-weight: bold; cursor: pointer;">Add Ammunition</button>
+            `;
+            showModal('Add Ammunition', body);
+        }
+
+        function confirmAddAmmo() {
+            const ammoType = document.getElementById('ammoTypeSelect').value;
+            const quantity = parseInt(document.getElementById('ammoQuantity').value) || 1;
+            addAmmo(ammoType, quantity);
+            closeModal();
         }
 
         function getEquippedInSlot(slot) {
             if (!state.inventory) return null;
+            // For hand slots, also check for two-handed weapons
+            if (slot === 'mainHand' || slot === 'offHand') {
+                const twoHanded = state.inventory.find(item => item.equipped === 'twoHanded');
+                if (twoHanded) return twoHanded;
+            }
             return state.inventory.find(item => item.equipped === slot);
         }
 
@@ -4475,12 +5515,33 @@
         function renderEquipmentSlots() {
             const slots = ['mainHand', 'offHand', 'armor', 'head', 'neck', 'hands', 'feet', 'ring1', 'ring2'];
 
+            // Check for two-handed weapon
+            const twoHandedWeapon = state.inventory.find(item => item.equipped === 'twoHanded');
+
             slots.forEach(slot => {
-                const item = getEquippedInSlot(slot);
                 const contentEl = document.getElementById(slot + 'Content');
                 const slotEl = document.getElementById('slot-' + slot);
 
                 if (!contentEl || !slotEl) return;
+
+                // Handle two-handed weapon display in both hand slots
+                if ((slot === 'mainHand' || slot === 'offHand') && twoHandedWeapon) {
+                    let displayText = twoHandedWeapon.name;
+                    if (twoHandedWeapon.type === 'weapon') {
+                        displayText += ` (${twoHandedWeapon.damageDie})`;
+                    }
+                    if (slot === 'offHand') {
+                        displayText = '↑ Two-handed';
+                    }
+                    contentEl.textContent = displayText;
+                    contentEl.classList.remove('empty');
+                    slotEl.classList.add('filled');
+                    if (twoHandedWeapon.isMagic) slotEl.classList.add('magic');
+                    else slotEl.classList.remove('magic');
+                    return;
+                }
+
+                const item = state.inventory.find(i => i.equipped === slot);
 
                 if (item) {
                     let displayText = item.name;
@@ -4545,17 +5606,169 @@
             const gearList = document.getElementById('gearList');
             if (!gearList) return;
 
-            gearList.innerHTML = state.gear.map((item, i) => `
-                <div class="inventory-item">
-                    <div class="inventory-item-left">
-                        <span class="inventory-item-name">${item.name}</span>
+            gearList.innerHTML = state.gear.map((item, i) => {
+                const qtyDisplay = item.unit ? `${item.qty} ${item.unit}` : `×${item.qty || 1}`;
+                const isConsumable = item.consumable;
+                const isTool = item.isTool;
+                const icon = isTool ? '🛠️' : (isConsumable ? '📦' : '🎒');
+
+                return `
+                    <div class="inventory-item ${isTool ? 'tool-item' : ''}" onclick="showGearDetails(${i})" style="cursor: pointer;">
+                        <div class="inventory-item-left">
+                            <span class="inventory-item-name">${icon} ${item.name}</span>
+                            ${item.weight ? `<span style="font-size: 0.75em; color: var(--text-muted);">${item.weight} lb</span>` : ''}
+                        </div>
+                        <div class="inventory-item-actions" onclick="event.stopPropagation();">
+                            ${isConsumable ? `
+                                <button class="qty-btn" onclick="adjustGearQty(${i}, -1)" style="padding: 4px 8px; background: var(--accent-red); border: none; border-radius: 4px; color: white; cursor: pointer;">−</button>
+                                <span style="color: var(--text-muted); min-width: 50px; text-align: center;">${qtyDisplay}</span>
+                                <button class="qty-btn" onclick="adjustGearQty(${i}, 1)" style="padding: 4px 8px; background: var(--accent-green); border: none; border-radius: 4px; color: white; cursor: pointer;">+</button>
+                            ` : `
+                                <span style="color: var(--text-muted);">${qtyDisplay}</span>
+                            `}
+                            <button class="delete-btn" onclick="deleteItem('gear', ${i})">✕</button>
+                        </div>
                     </div>
-                    <div class="inventory-item-actions">
-                        <span style="color: var(--text-muted);">×${item.qty || 1}</span>
-                        <button class="delete-btn" onclick="deleteItem('gear', ${i})">✕</button>
+                `;
+            }).join('');
+        }
+
+        function showGearDetails(index) {
+            const item = state.gear[index];
+            if (!item) return;
+
+            let body = `<div style="padding: 10px;">`;
+
+            // Basic info
+            body += `<div style="font-size: 1.1em; margin-bottom: 10px;">${item.desc || 'No description available.'}</div>`;
+
+            // Stats row
+            body += `<div style="display: flex; gap: 15px; margin-bottom: 15px; color: var(--text-muted);">`;
+            if (item.weight) body += `<span>⚖️ ${item.weight} lb</span>`;
+            if (item.qty !== undefined) body += `<span>📦 Qty: ${item.qty}${item.unit ? ' ' + item.unit : ''}</span>`;
+            body += `</div>`;
+
+            // Tool-specific info
+            if (item.isTool) {
+                body += `<div style="background: rgba(100,149,237,0.1); padding: 10px; border-radius: 8px; margin-bottom: 10px;">`;
+                body += `<div style="color: var(--accent-blue); font-weight: bold; margin-bottom: 8px;">🛠️ Tool Proficiency${item.proficient ? ' (Proficient)' : ''}</div>`;
+
+                if (item.checks) {
+                    body += `<div style="margin-bottom: 8px;"><strong>Related Checks:</strong> ${item.checks}</div>`;
+                }
+
+                if (item.uses && item.uses.length > 0) {
+                    body += `<div style="margin-bottom: 5px;"><strong>Common Uses:</strong></div>`;
+                    body += `<ul style="margin: 0; padding-left: 20px;">`;
+                    item.uses.forEach(use => {
+                        body += `<li style="margin-bottom: 4px;">${use}</li>`;
+                    });
+                    body += `</ul>`;
+                }
+                body += `</div>`;
+            }
+
+            // Consumable actions
+            if (item.consumable && item.qty > 0) {
+                body += `<div style="display: flex; gap: 10px; margin-top: 15px;">`;
+                body += `<button onclick="useGearItem(${index}); closeModal();" style="flex: 1; padding: 12px; background: var(--accent-orange); border: none; border-radius: 6px; color: white; font-weight: bold; cursor: pointer;">Use 1 ${item.name}</button>`;
+                body += `</div>`;
+            }
+
+            body += `</div>`;
+
+            showModal(item.name, body);
+        }
+
+        function adjustGearQty(index, amount) {
+            const item = state.gear[index];
+            if (!item) return;
+
+            saveForUndo();
+            item.qty = Math.max(0, (item.qty || 1) + amount);
+            saveState();
+            renderGearList();
+        }
+
+        function useGearItem(index) {
+            const item = state.gear[index];
+            if (!item || !item.consumable || item.qty <= 0) return;
+
+            saveForUndo();
+            item.qty -= 1;
+            saveState();
+            renderGearList();
+
+            // Log the usage if in battle
+            if (state.inBattle) {
+                addBattleLog(`Used ${item.name}`);
+            }
+        }
+
+        function openAddGearModal() {
+            const body = `
+                <div class="form-group">
+                    <label>Item Name</label>
+                    <input type="text" id="gearName" placeholder="e.g., Rope, Torch, Rations">
+                </div>
+                <div class="form-row" style="display: flex; gap: 10px;">
+                    <div class="form-group" style="flex: 1;">
+                        <label>Quantity</label>
+                        <input type="number" id="gearQty" value="1" min="1">
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label>Unit (optional)</label>
+                        <select id="gearUnit">
+                            <option value="">-</option>
+                            <option value="each">each</option>
+                            <option value="days">days</option>
+                            <option value="ft">ft</option>
+                            <option value="lb">lb</option>
+                        </select>
                     </div>
                 </div>
-            `).join('');
+                <div class="form-row" style="display: flex; gap: 10px;">
+                    <div class="form-group" style="flex: 1;">
+                        <label>Weight (lb)</label>
+                        <input type="number" id="gearWeight" value="1" min="0" step="0.5">
+                    </div>
+                    <div class="form-group" style="flex: 1; display: flex; align-items: center; padding-top: 20px;">
+                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                            <input type="checkbox" id="gearConsumable" style="width: 20px; height: 20px;">
+                            <span>Consumable</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Description (optional)</label>
+                    <textarea id="gearDesc" rows="2" placeholder="What does this item do?"></textarea>
+                </div>
+                <button onclick="saveNewGear()" style="width: 100%; padding: 12px; background: var(--accent-green); border: none; border-radius: 6px; color: white; font-weight: bold; cursor: pointer;">Add Gear</button>
+            `;
+            showModal('Add Adventuring Gear', body);
+        }
+
+        function saveNewGear() {
+            const name = document.getElementById('gearName').value.trim();
+            if (!name) { alert('Please enter an item name'); return; }
+
+            const newItem = {
+                id: 'gear-' + Date.now(),
+                name: name,
+                qty: parseInt(document.getElementById('gearQty').value) || 1,
+                weight: parseFloat(document.getElementById('gearWeight').value) || 0,
+                consumable: document.getElementById('gearConsumable').checked,
+                desc: document.getElementById('gearDesc').value.trim() || null
+            };
+
+            const unit = document.getElementById('gearUnit').value;
+            if (unit) newItem.unit = unit;
+
+            saveForUndo();
+            state.gear.push(newItem);
+            saveState();
+            renderGearList();
+            closeModal();
         }
 
         function renderAttunement() {
@@ -4659,18 +5872,25 @@
             const item = state.inventory.find(i => i.id === itemId);
             if (!item) return;
 
+            // Check if a two-handed weapon is currently equipped and we're replacing either hand
+            if (slot === 'mainHand' || slot === 'offHand') {
+                const twoHandedEquipped = state.inventory.find(i =>
+                    i.equipped === 'twoHanded' || (i.equipped === 'mainHand' && i.hands === 'two')
+                );
+                if (twoHandedEquipped) {
+                    twoHandedEquipped.equipped = null; // Fully unequip two-handed weapon
+                }
+            }
+
             // Handle two-handed weapons
             if (item.hands === 'two') {
                 // Unequip both hand slots (automatic - no confirmation per user preference)
                 state.inventory.forEach(i => {
-                    if (i.equipped === 'mainHand' || i.equipped === 'offHand') {
+                    if (i.equipped === 'mainHand' || i.equipped === 'offHand' || i.equipped === 'twoHanded') {
                         i.equipped = null;
                     }
                 });
-                item.equipped = 'mainHand';
-                // Mark off-hand as blocked
-                const offHandContent = document.getElementById('offHandContent');
-                if (offHandContent) offHandContent.textContent = '(Two-handed)';
+                item.equipped = 'twoHanded'; // Special marker for two-handed
             } else {
                 // Unequip current item in slot
                 state.inventory.forEach(i => {
@@ -4682,17 +5902,32 @@
             closeModal();
             renderInventory();
             updateAttackOptions();
+            updateResistancesDisplay();
             saveState();
         }
 
         function unequipFromSlot(slot) {
             saveForUndo();
+            // If clicking on either hand slot with a two-handed weapon, unequip it
+            if (slot === 'mainHand' || slot === 'offHand') {
+                const twoHandedEquipped = state.inventory.find(i => i.equipped === 'twoHanded');
+                if (twoHandedEquipped) {
+                    twoHandedEquipped.equipped = null;
+                    closeModal();
+                    renderInventory();
+                    updateAttackOptions();
+                    updateResistancesDisplay();
+                    saveState();
+                    return;
+                }
+            }
             state.inventory.forEach(item => {
                 if (item.equipped === slot) item.equipped = null;
             });
             closeModal();
             renderInventory();
             updateAttackOptions();
+            updateResistancesDisplay();
             saveState();
         }
 
@@ -4734,18 +5969,42 @@
             } else if (item.type === 'armor') {
                 body += `AC: ${item.baseAC} + DEX (max ${item.maxDex})<br>`;
                 body += `Type: ${item.armorType}`;
+            } else if (item.type === 'shield') {
+                body += `AC Bonus: +${item.acBonus}`;
+                if (item.magicBonus) body += ` (+${item.magicBonus} magic)`;
             }
             if (item.isMagic) {
                 body += `<br><span style="color: var(--accent-purple);">✦ Magic Item</span>`;
-                if (item.description) body += `<br>${item.description}`;
+                if (item.requiresAttunement) body += ` <span style="color: var(--text-muted);">(Attunement)</span>`;
+
+                // Show attack/damage bonuses for weapons
+                if (item.type === 'weapon' && (item.attackBonus || item.damageBonus)) {
+                    body += `<br>+${item.attackBonus || 0} attack, +${item.damageBonus || 0} damage`;
+                }
+
+                // Show magic bonus for armor
+                if (item.type === 'armor' && item.magicBonus) {
+                    body += `<br>+${item.magicBonus} AC bonus`;
+                }
+
+                // Display effects
+                if (item.effects && item.effects.length > 0) {
+                    body += `<br><div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border-color);">`;
+                    body += `<strong style="color: var(--accent-purple);">Effects:</strong>`;
+                    item.effects.forEach(effect => {
+                        const desc = getEffectDescription(effect);
+                        const info = EFFECT_TYPES[effect.type] || { icon: '✦' };
+                        body += `<br><span style="color: var(--text-secondary);">${info.icon} ${desc}</span>`;
+                    });
+                    body += `</div>`;
+                }
+
+                // Legacy: show old effect text if present
+                if (item.effect) {
+                    body += `<br><span style="color: var(--text-secondary);">${item.effect}</span>`;
+                }
             }
             body += `</div>`;
-
-            // Delete
-            body += `<hr style="border-color: var(--border-color); margin: 10px 0;">`;
-            body += `<div class="form-option" onclick="deleteInventoryItem('${itemId}')" style="border-color: var(--accent-red);">
-                <div class="form-option-title" style="color: var(--accent-red);">🗑️ Delete Item</div>
-            </div>`;
 
             body += '</div>';
             showModal(item.name, body);
@@ -4764,6 +6023,70 @@
         function updateAttackOptions() {
             // This will update the attack menu to reflect equipped weapons
             // Called when weapons are equipped/unequipped
+        }
+
+        function updateResistancesDisplay() {
+            const display = document.getElementById('resistancesDisplay');
+            if (!display) return;
+
+            // Base character resistances (Half-Aasimar/Half-Tiefling heritage)
+            const baseResistances = ['necrotic', 'radiant'];
+
+            // Collect all effects from equipped magic items
+            const itemResistances = [];
+            const immunities = [];
+            const conditionImmunities = [];
+
+            if (state.inventory) {
+                state.inventory.forEach(item => {
+                    if (!item.equipped || !item.isMagic || !item.effects) return;
+
+                    item.effects.forEach(effect => {
+                        switch(effect.type) {
+                            case 'resistance':
+                                if (!itemResistances.includes(effect.damageType) && !baseResistances.includes(effect.damageType)) {
+                                    itemResistances.push(effect.damageType);
+                                }
+                                break;
+                            case 'immunity':
+                                if (!immunities.includes(effect.damageType)) {
+                                    immunities.push(effect.damageType);
+                                }
+                                break;
+                            case 'conditionImmunity':
+                                if (!conditionImmunities.includes(effect.condition)) {
+                                    conditionImmunities.push(effect.condition);
+                                }
+                                break;
+                        }
+                    });
+                });
+            }
+
+            let html = '<div class="resistance-tags">';
+
+            // Base character resistances (always shown)
+            baseResistances.forEach(r => {
+                html += `<span class="resistance-tag">Resist ${r}</span>`;
+            });
+
+            // Item resistances
+            itemResistances.forEach(r => {
+                html += `<span class="resistance-tag" style="border-color: var(--accent-purple); background: rgba(123, 104, 238, 0.15);">Resist ${r} ✦</span>`;
+            });
+
+            // Damage Immunities
+            immunities.forEach(i => {
+                html += `<span class="resistance-tag immunity-tag">Immune ${i}</span>`;
+            });
+
+            // Condition Immunities
+            conditionImmunities.forEach(c => {
+                html += `<span class="resistance-tag immunity-tag">Immune ${c}</span>`;
+            });
+
+            html += '</div>';
+            display.innerHTML = html;
         }
 
         // Add Equipment Modal
@@ -4791,7 +6114,1013 @@
             showModal('Add Equipment', body);
         }
 
+        // ===== MAGIC ITEM EFFECTS SYSTEM =====
+        const EFFECT_TYPES = {
+            resistance: { icon: '🛡️', label: 'Damage Resistance' },
+            immunity: { icon: '⭐', label: 'Damage Immunity' },
+            conditionImmunity: { icon: '✨', label: 'Condition Immunity' },
+            extraDamage: { icon: '⚔️', label: 'Extra Damage' },
+            extraDamageVs: { icon: '🎯', label: 'Extra Damage vs Creature Type' },
+            speed: { icon: '💨', label: 'Movement Speed' },
+            advantage: { icon: '🎲', label: 'Advantage on Checks' },
+            light: { icon: '💡', label: 'Light Source' },
+            darkvision: { icon: '👁️', label: 'Darkvision' },
+            charges: { icon: '⚡', label: 'Charges (with spells)' },
+            spell: { icon: '✨', label: 'Grants Spell (at-will or 1/day)' },
+            description: { icon: '📜', label: 'Description/Flavor' }
+        };
+
+        const DAMAGE_TYPES = ['Acid', 'Cold', 'Fire', 'Force', 'Lightning', 'Necrotic', 'Poison', 'Psychic', 'Radiant', 'Thunder', 'Bludgeoning', 'Piercing', 'Slashing'];
+        const CONDITIONS = ['Blinded', 'Charmed', 'Deafened', 'Frightened', 'Grappled', 'Paralyzed', 'Petrified', 'Poisoned', 'Prone', 'Restrained', 'Stunned', 'Unconscious'];
+        const CREATURE_TYPES = ['Aberrations', 'Beasts', 'Celestials', 'Constructs', 'Dragons', 'Elementals', 'Fey', 'Fiends', 'Giants', 'Monstrosities', 'Oozes', 'Plants', 'Undead'];
+        const SPEED_TYPES = ['Walking', 'Flying', 'Swimming', 'Climbing', 'Burrowing'];
+
+        // Common spells that magic items can grant
+        const ITEM_SPELLS = [
+            { name: 'Detect Magic', level: 1 },
+            { name: 'Shield', level: 1 },
+            { name: 'Feather Fall', level: 1 },
+            { name: 'Healing Word', level: 1 },
+            { name: 'Cure Wounds', level: 1 },
+            { name: 'Invisibility', level: 2 },
+            { name: 'Levitate', level: 2 },
+            { name: 'Misty Step', level: 2 },
+            { name: 'Darkness', level: 2 },
+            { name: 'Spider Climb', level: 2 },
+            { name: 'Fly', level: 3 },
+            { name: 'Fireball', level: 3 },
+            { name: 'Lightning Bolt', level: 3 },
+            { name: 'Dispel Magic', level: 3 },
+            { name: 'Revivify', level: 3 },
+            { name: 'Greater Invisibility', level: 4 },
+            { name: 'Polymorph', level: 4 },
+            { name: 'Wall of Fire', level: 4 },
+            { name: 'Raise Dead', level: 5 },
+            { name: 'Teleportation Circle', level: 5 },
+            { name: 'Other (Custom)', level: 0 }
+        ];
+
+        // Temporary storage for effects being added to items
+        let tempEffects = { weapon: [], armor: [], shield: [], accessory: [] };
+
+        function showAddEffectForm(itemType) {
+            const formEl = document.getElementById(itemType + 'EffectForm');
+            if (!formEl) return;
+
+            formEl.style.display = 'block';
+            formEl.innerHTML = `
+                <div class="effect-form">
+                    <label>Effect Type</label>
+                    <select id="${itemType}EffectType" onchange="updateEffectOptions('${itemType}')">
+                        <option value="">Select effect type...</option>
+                        ${Object.entries(EFFECT_TYPES).map(([key, val]) =>
+                            `<option value="${key}">${val.icon} ${val.label}</option>`
+                        ).join('')}
+                    </select>
+                    <div id="${itemType}EffectOptions"></div>
+                    <div class="effect-form-buttons">
+                        <button onclick="cancelAddEffect('${itemType}')" style="background: var(--bg-card);">Cancel</button>
+                        <button onclick="confirmAddEffect('${itemType}')" style="background: var(--accent-green);">Add</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function updateEffectOptions(itemType) {
+            const effectType = document.getElementById(itemType + 'EffectType').value;
+            const optionsEl = document.getElementById(itemType + 'EffectOptions');
+            if (!optionsEl) return;
+
+            let html = '';
+            switch(effectType) {
+                case 'resistance':
+                case 'immunity':
+                    html = `
+                        <label style="margin-top:8px;">Damage Type</label>
+                        <select id="${itemType}EffectValue">
+                            ${DAMAGE_TYPES.map(t => `<option value="${t.toLowerCase()}">${t}</option>`).join('')}
+                        </select>`;
+                    break;
+                case 'conditionImmunity':
+                    html = `
+                        <label style="margin-top:8px;">Condition</label>
+                        <select id="${itemType}EffectValue">
+                            ${CONDITIONS.map(c => `<option value="${c.toLowerCase()}">${c}</option>`).join('')}
+                        </select>`;
+                    break;
+                case 'extraDamage':
+                    html = `
+                        <div class="effect-form-row">
+                            <div>
+                                <label>Dice</label>
+                                <select id="${itemType}EffectDice">
+                                    <option value="1d4">1d4</option>
+                                    <option value="1d6">1d6</option>
+                                    <option value="2d6" selected>2d6</option>
+                                    <option value="1d8">1d8</option>
+                                    <option value="2d8">2d8</option>
+                                    <option value="1d10">1d10</option>
+                                    <option value="2d10">2d10</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label>Damage Type</label>
+                                <select id="${itemType}EffectValue">
+                                    ${DAMAGE_TYPES.map(t => `<option value="${t.toLowerCase()}">${t}</option>`).join('')}
+                                </select>
+                            </div>
+                        </div>
+                        <label style="margin-top:8px;">Activation</label>
+                        <select id="${itemType}EffectActivation">
+                            <option value="always">Always Active</option>
+                            <option value="bonusAction">Bonus Action (Command Word)</option>
+                        </select>`;
+                    break;
+                case 'extraDamageVs':
+                    html = `
+                        <div class="effect-form-row">
+                            <div>
+                                <label>Dice</label>
+                                <select id="${itemType}EffectDice">
+                                    <option value="1d6">1d6</option>
+                                    <option value="2d6">2d6</option>
+                                    <option value="3d6" selected>3d6</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label>Creature Type</label>
+                                <select id="${itemType}EffectValue">
+                                    ${CREATURE_TYPES.map(c => `<option value="${c.toLowerCase()}">${c}</option>`).join('')}
+                                </select>
+                            </div>
+                        </div>`;
+                    break;
+                case 'speed':
+                    html = `
+                        <div class="effect-form-row">
+                            <div>
+                                <label>Speed Type</label>
+                                <select id="${itemType}EffectValue">
+                                    ${SPEED_TYPES.map(s => `<option value="${s.toLowerCase()}">${s}</option>`).join('')}
+                                </select>
+                            </div>
+                            <div>
+                                <label>Speed (ft)</label>
+                                <input type="number" id="${itemType}EffectAmount" value="30" min="5" step="5">
+                            </div>
+                        </div>`;
+                    break;
+                case 'advantage':
+                    html = `
+                        <label style="margin-top:8px;">Advantage On</label>
+                        <select id="${itemType}EffectValue">
+                            <option value="stealthChecks">Stealth Checks</option>
+                            <option value="perceptionChecks">Perception Checks</option>
+                            <option value="initiativeRolls">Initiative Rolls</option>
+                            <option value="savesVsSpells">Saving Throws vs Spells</option>
+                            <option value="savesVsMagic">Saving Throws vs Magic</option>
+                            <option value="savesVsFrightened">Saving Throws vs Frightened</option>
+                            <option value="savesVsCharmed">Saving Throws vs Charmed</option>
+                        </select>`;
+                    break;
+                case 'light':
+                    html = `
+                        <div class="effect-form-row">
+                            <div>
+                                <label>Bright (ft)</label>
+                                <input type="number" id="${itemType}EffectBright" value="20" min="0" step="5">
+                            </div>
+                            <div>
+                                <label>Dim (ft)</label>
+                                <input type="number" id="${itemType}EffectDim" value="20" min="0" step="5">
+                            </div>
+                        </div>
+                        <label style="margin-top:8px;">Activation</label>
+                        <select id="${itemType}EffectActivation">
+                            <option value="always">Always On</option>
+                            <option value="bonusAction">Bonus Action Toggle</option>
+                        </select>`;
+                    break;
+                case 'darkvision':
+                    html = `
+                        <label style="margin-top:8px;">Range (ft)</label>
+                        <select id="${itemType}EffectValue">
+                            <option value="60">60 ft</option>
+                            <option value="120">120 ft</option>
+                        </select>`;
+                    break;
+                case 'description':
+                    html = `
+                        <label style="margin-top:8px;">Description</label>
+                        <input type="text" id="${itemType}EffectValue" placeholder="e.g., Glows faintly in darkness">`;
+                    break;
+                case 'charges':
+                    html = `
+                        <div class="effect-form-row">
+                            <div>
+                                <label>Max Charges</label>
+                                <input type="number" id="${itemType}EffectMaxCharges" value="7" min="1" max="50">
+                            </div>
+                            <div>
+                                <label>Recharge</label>
+                                <select id="${itemType}EffectRecharge" onchange="updateRechargeOptions('${itemType}')">
+                                    <option value="dawn">At Dawn</option>
+                                    <option value="dusk">At Dusk</option>
+                                    <option value="longRest">Long Rest</option>
+                                    <option value="shortRest">Short Rest</option>
+                                    <option value="never">Never</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div id="${itemType}RechargeOptions">
+                            <div class="effect-form-row" style="margin-top:8px;">
+                                <div>
+                                    <label>Recharge Dice</label>
+                                    <select id="${itemType}EffectRechargeDice">
+                                        <option value="1d4+1">1d4+1</option>
+                                        <option value="1d6+1" selected>1d6+1</option>
+                                        <option value="1d8+1">1d8+1</option>
+                                        <option value="2d4">2d4</option>
+                                        <option value="all">Full Recharge</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label>Break Chance</label>
+                                    <select id="${itemType}EffectBreakChance">
+                                        <option value="0">Never Breaks</option>
+                                        <option value="1">On 1 (crumbles)</option>
+                                        <option value="5">On 1-5 (5%)</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <label style="margin-top:12px;">Spells (click to add)</label>
+                        <div id="${itemType}ChargeSpellsList" style="margin-bottom:8px; font-size:0.9em;"></div>
+                        <div class="effect-form-row">
+                            <div style="flex:2;">
+                                <select id="${itemType}ChargeSpellSelect">
+                                    ${ITEM_SPELLS.map(s => `<option value="${s.name}">${s.name} (${s.level === 0 ? 'Cantrip' : 'Lvl ' + s.level})</option>`).join('')}
+                                </select>
+                            </div>
+                            <div style="flex:1;">
+                                <input type="number" id="${itemType}ChargeSpellCost" value="1" min="1" max="10" placeholder="Cost">
+                            </div>
+                            <div>
+                                <button type="button" onclick="addChargeSpell('${itemType}')" style="padding:8px 12px; background:var(--accent-green);">+</button>
+                            </div>
+                        </div>`;
+                    // Initialize empty spell list for this item
+                    setTimeout(() => { if (!window.tempChargeSpells) window.tempChargeSpells = {}; window.tempChargeSpells[itemType] = []; }, 0);
+                    break;
+                case 'spell':
+                    html = `
+                        <label style="margin-top:8px;">Spell</label>
+                        <select id="${itemType}EffectSpell" onchange="toggleCustomSpellForm('${itemType}')">
+                            ${ITEM_SPELLS.map(s => `<option value="${s.name}" data-level="${s.level}">${s.name} (${s.level === 0 ? 'Cantrip' : 'Lvl ' + s.level})</option>`).join('')}
+                        </select>
+                        <div id="${itemType}CustomSpellForm" style="display:none; margin-top:12px; padding:12px; background:rgba(100,149,237,0.1); border-radius:8px;">
+                            <div style="color:var(--accent-blue); font-weight:bold; margin-bottom:10px;">Custom Spell Details</div>
+                            <div class="form-group">
+                                <label>Spell Name</label>
+                                <input type="text" id="${itemType}CustomSpellName" placeholder="Enter spell name">
+                            </div>
+                            <div class="effect-form-row">
+                                <div>
+                                    <label>School</label>
+                                    <select id="${itemType}CustomSpellSchool">
+                                        <option value="Abjuration">Abjuration</option>
+                                        <option value="Conjuration">Conjuration</option>
+                                        <option value="Divination">Divination</option>
+                                        <option value="Enchantment">Enchantment</option>
+                                        <option value="Evocation">Evocation</option>
+                                        <option value="Illusion">Illusion</option>
+                                        <option value="Necromancy">Necromancy</option>
+                                        <option value="Transmutation">Transmutation</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label>Casting Time</label>
+                                    <select id="${itemType}CustomSpellTime">
+                                        <option value="Action">Action</option>
+                                        <option value="Bonus Action">Bonus Action</option>
+                                        <option value="Reaction">Reaction</option>
+                                        <option value="1 Minute">1 Minute</option>
+                                        <option value="10 Minutes">10 Minutes</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="effect-form-row" style="margin-top:8px;">
+                                <div>
+                                    <label>Range</label>
+                                    <select id="${itemType}CustomSpellRange">
+                                        <option value="Self">Self</option>
+                                        <option value="Touch">Touch</option>
+                                        <option value="30 feet">30 feet</option>
+                                        <option value="60 feet">60 feet</option>
+                                        <option value="90 feet">90 feet</option>
+                                        <option value="120 feet">120 feet</option>
+                                        <option value="Sight">Sight</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label>Duration</label>
+                                    <select id="${itemType}CustomSpellDuration">
+                                        <option value="Instantaneous">Instantaneous</option>
+                                        <option value="1 round">1 round</option>
+                                        <option value="1 minute">1 minute</option>
+                                        <option value="10 minutes">10 minutes</option>
+                                        <option value="1 hour">1 hour</option>
+                                        <option value="8 hours">8 hours</option>
+                                        <option value="24 hours">24 hours</option>
+                                        <option value="Until dispelled">Until dispelled</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="effect-form-row" style="margin-top:8px;">
+                                <div style="display:flex; gap:10px; align-items:center;">
+                                    <label style="display:flex; gap:5px; align-items:center; cursor:pointer;">
+                                        <input type="checkbox" id="${itemType}CustomSpellConc" style="width:18px; height:18px;">
+                                        <span>Concentration</span>
+                                    </label>
+                                    <label style="display:flex; gap:5px; align-items:center; cursor:pointer;">
+                                        <input type="checkbox" id="${itemType}CustomSpellRitual" style="width:18px; height:18px;">
+                                        <span>Ritual</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-group" style="margin-top:8px;">
+                                <label>Components</label>
+                                <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                                    <label style="display:flex; gap:5px; align-items:center; cursor:pointer;">
+                                        <input type="checkbox" id="${itemType}CustomSpellV" checked style="width:18px; height:18px;">
+                                        <span>V</span>
+                                    </label>
+                                    <label style="display:flex; gap:5px; align-items:center; cursor:pointer;">
+                                        <input type="checkbox" id="${itemType}CustomSpellS" checked style="width:18px; height:18px;">
+                                        <span>S</span>
+                                    </label>
+                                    <label style="display:flex; gap:5px; align-items:center; cursor:pointer;">
+                                        <input type="checkbox" id="${itemType}CustomSpellM" style="width:18px; height:18px;">
+                                        <span>M</span>
+                                    </label>
+                                </div>
+                                <input type="text" id="${itemType}CustomSpellMaterial" placeholder="Material component details (if M)" style="margin-top:5px; display:none;">
+                            </div>
+                            <div class="effect-form-row" style="margin-top:8px;">
+                                <div>
+                                    <label>Damage/Healing</label>
+                                    <input type="text" id="${itemType}CustomSpellDamage" placeholder="e.g., 8d6 fire">
+                                </div>
+                                <div>
+                                    <label>Save DC Type</label>
+                                    <select id="${itemType}CustomSpellSave">
+                                        <option value="">None</option>
+                                        <option value="STR">STR save</option>
+                                        <option value="DEX">DEX save</option>
+                                        <option value="CON">CON save</option>
+                                        <option value="INT">INT save</option>
+                                        <option value="WIS">WIS save</option>
+                                        <option value="CHA">CHA save</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group" style="margin-top:8px;">
+                                <label>Description</label>
+                                <textarea id="${itemType}CustomSpellDesc" rows="3" placeholder="Full spell description..."></textarea>
+                            </div>
+                            <div class="form-group" style="margin-top:8px;">
+                                <label>At Higher Levels (optional)</label>
+                                <input type="text" id="${itemType}CustomSpellHigher" placeholder="e.g., +1d6 damage per level above 3rd">
+                            </div>
+                        </div>
+                        <div class="effect-form-row" style="margin-top:8px;">
+                            <div>
+                                <label>Spell Level</label>
+                                <select id="${itemType}EffectSpellLevel">
+                                    <option value="0">Cantrip</option>
+                                    <option value="1" selected>1st</option>
+                                    <option value="2">2nd</option>
+                                    <option value="3">3rd</option>
+                                    <option value="4">4th</option>
+                                    <option value="5">5th</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label>Usage</label>
+                                <select id="${itemType}EffectSpellUsage">
+                                    <option value="atWill">At Will</option>
+                                    <option value="1/day" selected>1/Day</option>
+                                    <option value="2/day">2/Day</option>
+                                    <option value="3/day">3/Day</option>
+                                </select>
+                            </div>
+                        </div>
+                        <label style="margin-top:8px;">Spellcasting Ability (for save DC)</label>
+                        <select id="${itemType}EffectSpellAbility">
+                            <option value="item">Item's DC (use item DC)</option>
+                            <option value="wis">Wisdom (your DC)</option>
+                            <option value="int">Intelligence (your DC)</option>
+                            <option value="cha">Charisma (your DC)</option>
+                        </select>`;
+                    // Set up material component toggle
+                    setTimeout(() => {
+                        const mCheckbox = document.getElementById(itemType + 'CustomSpellM');
+                        const mInput = document.getElementById(itemType + 'CustomSpellMaterial');
+                        if (mCheckbox && mInput) {
+                            mCheckbox.addEventListener('change', () => {
+                                mInput.style.display = mCheckbox.checked ? 'block' : 'none';
+                            });
+                        }
+                    }, 50);
+                    break;
+            }
+            optionsEl.innerHTML = html;
+        }
+
+        function confirmAddEffect(itemType) {
+            const effectType = document.getElementById(itemType + 'EffectType').value;
+            if (!effectType) { alert('Please select an effect type'); return; }
+
+            const effect = { type: effectType };
+
+            switch(effectType) {
+                case 'resistance':
+                case 'immunity':
+                    effect.damageType = document.getElementById(itemType + 'EffectValue').value;
+                    break;
+                case 'conditionImmunity':
+                    effect.condition = document.getElementById(itemType + 'EffectValue').value;
+                    break;
+                case 'extraDamage':
+                    effect.dice = document.getElementById(itemType + 'EffectDice').value;
+                    effect.damageType = document.getElementById(itemType + 'EffectValue').value;
+                    effect.activation = document.getElementById(itemType + 'EffectActivation').value;
+                    break;
+                case 'extraDamageVs':
+                    effect.dice = document.getElementById(itemType + 'EffectDice').value;
+                    effect.creatureType = document.getElementById(itemType + 'EffectValue').value;
+                    break;
+                case 'speed':
+                    effect.speedType = document.getElementById(itemType + 'EffectValue').value;
+                    effect.value = parseInt(document.getElementById(itemType + 'EffectAmount').value);
+                    break;
+                case 'advantage':
+                    effect.on = document.getElementById(itemType + 'EffectValue').value;
+                    break;
+                case 'light':
+                    effect.bright = parseInt(document.getElementById(itemType + 'EffectBright').value);
+                    effect.dim = parseInt(document.getElementById(itemType + 'EffectDim').value);
+                    effect.activation = document.getElementById(itemType + 'EffectActivation').value;
+                    break;
+                case 'darkvision':
+                    effect.range = parseInt(document.getElementById(itemType + 'EffectValue').value);
+                    break;
+                case 'description':
+                    effect.text = document.getElementById(itemType + 'EffectValue').value;
+                    if (!effect.text) { alert('Please enter a description'); return; }
+                    break;
+                case 'charges':
+                    effect.maxCharges = parseInt(document.getElementById(itemType + 'EffectMaxCharges').value);
+                    effect.recharge = document.getElementById(itemType + 'EffectRecharge').value;
+                    if (effect.recharge !== 'never') {
+                        effect.rechargeDice = document.getElementById(itemType + 'EffectRechargeDice').value;
+                        effect.breakChance = parseInt(document.getElementById(itemType + 'EffectBreakChance').value);
+                    }
+                    effect.spells = window.tempChargeSpells && window.tempChargeSpells[itemType] ? [...window.tempChargeSpells[itemType]] : [];
+                    if (effect.spells.length === 0) {
+                        alert('Please add at least one spell to use with charges');
+                        return;
+                    }
+                    break;
+                case 'spell':
+                    const spellSelect = document.getElementById(itemType + 'EffectSpell');
+                    const spellName = spellSelect.value;
+                    if (spellName === 'Other (Custom)') {
+                        effect.spell = document.getElementById(itemType + 'CustomSpellName').value;
+                        if (!effect.spell) { alert('Please enter a custom spell name'); return; }
+                        effect.isCustom = true;
+                        // Capture full custom spell details
+                        effect.spellDetails = {
+                            school: document.getElementById(itemType + 'CustomSpellSchool').value,
+                            castingTime: document.getElementById(itemType + 'CustomSpellTime').value,
+                            range: document.getElementById(itemType + 'CustomSpellRange').value,
+                            duration: document.getElementById(itemType + 'CustomSpellDuration').value,
+                            concentration: document.getElementById(itemType + 'CustomSpellConc').checked,
+                            ritual: document.getElementById(itemType + 'CustomSpellRitual').checked,
+                            components: {
+                                v: document.getElementById(itemType + 'CustomSpellV').checked,
+                                s: document.getElementById(itemType + 'CustomSpellS').checked,
+                                m: document.getElementById(itemType + 'CustomSpellM').checked,
+                                material: document.getElementById(itemType + 'CustomSpellMaterial').value || null
+                            },
+                            damage: document.getElementById(itemType + 'CustomSpellDamage').value || null,
+                            save: document.getElementById(itemType + 'CustomSpellSave').value || null,
+                            description: document.getElementById(itemType + 'CustomSpellDesc').value || null,
+                            higherLevels: document.getElementById(itemType + 'CustomSpellHigher').value || null
+                        };
+                    } else {
+                        effect.spell = spellName;
+                        effect.isCustom = false;
+                    }
+                    effect.spellLevel = parseInt(document.getElementById(itemType + 'EffectSpellLevel').value);
+                    effect.usage = document.getElementById(itemType + 'EffectSpellUsage').value;
+                    effect.ability = document.getElementById(itemType + 'EffectSpellAbility').value;
+                    break;
+            }
+
+            tempEffects[itemType].push(effect);
+            renderEffectsList(itemType);
+            cancelAddEffect(itemType);
+        }
+
+        function cancelAddEffect(itemType) {
+            const formEl = document.getElementById(itemType + 'EffectForm');
+            if (formEl) formEl.style.display = 'none';
+        }
+
+        function removeEffect(itemType, index) {
+            tempEffects[itemType].splice(index, 1);
+            renderEffectsList(itemType);
+        }
+
+        function renderEffectsList(itemType) {
+            const listEl = document.getElementById(itemType + 'EffectsList');
+            if (!listEl) return;
+
+            if (tempEffects[itemType].length === 0) {
+                listEl.innerHTML = '<div style="color: var(--text-muted); font-size: 0.85em; padding: 8px;">No effects added</div>';
+                return;
+            }
+
+            listEl.innerHTML = tempEffects[itemType].map((effect, i) => {
+                const info = EFFECT_TYPES[effect.type] || { icon: '❓', label: effect.type };
+                let desc = getEffectDescription(effect);
+                return `
+                    <div class="effect-item">
+                        <span class="effect-icon">${info.icon}</span>
+                        <span class="effect-text">${desc}</span>
+                        <span class="effect-remove" onclick="removeEffect('${itemType}', ${i})">✕</span>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function getEffectDescription(effect) {
+            switch(effect.type) {
+                case 'resistance': return `Resistance to ${effect.damageType} damage`;
+                case 'immunity': return `Immunity to ${effect.damageType} damage`;
+                case 'conditionImmunity': return `Immunity to ${effect.condition}`;
+                case 'extraDamage':
+                    return effect.activation === 'always'
+                        ? `+${effect.dice} ${effect.damageType} damage`
+                        : `+${effect.dice} ${effect.damageType} (command word)`;
+                case 'extraDamageVs': return `+${effect.dice} damage vs ${effect.creatureType}`;
+                case 'speed': return `${effect.speedType} speed ${effect.value} ft`;
+                case 'advantage':
+                    const advLabels = {
+                        stealthChecks: 'Stealth checks',
+                        perceptionChecks: 'Perception checks',
+                        initiativeRolls: 'Initiative',
+                        savesVsSpells: 'saves vs spells',
+                        savesVsMagic: 'saves vs magic',
+                        savesVsFrightened: 'saves vs frightened',
+                        savesVsCharmed: 'saves vs charmed'
+                    };
+                    return `Advantage on ${advLabels[effect.on] || effect.on}`;
+                case 'light':
+                    return effect.activation === 'always'
+                        ? `Light: ${effect.bright}/${effect.dim} ft`
+                        : `Light: ${effect.bright}/${effect.dim} ft (toggle)`;
+                case 'darkvision': return `Darkvision ${effect.range} ft`;
+                case 'description': return effect.text;
+                case 'charges':
+                    const spellNames = effect.spells.map(s => s.name).join(', ');
+                    const rechargeText = effect.recharge === 'never' ? 'no recharge' : `recharges at ${effect.recharge}`;
+                    return `${effect.maxCharges} charges (${rechargeText}) - ${spellNames}`;
+                case 'spell':
+                    const usageText = effect.usage === 'atWill' ? 'at will' : effect.usage;
+                    return `${effect.spell} (${usageText})`;
+                default: return effect.type;
+            }
+        }
+
+        // Helper functions for charges effect type
+        function updateRechargeOptions(itemType) {
+            const rechargeType = document.getElementById(itemType + 'EffectRecharge').value;
+            const optionsEl = document.getElementById(itemType + 'RechargeOptions');
+            if (optionsEl) {
+                optionsEl.style.display = rechargeType === 'never' ? 'none' : 'block';
+            }
+        }
+
+        function addChargeSpell(itemType) {
+            const spellSelect = document.getElementById(itemType + 'ChargeSpellSelect');
+            const costInput = document.getElementById(itemType + 'ChargeSpellCost');
+            const spellName = spellSelect.value;
+            const cost = parseInt(costInput.value) || 1;
+
+            if (!window.tempChargeSpells) window.tempChargeSpells = {};
+            if (!window.tempChargeSpells[itemType]) window.tempChargeSpells[itemType] = [];
+
+            // Check if spell already exists
+            if (window.tempChargeSpells[itemType].find(s => s.name === spellName)) {
+                alert('This spell is already added');
+                return;
+            }
+
+            // Get spell level from ITEM_SPELLS
+            const spellData = ITEM_SPELLS.find(s => s.name === spellName);
+            const level = spellData ? spellData.level : 1;
+
+            window.tempChargeSpells[itemType].push({ name: spellName, cost: cost, level: level });
+            renderChargeSpells(itemType);
+            costInput.value = '1'; // Reset cost
+        }
+
+        function renderChargeSpells(itemType) {
+            const listEl = document.getElementById(itemType + 'ChargeSpellsList');
+            if (!listEl) return;
+
+            if (!window.tempChargeSpells || !window.tempChargeSpells[itemType] || window.tempChargeSpells[itemType].length === 0) {
+                listEl.innerHTML = '<span style="color: var(--text-muted);">No spells added yet</span>';
+                return;
+            }
+
+            listEl.innerHTML = window.tempChargeSpells[itemType].map((spell, i) => `
+                <div style="display:flex; justify-content:space-between; align-items:center; padding:4px 8px; background:var(--bg-input); border-radius:4px; margin-bottom:4px;">
+                    <span>${spell.name} (${spell.cost} charge${spell.cost > 1 ? 's' : ''})</span>
+                    <span style="cursor:pointer; color:var(--accent-red);" onclick="removeChargeSpell('${itemType}', ${i})">✕</span>
+                </div>
+            `).join('');
+        }
+
+        function removeChargeSpell(itemType, index) {
+            if (window.tempChargeSpells && window.tempChargeSpells[itemType]) {
+                window.tempChargeSpells[itemType].splice(index, 1);
+                renderChargeSpells(itemType);
+            }
+        }
+
+        // Helper function for spell effect type - toggles custom spell form
+        function toggleCustomSpellForm(itemType) {
+            const spellSelect = document.getElementById(itemType + 'EffectSpell');
+            const levelSelect = document.getElementById(itemType + 'EffectSpellLevel');
+            const customForm = document.getElementById(itemType + 'CustomSpellForm');
+            const selectedOption = spellSelect.options[spellSelect.selectedIndex];
+
+            if (spellSelect.value === 'Other (Custom)') {
+                if (customForm) customForm.style.display = 'block';
+            } else {
+                if (customForm) customForm.style.display = 'none';
+                const level = selectedOption.dataset.level;
+                if (level && levelSelect) {
+                    levelSelect.value = level;
+                }
+            }
+        }
+
+        // Legacy alias for backwards compatibility
+        function updateSpellLevelFromSelection(itemType) {
+            toggleCustomSpellForm(itemType);
+        }
+
+        function resetTempEffects(itemType) {
+            tempEffects[itemType] = [];
+            const listEl = document.getElementById(itemType + 'EffectsList');
+            if (listEl) listEl.innerHTML = '';
+            // Also clear temporary charge spells
+            if (window.tempChargeSpells && window.tempChargeSpells[itemType]) {
+                window.tempChargeSpells[itemType] = [];
+            }
+        }
+
+        // ===== ITEM CHARGES MANAGEMENT =====
+        function initializeItemCharges(item) {
+            // Check if item has a charges effect
+            if (!item.effects) return;
+            const chargesEffect = item.effects.find(e => e.type === 'charges');
+            if (!chargesEffect) return;
+
+            // Initialize charges if not already set
+            if (!state.itemCharges[item.id]) {
+                state.itemCharges[item.id] = {
+                    current: chargesEffect.maxCharges,
+                    max: chargesEffect.maxCharges
+                };
+            }
+        }
+
+        function getItemCharges(itemId) {
+            return state.itemCharges[itemId] || null;
+        }
+
+        function useItemCharges(itemId, amount) {
+            if (!state.itemCharges[itemId]) return false;
+            if (state.itemCharges[itemId].current < amount) return false;
+
+            saveForUndo();
+            state.itemCharges[itemId].current -= amount;
+            saveState();
+            updateItemChargesDisplay();
+            return true;
+        }
+
+        function getChargesEffectForItem(item) {
+            if (!item.effects) return null;
+            return item.effects.find(e => e.type === 'charges');
+        }
+
+        function rollDice(diceStr) {
+            // Parse dice string like "1d6+1", "2d4", "all"
+            if (diceStr === 'all') return Infinity; // Will be capped to max
+
+            const match = diceStr.match(/(\d+)d(\d+)(?:\+(\d+))?/);
+            if (!match) return 0;
+
+            const numDice = parseInt(match[1]);
+            const dieSize = parseInt(match[2]);
+            const bonus = parseInt(match[3]) || 0;
+
+            let total = bonus;
+            for (let i = 0; i < numDice; i++) {
+                total += Math.floor(Math.random() * dieSize) + 1;
+            }
+            return total;
+        }
+
+        function rechargeItems(rechargeTime) {
+            // rechargeTime can be 'dawn', 'dusk', 'longRest', 'shortRest'
+            let recharged = [];
+
+            state.inventory.forEach(item => {
+                const chargesEffect = getChargesEffectForItem(item);
+                if (!chargesEffect) return;
+                if (chargesEffect.recharge === 'never') return;
+                if (chargesEffect.recharge !== rechargeTime) return;
+
+                const charges = state.itemCharges[item.id];
+                if (!charges) return;
+
+                // Roll recharge dice
+                let rechargeAmount = rollDice(chargesEffect.rechargeDice);
+                if (rechargeAmount === Infinity) {
+                    rechargeAmount = charges.max;
+                }
+
+                const oldCharges = charges.current;
+                charges.current = Math.min(charges.current + rechargeAmount, charges.max);
+                const gained = charges.current - oldCharges;
+
+                if (gained > 0) {
+                    recharged.push({ item: item.name, gained: gained, current: charges.current, max: charges.max });
+                }
+
+                // Check for break on last charge used (roll d20, break on specified value)
+                if (oldCharges === 0 && chargesEffect.breakChance > 0) {
+                    const breakRoll = Math.floor(Math.random() * 20) + 1;
+                    if (breakRoll <= chargesEffect.breakChance) {
+                        // Item breaks!
+                        alert(`${item.name} crumbles to dust!`);
+                        // Remove from inventory
+                        const index = state.inventory.indexOf(item);
+                        if (index > -1) {
+                            state.inventory.splice(index, 1);
+                            delete state.itemCharges[item.id];
+                        }
+                    }
+                }
+            });
+
+            // Also reset 1/day spell usage
+            if (rechargeTime === 'dawn' || rechargeTime === 'longRest') {
+                state.itemSpellsUsed = {};
+            }
+
+            saveState();
+            updateItemChargesDisplay();
+            renderInventory();
+
+            return recharged;
+        }
+
+        function castItemSpell(itemId, spellName, chargeCost) {
+            const item = state.inventory.find(i => i.id === itemId);
+            if (!item) { alert('Item not found'); return false; }
+
+            if (chargeCost > 0) {
+                // Spell costs charges
+                if (!useItemCharges(itemId, chargeCost)) {
+                    alert(`Not enough charges! (need ${chargeCost})`);
+                    return false;
+                }
+                // Check if item should break (expended last charge)
+                const charges = state.itemCharges[itemId];
+                const chargesEffect = getChargesEffectForItem(item);
+                if (charges && charges.current === 0 && chargesEffect && chargesEffect.breakChance > 0) {
+                    const breakRoll = Math.floor(Math.random() * 20) + 1;
+                    if (breakRoll <= chargesEffect.breakChance) {
+                        alert(`${item.name} crumbles to dust!`);
+                        const index = state.inventory.indexOf(item);
+                        if (index > -1) {
+                            state.inventory.splice(index, 1);
+                            delete state.itemCharges[item.id];
+                        }
+                        saveState();
+                        renderInventory();
+                    }
+                }
+            }
+
+            // Log the cast
+            if (state.inBattle) {
+                state.battleLog.push(`Cast ${spellName} from ${item.name}`);
+            }
+
+            updateItemChargesDisplay();
+            return true;
+        }
+
+        function castItemGrantedSpell(itemId, spellName, usage) {
+            const item = state.inventory.find(i => i.id === itemId);
+            if (!item) { alert('Item not found'); return false; }
+
+            const usageKey = `${itemId}_${spellName}`;
+
+            if (usage !== 'atWill') {
+                // Check if already used today
+                if (state.itemSpellsUsed[usageKey]) {
+                    alert(`${spellName} has already been used today!`);
+                    return false;
+                }
+                // Mark as used
+                saveForUndo();
+                state.itemSpellsUsed[usageKey] = true;
+                saveState();
+            }
+
+            // Log the cast
+            if (state.inBattle) {
+                state.battleLog.push(`Cast ${spellName} from ${item.name}`);
+            }
+
+            updateItemChargesDisplay();
+            return true;
+        }
+
+        function updateItemChargesDisplay() {
+            const chargesContainer = document.getElementById('itemChargesDisplay');
+            if (!chargesContainer) return;
+
+            let html = '';
+            let hasChargedItems = false;
+
+            state.inventory.forEach(item => {
+                // Initialize charges if needed
+                initializeItemCharges(item);
+
+                const chargesEffect = getChargesEffectForItem(item);
+                if (chargesEffect) {
+                    const charges = state.itemCharges[item.id];
+                    if (charges) {
+                        hasChargedItems = true;
+                        const percentage = (charges.current / charges.max) * 100;
+                        html += `
+                            <div class="item-charges-row" onclick="showItemChargesModal('${item.id}')">
+                                <span class="item-charges-name">${item.name}</span>
+                                <div class="item-charges-bar">
+                                    <div class="item-charges-fill" style="width: ${percentage}%"></div>
+                                </div>
+                                <span class="item-charges-count">${charges.current}/${charges.max}</span>
+                            </div>
+                        `;
+                    }
+                }
+
+                // Also show spell effects with usage (non-at-will)
+                if (item.effects) {
+                    item.effects.filter(e => e.type === 'spell' && e.usage !== 'atWill').forEach(effect => {
+                        hasChargedItems = true;
+                        const usageKey = `${item.id}_${effect.spell}`;
+                        const used = state.itemSpellsUsed[usageKey];
+                        html += `
+                            <div class="item-spell-row ${used ? 'used' : ''}" onclick="showItemSpellModal('${item.id}', '${effect.spell}')">
+                                <span class="item-spell-name">${effect.spell} (${item.name})</span>
+                                <span class="item-spell-usage">${used ? 'Used' : effect.usage}</span>
+                            </div>
+                        `;
+                    });
+                }
+            });
+
+            // Show/hide the integrated charges section
+            chargesContainer.style.display = hasChargedItems ? 'block' : 'none';
+
+            if (hasChargedItems) {
+                chargesContainer.innerHTML = '<div style="font-size: 0.85em; color: var(--accent-purple); margin-bottom: 8px;">⚡ Magic Item Charges</div>' + html;
+            }
+        }
+
+        function showItemChargesModal(itemId) {
+            const item = state.inventory.find(i => i.id === itemId);
+            if (!item) return;
+
+            const chargesEffect = getChargesEffectForItem(item);
+            if (!chargesEffect) return;
+
+            const charges = state.itemCharges[itemId];
+            if (!charges) return;
+
+            let spellsHtml = chargesEffect.spells.map(spell => `
+                <div class="charge-spell-option" onclick="castItemSpell('${itemId}', '${spell.name}', ${spell.cost})">
+                    <span class="charge-spell-name">${spell.name}</span>
+                    <span class="charge-spell-cost">${spell.cost} charge${spell.cost > 1 ? 's' : ''}</span>
+                </div>
+            `).join('');
+
+            const body = `
+                <div class="item-charges-modal">
+                    <div class="charges-header">
+                        <span>Charges: ${charges.current} / ${charges.max}</span>
+                        <span class="recharge-info">${chargesEffect.recharge === 'never' ? 'No recharge' : 'Recharges at ' + chargesEffect.recharge}</span>
+                    </div>
+                    <div class="charges-bar-large">
+                        <div class="charges-fill-large" style="width: ${(charges.current / charges.max) * 100}%"></div>
+                    </div>
+                    <h4 style="margin: 15px 0 10px;">Cast Spell:</h4>
+                    <div class="charge-spells-list">
+                        ${spellsHtml}
+                    </div>
+                </div>
+            `;
+
+            showModal(item.name, body);
+        }
+
+        function showItemSpellModal(itemId, spellName) {
+            const item = state.inventory.find(i => i.id === itemId);
+            if (!item) return;
+
+            const spellEffect = item.effects.find(e => e.type === 'spell' && e.spell === spellName);
+            if (!spellEffect) return;
+
+            const usageKey = `${itemId}_${spellName}`;
+            const used = state.itemSpellsUsed[usageKey];
+
+            // Build spell details section
+            let detailsHtml = '';
+            if (spellEffect.isCustom && spellEffect.spellDetails) {
+                const d = spellEffect.spellDetails;
+                const components = [];
+                if (d.components.v) components.push('V');
+                if (d.components.s) components.push('S');
+                if (d.components.m) components.push('M' + (d.components.material ? ` (${d.components.material})` : ''));
+
+                detailsHtml = `
+                    <div style="background: rgba(100,149,237,0.1); padding: 12px; border-radius: 8px; margin-bottom: 15px; font-size: 0.9em;">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px;">
+                            <div><strong>School:</strong> ${d.school}</div>
+                            <div><strong>Casting Time:</strong> ${d.castingTime}</div>
+                            <div><strong>Range:</strong> ${d.range}</div>
+                            <div><strong>Duration:</strong> ${d.concentration ? 'Conc., ' : ''}${d.duration}</div>
+                            <div><strong>Components:</strong> ${components.join(', ')}</div>
+                            ${d.save ? `<div><strong>Save:</strong> ${d.save}</div>` : ''}
+                            ${d.damage ? `<div><strong>Damage:</strong> ${d.damage}</div>` : ''}
+                        </div>
+                        ${d.description ? `<div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.1);">${d.description}</div>` : ''}
+                        ${d.higherLevels ? `<div style="margin-top: 10px; color: var(--accent-gold);"><strong>At Higher Levels:</strong> ${d.higherLevels}</div>` : ''}
+                    </div>
+                `;
+            }
+
+            const body = `
+                <div class="item-spell-modal">
+                    <div style="text-align: center; margin-bottom: 15px;">
+                        <div style="font-size: 1.3em; font-weight: bold; color: var(--accent-purple);">${spellName}</div>
+                        <div style="color: var(--text-secondary);">Level ${spellEffect.spellLevel} ${spellEffect.isCustom && spellEffect.spellDetails ? spellEffect.spellDetails.school : ''} Spell</div>
+                    </div>
+                    ${detailsHtml}
+                    <div style="padding: 12px; background: rgba(0,0,0,0.2); border-radius: 8px; margin-bottom: 15px;">
+                        <div style="display: flex; justify-content: space-between;">
+                            <span>Usage:</span>
+                            <span style="color: ${used ? 'var(--accent-red)' : 'var(--accent-green)'};">${used ? 'Already Used' : spellEffect.usage}</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-top: 8px;">
+                            <span>Save DC:</span>
+                            <span>${spellEffect.ability === 'item' ? 'Item DC' : 'Your DC (15)'}</span>
+                        </div>
+                    </div>
+                    ${used ?
+                        `<div style="text-align: center; color: var(--text-muted); padding: 15px;">This spell has already been used today.<br>It resets at dawn.</div>` :
+                        `<button onclick="castItemGrantedSpell('${itemId}', '${spellName}', '${spellEffect.usage}'); closeModal();" style="width: 100%; padding: 12px; background: var(--accent-purple); border: none; border-radius: 8px; color: white; font-weight: bold; cursor: pointer;">Cast ${spellName}</button>`
+                    }
+                </div>
+            `;
+
+            showModal(`${item.name}`, body);
+        }
+
         function openAddWeaponForm() {
+            resetTempEffects('weapon');
             const body = `
                 <div class="form-group">
                     <label>Weapon Name</label>
@@ -4803,7 +7132,8 @@
                         <select id="weaponType">
                             <option value="melee">Melee</option>
                             <option value="ranged">Ranged</option>
-                            <option value="thrown">Thrown</option>
+                            <option value="thrown">Thrown Only</option>
+                            <option value="melee/thrown">Melee/Thrown</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -4882,8 +7212,10 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label>Special Effect (optional)</label>
-                        <input type="text" id="weaponEffect" placeholder="e.g., Deals extra 1d6 fire damage">
+                        <label>Magic Effects</label>
+                        <div id="weaponEffectsList" class="effects-list"></div>
+                        <div class="add-effect-btn" onclick="showAddEffectForm('weapon')">+ Add Effect</div>
+                        <div id="weaponEffectForm" style="display:none;"></div>
                     </div>
                 </div>
                 <div style="margin-top: 15px;">
@@ -4895,7 +7227,7 @@
             // Show/hide range based on weapon type
             setTimeout(() => {
                 document.getElementById('weaponType').addEventListener('change', function() {
-                    document.getElementById('rangeGroup').style.display = this.value === 'ranged' || this.value === 'thrown' ? 'block' : 'none';
+                    document.getElementById('rangeGroup').style.display = ['ranged', 'thrown', 'melee/thrown'].includes(this.value) ? 'block' : 'none';
                 });
                 document.getElementById('weaponMagic').addEventListener('change', function() {
                     document.getElementById('magicWeaponOptions').style.display = this.checked ? 'block' : 'none';
@@ -4920,7 +7252,7 @@
                 equipped: null
             };
 
-            if (weapon.weaponType === 'ranged' || weapon.weaponType === 'thrown') {
+            if (['ranged', 'thrown', 'melee/thrown'].includes(weapon.weaponType)) {
                 weapon.range = document.getElementById('weaponRange').value || '20/60';
             }
 
@@ -4928,17 +7260,22 @@
                 weapon.requiresAttunement = document.getElementById('weaponAttunement').checked;
                 weapon.attackBonus = parseInt(document.getElementById('weaponAttackBonus').value) || 0;
                 weapon.damageBonus = parseInt(document.getElementById('weaponDamageBonus').value) || 0;
-                weapon.effect = document.getElementById('weaponEffect').value;
+                weapon.effects = [...tempEffects.weapon];
             }
 
             saveForUndo();
             state.inventory.push(weapon);
+            initializeItemCharges(weapon);
+            resetTempEffects('weapon');
             closeModal();
             renderInventory();
+            updateResistancesDisplay();
+            updateItemChargesDisplay();
             saveState();
         }
 
         function openAddArmorForm() {
+            resetTempEffects('armor');
             const body = `
                 <div class="form-group">
                     <label>Armor Name</label>
@@ -5004,8 +7341,10 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label>Special Effect (optional)</label>
-                        <input type="text" id="armorEffect" placeholder="e.g., Resistance to fire damage">
+                        <label>Magic Effects</label>
+                        <div id="armorEffectsList" class="effects-list"></div>
+                        <div class="add-effect-btn" onclick="showAddEffectForm('armor')">+ Add Effect</div>
+                        <div id="armorEffectForm" style="display:none;"></div>
                     </div>
                 </div>
                 <div style="margin-top: 15px;">
@@ -5040,17 +7379,22 @@
             if (armor.isMagic) {
                 armor.requiresAttunement = document.getElementById('armorAttunement').checked;
                 armor.magicBonus = parseInt(document.getElementById('armorACBonus').value) || 0;
-                armor.effect = document.getElementById('armorEffect').value;
+                armor.effects = [...tempEffects.armor];
             }
 
             saveForUndo();
             state.inventory.push(armor);
+            initializeItemCharges(armor);
+            resetTempEffects('armor');
             closeModal();
             renderInventory();
+            updateResistancesDisplay();
+            updateItemChargesDisplay();
             saveState();
         }
 
         function openAddShieldForm() {
+            resetTempEffects('shield');
             const body = `
                 <div class="form-group">
                     <label>Shield Name</label>
@@ -5086,8 +7430,10 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label>Special Effect (optional)</label>
-                        <input type="text" id="shieldEffect" placeholder="e.g., Can cast Shield spell 1/day">
+                        <label>Magic Effects</label>
+                        <div id="shieldEffectsList" class="effects-list"></div>
+                        <div class="add-effect-btn" onclick="showAddEffectForm('shield')">+ Add Effect</div>
+                        <div id="shieldEffectForm" style="display:none;"></div>
                     </div>
                 </div>
                 <div style="margin-top: 15px;">
@@ -5118,17 +7464,22 @@
             if (shield.isMagic) {
                 shield.requiresAttunement = document.getElementById('shieldAttunement').checked;
                 shield.magicBonus = parseInt(document.getElementById('shieldMagicBonus').value) || 0;
-                shield.effect = document.getElementById('shieldEffect').value;
+                shield.effects = [...tempEffects.shield];
             }
 
             saveForUndo();
             state.inventory.push(shield);
+            initializeItemCharges(shield);
+            resetTempEffects('shield');
             closeModal();
             renderInventory();
+            updateResistancesDisplay();
+            updateItemChargesDisplay();
             saveState();
         }
 
         function openAddAccessoryForm() {
+            resetTempEffects('accessory');
             const body = `
                 <div class="form-group">
                     <label>Item Name</label>
@@ -5151,8 +7502,10 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label>Description / Effect</label>
-                    <input type="text" id="accessoryEffect" placeholder="e.g., +1 to AC">
+                    <label>Magic Effects</label>
+                    <div id="accessoryEffectsList" class="effects-list"></div>
+                    <div class="add-effect-btn" onclick="showAddEffectForm('accessory')">+ Add Effect</div>
+                    <div id="accessoryEffectForm" style="display:none;"></div>
                 </div>
                 <div style="margin-top: 15px;">
                     <button onclick="saveNewAccessory()" style="width: 100%; padding: 12px; background: var(--accent-green); border: none; border-radius: 6px; color: white; font-weight: bold; cursor: pointer;">Add Accessory</button>
@@ -5171,30 +7524,20 @@
                 name: name,
                 slotType: document.getElementById('accessorySlot').value,
                 requiresAttunement: document.getElementById('accessoryAttunement').checked,
-                effect: document.getElementById('accessoryEffect').value,
+                effects: [...tempEffects.accessory],
                 isMagic: true,
                 equipped: null
             };
 
             saveForUndo();
             state.inventory.push(accessory);
+            initializeItemCharges(accessory);
+            resetTempEffects('accessory');
             closeModal();
             renderInventory();
+            updateResistancesDisplay();
+            updateItemChargesDisplay();
             saveState();
-        }
-
-        function addInventoryItem(type) {
-            if (type === 'gear') {
-                const input = document.getElementById('newGear');
-                const name = input.value.trim();
-                if (!name) return;
-
-                saveForUndo();
-                state.gear.push({ id: Date.now(), name, qty: 1 });
-                input.value = '';
-                renderInventory();
-                saveState();
-            }
         }
 
         function deleteItem(type, index) {
@@ -5203,11 +7546,6 @@
             if (type === 'gear') state.gear.splice(index, 1);
             renderInventory();
             saveState();
-        }
-
-        function showItemInfo(type, index) {
-            const item = type === 'gear' ? state.gear[index] : null;
-            if (item) showModal(item.name, `<p>${item.info || 'Adventuring gear'}</p>`);
         }
 
         // ===== NOTES =====
@@ -5357,6 +7695,9 @@
                 updateBattleUI();
                 updateConcentrationDisplay();
                 updateCompanionDisplay();
+                updateResistancesDisplay();
+                updateItemChargesDisplay();
+                loadCardCollapseStates();
 
                 console.log('Ashvael character sheet initialized successfully');
             } catch (error) {
