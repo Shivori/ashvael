@@ -1,237 +1,779 @@
 # Ashvael Character Sheet - Complete Reference
 
 ## Campaign & Rules
-- **Rules Version**: D&D 2024 (One D&D / 2024 Player's Handbook)
+- **Rules Version**: D&D 2024 (2024 Player's Handbook)
 - **Campaign**: Spelljammer (no spoilers requested)
 - **Character Level**: 5
 
-## Character Details
+---
+
+# PART 1: D&D 2024 CORE RULES
+
+## Proficiency System
+
+### Proficiency Bonus by Level
+| Level | Proficiency Bonus |
+|-------|-------------------|
+| 1-4   | +2 |
+| 5-8   | +3 |
+| 9-12  | +4 |
+| 13-16 | +5 |
+| 17-20 | +6 |
+
+**Current (Level 5): +3**
+
+### Armor Proficiency Rules (2024 PHB)
+
+**If wearing armor you are NOT proficient with:**
+- Disadvantage on any ability check, saving throw, or attack roll that involves Strength or Dexterity
+- **You CANNOT cast spells** while wearing non-proficient armor
+
+> **IMPORTANT FOR IMPLEMENTATION**: If Ashvael equips Medium or Heavy armor (not proficient), the app must:
+> 1. Show warning about disadvantage
+> 2. **DISABLE all spell casting buttons**
+> 3. Show message explaining why spells are disabled
+
+### Shield Proficiency Rules (2024 PHB)
+
+**If using a shield you are NOT proficient with:**
+- Same penalties as non-proficient armor (disadvantage, cannot cast spells)
+- Druids are proficient with shields (non-metal)
+
+### Weapon Proficiency Rules (2024 PHB)
+
+**When attacking with a weapon you are NOT proficient with:**
+- **DO NOT add proficiency bonus to the attack roll**
+- Damage roll is unaffected (still add ability modifier)
+
+**Attack Roll Formula:**
+- Proficient: d20 + ability modifier + proficiency bonus
+- NOT Proficient: d20 + ability modifier (NO proficiency bonus)
+
+> **IMPORTANT FOR IMPLEMENTATION**: When calculating attack bonus for non-proficient weapons:
+> - Proficient attack: DEX mod (+2) + Prof (+3) = **+5**
+> - Non-proficient attack: DEX mod (+2) only = **+2**
+
+---
+
+## Combat Rules (2024 PHB)
+
+### Action Economy (Per Turn)
+
+| Resource | Amount | Examples |
+|----------|--------|----------|
+| Movement | Speed (30 ft) | Move up to speed, can split before/after actions |
+| Action | 1 | Attack, Cast Spell, Dash, Dodge, Help, etc. |
+| Bonus Action | 1 (if available) | Healing Word, Two-Weapon Fighting, Wild Shape |
+| Reaction | 1 per round | Opportunity Attack, Shield spell, Absorb Elements |
+| Free Object Interaction | 1 | Draw/sheathe weapon, open door |
+
+### Actions in Combat
+
+| Action | Description |
+|--------|-------------|
+| **Attack** | Make one weapon attack (or more with Extra Attack) |
+| **Cast a Spell** | Cast a spell with casting time of 1 Action |
+| **Dash** | Gain extra movement equal to speed |
+| **Disengage** | Movement doesn't provoke opportunity attacks |
+| **Dodge** | Attacks against you have Disadvantage, Advantage on DEX saves |
+| **Help** | Give ally Advantage on next check or attack |
+| **Hide** | Make Stealth check to become Hidden |
+| **Ready** | Prepare action for trigger (uses Reaction when triggered) |
+| **Search** | Make Perception or Investigation check |
+| **Use an Object** | Interact with object requiring action (use item, drink potion) |
+
+### Making an Attack Roll
+
+1. **Roll d20**
+2. **Add modifiers:**
+   - Ability modifier (STR for melee, DEX for ranged/finesse)
+   - Proficiency bonus (if proficient with weapon)
+   - Magic bonus (if magic weapon)
+3. **Compare to AC:**
+   - Roll total >= AC = Hit
+   - Roll total < AC = Miss
+   - Natural 20 = Critical Hit (always hits, double damage dice)
+   - Natural 1 = Critical Miss (always misses)
+
+### Damage Roll
+
+1. **Roll weapon's damage dice**
+2. **Add ability modifier** (same as attack, usually STR or DEX)
+3. **Add magic bonus** (if applicable)
+4. **Double dice on Critical Hit** (roll twice as many damage dice, add modifiers once)
+
+### Armor Class (AC) Calculation
+
+| Armor Type | AC Formula | Ashvael Note |
+|------------|------------|--------------|
+| No Armor | 10 + DEX mod | 10 + 2 = 12 |
+| Light Armor | Base AC + DEX mod | Leather: 11 + 2 = 13 |
+| Medium Armor | Base AC + DEX mod (max +2) | Hide: 12 + 2 = 14 |
+| Heavy Armor | Base AC (no DEX) | NOT PROFICIENT |
+| Shield | +2 to AC | Adds to above |
+
+**Ashvael's Current AC (Leather + Shield): 11 + 2 (DEX) + 2 (Shield) = 15**
+
+### Saving Throws
+
+**Formula: d20 + ability modifier + proficiency bonus (if proficient)**
+
+Ashvael's Saving Throw Proficiencies (Druid):
+- **Intelligence: +2** (proficient: -1 + 3)
+- **Wisdom: +7** (proficient: +4 + 3)
+
+### Concentration
+
+- Only one Concentration spell at a time
+- Must make Constitution saving throw when taking damage to maintain
+- **DC = 10 or half damage taken, whichever is higher**
+- War Caster feat: Advantage on Concentration saves
+
+### Opportunity Attacks
+
+- Trigger: Hostile creature moves OUT of your reach
+- Uses Reaction
+- Make one melee attack against the creature
+- Disengage action prevents opportunity attacks
+
+---
+
+## Spellcasting Rules (2024 PHB)
+
+### Spell Slots
+
+Spell slots are expended when casting spells and recover on Long Rest.
+
+**Ashvael's Slots (Level 5 Druid):**
+| Level | Slots |
+|-------|-------|
+| 1st | 4 |
+| 2nd | 3 |
+| 3rd | 2 |
+
+### Upcasting
+
+Many spells can be cast at higher levels for increased effect:
+- Healing Word: 1d4+WIS per level above 1st
+- Guiding Bolt: 1d6 per level above 1st
+- Cure Wounds: 1d8 per level above 1st
+
+### Spellcasting Focus
+
+- Druids can use a Druidic Focus (Star Map, staff, yew wand, etc.)
+- Focus replaces Material components (unless component has a gold cost)
+- Ashvael uses Star Map as focus
+
+### Ritual Casting
+
+- Druids can cast ritual spells without expending a slot
+- Takes 10 extra minutes to cast
+- Spell must be prepared AND have ritual tag
+
+### Cantrip Scaling
+
+Cantrips increase in power at levels 5, 11, and 17.
+
+| Level | Damage Dice |
+|-------|-------------|
+| 1-4 | 1 die |
+| 5-10 | 2 dice |
+| 11-16 | 3 dice |
+| 17+ | 4 dice |
+
+**Ashvael (Level 5):**
+- Produce Flame: 2d8 fire
+- Thorn Whip: 2d6 piercing
+- Starry Wisp: 2d8 radiant
+
+---
+
+# PART 2: ASHVAEL - CHARACTER DETAILS
+
+## Basic Information
 - **Name**: Ashvael
-- **Class**: Druid (Circle of Stars)
-- **Species**: Half-Aasimar / Half-Tiefling
+- **Class**: Druid 5 (Circle of Stars)
+- **Species**: Half-Aasimar / Half-Tiefling (Homebrew)
 - **Background**: Guide
-  - Skill Proficiencies: Survival (proficient), Stealth (NOT proficient - need to fix in sheet)
-  - Tool Proficiency: Cartographer's Tools
-  - Feat: Magic Initiate (Druid) - already implemented
+- **Level**: 5
+- **Proficiency Bonus**: +3
+
+---
+
+## Ability Scores
+
+| Ability | Score | Modifier | Save (Prof?) |
+|---------|-------|----------|--------------|
+| Strength | 8 | -1 | -1 |
+| Dexterity | 14 | +2 | +2 |
+| Constitution | 15 | +2 | +2 |
+| Intelligence | 8 | -1 | +2 (Prof) |
+| Wisdom | 18 | +4 | +7 (Prof) |
+| Charisma | 13 | +1 | +1 |
+
+---
+
+## Species: Half-Aasimar / Half-Tiefling (Homebrew)
+
+### Aasimar Traits (2024 PHB)
+
+| Trait | Description |
+|-------|-------------|
+| **Creature Type** | Humanoid |
+| **Size** | Medium (5-6 feet) |
+| **Speed** | 30 feet |
+| **Celestial Resistance** | Resistance to Necrotic and Radiant damage |
+| **Darkvision** | See in dim light (60 ft) as if bright, darkness as dim (grayscale) |
+| **Healing Hands** | Action: Touch one creature, heal HP equal to 1d4 x your Proficiency Bonus. 1/Long Rest |
+| **Light Bearer** | Know the Light cantrip. Charisma is spellcasting ability |
+
+### Celestial Revelation (Level 3+)
+**1/Long Rest, transform for 1 minute with one of:**
+
+| Form | Effect |
+|------|--------|
+| **Heavenly Wings** | Gain flying speed equal to walking speed |
+| **Inner Radiance** | At end of each of YOUR turns, 10 ft emanation deals Radiant damage = Proficiency Bonus |
+| **Necrotic Shroud** | Creatures of choice in 10 ft make CHA save or Frightened of you until end of next turn |
+
+> **CHOICE MADE**: Ashvael can choose any form each time Celestial Revelation is used.
+
+### Tiefling Traits (Partial - Homebrew)
+As half-Tiefling, specific traits are determined by DM. Currently using:
+- Visual characteristics (appearance)
+- Specific infernal legacy features (TBD with DM)
+
+---
+
+## Background: Guide (2024 PHB)
+
+### Skill Proficiencies
+- **Stealth** (DEX) - Proficient
+- **Survival** (WIS) - Proficient
+
+### Tool Proficiency
+- **Cartographer's Tools** - Proficient
+
+### Feat Granted
+- **Magic Initiate: Druid**
+
+### Starting Equipment
+| Item | Description |
+|------|-------------|
+| Bedroll | Sleeping gear for camping |
+| Tent (2-person) | Shelter for 2 people |
+| Tinderbox | Fire-starting kit |
+| Traveler's Clothes | Durable traveling outfit |
+| Waterskin | Holds 4 pints of water |
+| 50 ft Hempen Rope | Standard rope |
+| Quiver | Holds up to 20 arrows |
+| 20 Arrows | Ammunition |
+| Cartographer's Tools | Map-making supplies |
+| **3 GP** | Starting gold |
+
+---
+
+## Class: Druid (2024 PHB)
+
+### Hit Points
+- **Hit Die**: d8
+- **HP at 1st Level**: 8 + CON modifier (10 HP)
+- **HP at Higher Levels**: 1d8 (or 5) + CON modifier per level
+- **Current Max HP at Level 5**: 8 + 5 + 5 + 5 + 5 + (CON mod x 5) = 38 HP
+  - (8 + 4x5 + 2x5 = 8 + 20 + 10 = 38 HP)
+
+### Proficiencies
+
+#### Armor Proficiencies
+| Armor Type | Proficient? | Notes |
+|------------|-------------|-------|
+| Light Armor | YES | Padded, Leather, Studded Leather |
+| Medium Armor | NO | NOT proficient (only with Warden subclass) |
+| Heavy Armor | NO | NOT proficient |
+| Shields | YES | Non-metal only (wood, bone, etc.) |
+
+> **IMPORTANT**: Ashvael wearing Medium or Heavy armor CANNOT cast spells.
+
+#### Weapon Proficiencies
+| Weapon Type | Proficient? |
+|-------------|-------------|
+| Simple Weapons | YES |
+| Martial Weapons | NO |
+
+**Simple Weapons (Proficient):**
+Club, Dagger, Greatclub, Handaxe, Javelin, Light Hammer, Mace, Quarterstaff, Sickle, Spear, Light Crossbow, Dart, Shortbow, Sling
+
+**Martial Weapons (NOT Proficient):**
+Battleaxe, Flail, Glaive, Greataxe, Greatsword, Halberd, Lance, Longsword, Maul, Morningstar, Pike, Rapier, Scimitar, Shortsword, Trident, War Pick, Warhammer, Whip, Blowgun, Hand Crossbow, Heavy Crossbow, Longbow, Net
+
+> **CORRECTION NEEDED**: Scimitar is a MARTIAL weapon. Ashvael is NOT proficient with Scimitar.
+> Attack with Scimitar: +2 (DEX only, no proficiency bonus)
+> Should replace with Sickle (simple, 1d4 slashing) per official Druid starting equipment.
+
+#### Tool Proficiencies
+- **Herbalism Kit** - Proficient (from Druid class)
+- **Cartographer's Tools** - Proficient (from Guide background)
+
+#### Saving Throws
+- **Intelligence** - Proficient
+- **Wisdom** - Proficient
+
+#### Skills (Choose 2 from Druid list)
+Druids choose from: Arcana, Animal Handling, Insight, Medicine, Nature, Perception, Religion, Survival
+
+> **CHOICE MADE**: (Need to confirm which 2 skills were chosen from Druid class)
+> Background (Guide) grants: Stealth, Survival
+
+### Druid Starting Equipment (Official 2024)
+Choose Option A or B:
+
+**Option A:**
+- Leather Armor
+- Shield
+- Sickle (NOT Scimitar - Scimitar is martial)
+- Druidic Focus (Staff, Sprig of Mistletoe, Totem, or Wooden Staff)
+- Explorer's Pack
+- Herbalism Kit
+- 9 GP
+
+**Option B:**
+- 50 GP to buy equipment
+
+> **CHOICE MADE**: Option A selected
+> **Druidic Focus Choice**: Quarterstaff (acts as both focus and weapon, 1d6/1d8 bludgeoning)
+
+### Explorer's Pack Contents (Official 2024)
+| Item | Qty | Description |
+|------|-----|-------------|
+| Backpack | 1 | Holds 1 cubic foot / 30 lbs of gear |
+| Bedroll | 1 | Sleeping bag for camping |
+| Mess Kit | 1 | Tin utensils (plate, cup, fork, spoon, knife) |
+| Tinderbox | 1 | Flint, fire steel, tinder for starting fires |
+| Torches | 10 | Each burns 1 hour, 20 ft bright/20 ft dim light |
+| Rations | 10 | One day's worth of food each |
+| Waterskin | 1 | Holds 4 pints of water |
+| Hempen Rope | 50 ft | Standard rope, can be cut |
+
+---
+
+## Druid Class Features
+
+### Level 1 Features
+
+#### Druidic (Language)
+- Secret language known only to Druids
+- Can use to leave hidden messages
+- Others can spot messages with DC 15 Perception, but can't decipher without magic
+
+#### Spellcasting
+- **Spellcasting Ability**: Wisdom
+- **Spell Save DC**: 8 + Prof + WIS = 8 + 3 + 4 = **15**
+- **Spell Attack Bonus**: Prof + WIS = 3 + 4 = **+7**
+- **Spellcasting Focus**: Druidic Focus (Star Map)
+- **Ritual Casting**: Can cast prepared ritual spells without slot (takes 10 min longer)
+- **Preparing Spells**: Can prepare WIS mod + Druid level spells after Long Rest
+  - Ashvael can prepare: 4 + 5 = **9 spells**
+
+#### Primal Order
+Druids choose Magician or Warden at level 1.
+
+| Order | Benefit |
+|-------|---------|
+| **Magician** | Know extra cantrip from Druid list |
+| Warden | Martial weapon proficiency, Medium armor proficiency |
+
+> **CHOICE MADE**: Magician (extra cantrip)
+> Note: This is why Ashvael is NOT proficient with medium armor.
+
+### Level 2 Features
+
+#### Wild Shape
+**Uses**: 2 per Short or Long Rest
+
+**Transformation Rules (Level 5):**
+- Max CR: 1/2 (was 1/4 at levels 2-4)
+- No flying speed allowed (until level 8)
+- No swimming speed unless you've seen the beast
+- Duration: Druid level / 2 hours = 2.5 hours
+- Bonus Action to activate OR use action for Wild Companion
+
+**What Changes in Wild Shape:**
+- Gain beast's STR, DEX, CON
+- Gain beast's HP as Temp HP (Level 5: gain 5 temp HP)
+- Gain beast's AC (natural armor)
+- Gain beast's Speed
+- Gain beast's attacks and special abilities
+- Skills recalculate using new ability scores
+
+**What Stays the Same:**
+- INT, WIS, CHA scores
+- Proficiencies (skills, saves)
+- Personality, alignment, memories
+- Class features
+- Languages (can understand but not speak)
+
+**Wild Shape Restrictions:**
+- **CANNOT cast spells** (no verbal components in beast form)
+- Cannot talk
+- Cannot use equipment (melds into form)
+- Concentration on existing spells continues
+
+**Reverting:**
+- Bonus Action to revert
+- Automatic when temp HP drops to 0
+- Automatic when duration ends
+- Automatic if knocked Unconscious
+
+#### Wild Companion
+Instead of Wild Shape, can expend a use to cast **Find Familiar** (as a Fey, no material components).
+
+### Level 5 Features
+
+#### Wild Shape Improvement
+- Max CR increases to 1/2
+- Gain temporary HP equal to Druid level (5)
+- Can transform into beasts with swimming speed
+
+---
+
+## Subclass: Circle of Stars
+
+### Level 2: Star Map
+
+**Feature:**
+- A Tiny object (constellation map) that serves as Spellcasting Focus
+- While holding it:
+  - Know the **Guidance** cantrip
+  - Can cast **Guiding Bolt** without expending a slot (WIS mod times per Long Rest = 4)
+- If lost, can create new one during Long Rest (1 hour meditation)
+
+### Level 2: Starry Form
+
+**Activation**: Bonus Action, expends Wild Shape use
+
+**Duration**: 10 minutes
+
+**Effect**: Body becomes luminous, stars appear on skin
+
+**Choose one constellation when activating:**
+
+| Constellation | Effect |
+|---------------|--------|
+| **Archer** | Bonus Action: Make ranged spell attack (60 ft), deal 1d8+WIS Radiant damage |
+| **Chalice** | When casting healing spell, you OR another creature in 30 ft regains 1d8+WIS HP |
+| **Dragon** | Minimum roll of 10 on INT/WIS checks and Concentration saves |
+
+**Key Differences from Wild Shape:**
+- Can still cast spells
+- Keep your normal form (humanoid appearance with starry effects)
+- No beast stat replacements
+- Uses Wild Shape resource but is NOT a beast transformation
+
+> **IMPORTANT FOR IMPLEMENTATION**: When in Starry Form:
+> - Spell casting remains ENABLED
+> - If Archer: Add bonus action attack option
+> - If Chalice: Add healing bonus to Cast Spell
+> - If Dragon: Apply minimum 10 to relevant rolls
+
+### Level 6: Cosmic Omen (Future)
+
+After Long Rest, roll a die. Result determines feature:
+
+| Roll | Omen | Effect |
+|------|------|--------|
+| Even | Weal | Reaction: Creature in 30 ft adds d6 to attack/save/check |
+| Odd | Woe | Reaction: Creature in 30 ft subtracts d6 from attack/save/check |
+
+Uses = Proficiency Bonus per Long Rest
+
+### Level 10: Twinkling Constellations (Future)
+
+- At start of each turn, can change to different Starry Form constellation
+- Also: Archer = 2d8+WIS, Chalice = 2d8+WIS
+
+---
 
 ## Feats
-| Feat | Source | Effect |
-|------|--------|--------|
-| Magic Initiate: Druid | Guide Background | 2 cantrips (Produce Flame, Mending), Healing Word 1/day free, always prepared |
-| War Caster | Level 4 ASI | Advantage on concentration saves, can cast somatic spells with hands full |
+
+### Magic Initiate: Druid (from Guide Background)
+
+**Cantrips (2):**
+| Cantrip | Casting Time | Range | Effect |
+|---------|--------------|-------|--------|
+| Produce Flame | Action | Self | Create flame, throw as ranged attack (30 ft), 2d8 fire (level 5) |
+| Mending | 1 Minute | Touch | Repair single break/tear in object |
+
+**1st Level Spell (1):**
+| Spell | Effect |
+|-------|--------|
+| Healing Word | Bonus Action, 60 ft, heal 1d4+WIS (can upcast) |
+
+- Spell can be cast 1/Long Rest free OR with spell slots
+- Always prepared (doesn't count against prepared limit)
+- Uses Wisdom for spellcasting
+
+> **CHOICE MADE**: Produce Flame, Mending, Healing Word
+
+### War Caster (Level 4 ASI)
+
+| Benefit | Description |
+|---------|-------------|
+| **Advantage on Concentration** | Advantage on CON saves to maintain Concentration |
+| **Somatic Components** | Can perform somatic components while holding weapon/shield |
+| **Opportunity Spell** | Can cast spell instead of opportunity attack (spell must target only that creature, 1 Action casting time) |
 
 ---
 
-## Level Progression (1-10)
+## Free Resources Summary
 
-### Level 1
-- **Proficiency Bonus**: +2
-- **Spell Slots**: 2x 1st level
-- **Cantrip Damage**: Base (1 die)
-- **Class Features**:
-  - Druidic (secret language)
-  - Spellcasting
-  - Druid Circle: Circle of Stars
-  - Star Map (can cast Guiding Bolt free, WIS mod times per long rest = 4/day)
-  - Starry Form (use Wild Shape to activate: Archer, Chalice, or Dragon)
-- **Species Traits (Half-Aasimar)**:
-  - Celestial Resistance (Necrotic, Radiant)
-  - Darkvision 60 ft
-  - Healing Hands (1/long rest, heal 1d4 per level)
-  - Light Bearer (Light cantrip)
-- **Species Traits (Half-Tiefling)**:
-  - Infernal Legacy (varies)
-
-### Level 2
-- **Proficiency Bonus**: +2
-- **Spell Slots**: 3x 1st level
-- **Class Features**:
-  - Wild Shape (2 uses per short rest)
-  - Wild Companion (can use Wild Shape OR spell slot to cast Find Familiar as Fey)
-
-### Level 3
-- **Proficiency Bonus**: +2
-- **Spell Slots**: 4x 1st level, 2x 2nd level
-- **Species Feature**:
-  - Celestial Revelation (1/long rest): Choose Inner Radiance, Necrotic Shroud, or Radiant Soul
-
-### Level 4
-- **Proficiency Bonus**: +2
-- **Spell Slots**: 4x 1st level, 3x 2nd level
-- **Class Features**:
-  - Ability Score Improvement OR Feat
-- **Feat Taken**: War Caster
-  - Advantage on Constitution saves to maintain concentration
-  - Can perform somatic components with hands full (shield/weapon)
-  - Can cast certain spells as opportunity attack (not implemented yet)
-
-### Level 5
-- **Proficiency Bonus**: +3
-- **Spell Slots**: 4x 1st level, 3x 2nd level, 2x 3rd level
-- **Cantrip Damage**: Increases to 2 dice (level 5 scaling)
-- **Class Features**:
-  - Wild Shape improvement: CR 1/2 beasts (was CR 1/4)
-  - Wild Shape: Gain 5 temp HP (equal to druid level)
-
-### Level 6
-- **Proficiency Bonus**: +3
-- **Spell Slots**: 4x 1st, 3x 2nd, 3x 3rd
-- **Class Features**:
-  - Circle of Stars: Cosmic Omen (reaction to add/subtract d6 from rolls within 30ft)
-
-### Level 7
-- **Proficiency Bonus**: +3
-- **Spell Slots**: 4x 1st, 3x 2nd, 3x 3rd, 1x 4th
-
-### Level 8
-- **Proficiency Bonus**: +3
-- **Spell Slots**: 4x 1st, 3x 2nd, 3x 3rd, 2x 4th
-- **Class Features**:
-  - Ability Score Improvement OR Feat
-
-### Level 9
-- **Proficiency Bonus**: +4
-- **Spell Slots**: 4x 1st, 3x 2nd, 3x 3rd, 3x 4th, 1x 5th
-
-### Level 10
-- **Proficiency Bonus**: +4
-- **Spell Slots**: 4x 1st, 3x 2nd, 3x 3rd, 3x 4th, 2x 5th
-- **Class Features**:
-  - Circle of Stars: Twinkling Constellations (change Starry Form constellation at start of each turn)
-- **Cantrip Damage**: Still 2 dice (next increase at level 11)
+| Resource | Uses | Recharge | Source | Effect |
+|----------|------|----------|--------|--------|
+| Guiding Bolt | 4 | Long Rest | Star Map | 4d6 radiant, grants Advantage on next attack |
+| Healing Word | 1 | Long Rest | Magic Initiate | 1d4+WIS healing, Bonus Action, 60 ft |
+| Healing Hands | 1 | Long Rest | Aasimar | Touch, heal 1d4 x Prof Bonus (3d4) HP |
+| Celestial Revelation | 1 | Long Rest | Aasimar (3+) | Transform 1 min (Wings/Radiance/Shroud) |
+| Wild Shape | 2 | Short/Long Rest | Druid | Transform into beast or use for Starry Form/Wild Companion |
 
 ---
 
-## Free Resources (per rest)
+## Skill Proficiencies
 
-| Resource | Uses | Recharge | Source |
-|----------|------|----------|--------|
-| Guiding Bolt | 4/day | Long Rest | Star Map (WIS mod) |
-| Healing Word | 1/day | Long Rest | Magic Initiate: Druid |
-| Healing Hands | 1/day | Long Rest | Aasimar Ancestry |
-| Celestial Revelation | 1/day | Long Rest | Aasimar Ancestry (level 3) |
-| Wild Shape | 2/rest | Short Rest | Druid Class |
+| Skill | Ability | Proficient? | Modifier |
+|-------|---------|-------------|----------|
+| Acrobatics | DEX | No | +2 |
+| Animal Handling | WIS | No | +4 |
+| Arcana | INT | No | -1 |
+| Athletics | STR | No | -1 |
+| Deception | CHA | No | +1 |
+| History | INT | No | -1 |
+| Insight | WIS | No | +4 |
+| Intimidation | CHA | No | +1 |
+| Investigation | INT | No | -1 |
+| Medicine | WIS | No | +4 |
+| Nature | INT | No | -1 |
+| Perception | WIS | No | +4 |
+| Performance | CHA | No | +1 |
+| Persuasion | CHA | No | +1 |
+| Religion | INT | No | -1 |
+| Sleight of Hand | DEX | No | +2 |
+| Stealth | DEX | **YES** | +5 |
+| Survival | WIS | **YES** | +7 |
+
+> **NOTE**: Need to confirm which 2 skills were chosen from Druid class list.
+> Currently only showing Guide background proficiencies (Stealth, Survival).
 
 ---
 
-## Ability Scores (Normal Form)
-| Ability | Score | Modifier | Save |
-|---------|-------|----------|------|
-| STR | 8 | -1 | -1 |
-| DEX | 14 | +2 | +2 |
-| CON | 15 | +2 | +2 |
-| INT | 8 | -1 | -1 |
-| WIS | 18 | +4 | +7 (prof) |
-| CHA | 13 | +1 | +1 |
+## Senses
+
+| Sense | Range | Description |
+|-------|-------|-------------|
+| Darkvision | 60 ft | See dim light as bright, darkness as dim (grayscale only) |
+| Passive Perception | 14 | 10 + Perception modifier (+4) |
+| Passive Investigation | 9 | 10 + Investigation modifier (-1) |
+| Passive Insight | 14 | 10 + Insight modifier (+4) |
 
 ---
 
-## UI/UX Preferences
+# PART 3: OFFICIAL STARTING EQUIPMENT
 
-### Spell Casting Flow
-- Free resource spells appear IN the Cast Spell menus (not separate buttons)
-- When selecting a spell with free uses OR slot options, show ALL options:
-  - Free use (X/day remaining) - if available
-  - 1st level slot
-  - 2nd level slot (upcast) - with damage/healing preview
-  - 3rd level slot (upcast) - with damage/healing preview
-- Guiding Bolt: Shows in "Cast Spell (Action)" with free + slot options
-- Healing Word: Shows in "Cast Spell (Bonus)" with free + slot options
+## Complete Starting Equipment List
 
-### Summoning & Companions
-- **Support MULTIPLE companions simultaneously** (e.g., Familiar + Summon Beast)
-- Show separate stat blocks for each active companion
-- Summon Beast: Must select environment (Air/Land/Water) when casting
-- Wild Companion (Find Familiar): Select familiar form when summoning
-- When concentration ends, dismiss only the concentration-based companion
-- Companion stat blocks show:
-  - Name, AC, HP (editable), Speed
-  - Attack information (to-hit, damage)
-  - Clickable abilities that show full description
+### From Druid Class (Option A)
+| Item | Type | Properties | Notes |
+|------|------|------------|-------|
+| Leather Armor | Light Armor | AC 11 + DEX | Proficient |
+| Shield | Shield | +2 AC | Proficient (non-metal) |
+| Sickle | Simple Melee | 1d4 slashing, Light | Proficient |
+| Quarterstaff | Simple Melee / Focus | 1d6 bludgeoning (1d8 versatile) | Acts as Druidic Focus |
+| Herbalism Kit | Tool | — | Proficient |
+| Backpack | Adventuring Gear | Holds 30 lbs | — |
+| Bedroll | Adventuring Gear | — | — |
+| Mess Kit | Adventuring Gear | Tin utensils | — |
+| Tinderbox | Adventuring Gear | Fire starting | — |
+| Torches | Adventuring Gear | 10 total, consumable | 1 hour burn each |
+| Rations | Adventuring Gear | 10 days, consumable | — |
+| Waterskin | Adventuring Gear | 4 pints | — |
+| Hempen Rope | Adventuring Gear | 50 ft, consumable | Can be cut |
+| 9 GP | Currency | — | — |
+
+### From Guide Background
+| Item | Type | Notes |
+|------|------|-------|
+| Bedroll | Adventuring Gear | (Already from Explorer's Pack) |
+| Tent (2-person) | Adventuring Gear | Shelter |
+| Tinderbox | Adventuring Gear | (Already from Explorer's Pack) |
+| Traveler's Clothes | Clothing | Outfit |
+| Waterskin | Adventuring Gear | (Already from Explorer's Pack) |
+| Hempen Rope (50 ft) | Adventuring Gear | (Already from Explorer's Pack) |
+| Quiver | Container | Holds 20 arrows |
+| Arrows | Ammunition | 20 arrows |
+| Cartographer's Tools | Tool | Proficient |
+| 3 GP | Currency | — |
+
+### From Circle of Stars Subclass
+| Item | Type | Notes |
+|------|------|-------|
+| Star Map | Druidic Focus | Grants Guidance cantrip, 4 free Guiding Bolts/day |
+
+### Consolidated Equipment List
+Removing duplicates from overlapping packs:
+
+| Item | Qty | Type | Notes |
+|------|-----|------|-------|
+| Leather Armor | 1 | Light Armor | Equipped |
+| Shield (Wooden) | 1 | Shield | Equipped |
+| Sickle | 1 | Simple Weapon | 1d4 slashing, Light |
+| Quarterstaff | 1 | Simple Weapon / Focus | 1d6 (1d8 versatile) bludgeoning |
+| Star Map | 1 | Focus | Primary focus, grants Guidance + Guiding Bolt |
+| Dagger | 1 | Simple Weapon | 1d4 piercing, Finesse, Thrown (20/60) |
+| Shortbow | 1 | Simple Weapon | 1d6 piercing, Range 80/320 |
+| Arrows | 20 | Ammunition | For shortbow |
+| Quiver | 1 | Container | Holds arrows |
+| Herbalism Kit | 1 | Tool | Proficient |
+| Cartographer's Tools | 1 | Tool | Proficient |
+| Backpack | 1 | Container | Holds 30 lbs |
+| Bedroll | 1 | Gear | Camping |
+| Tent (2-person) | 1 | Gear | Shelter |
+| Mess Kit | 1 | Gear | Eating utensils |
+| Tinderbox | 1 | Gear | Fire starting |
+| Torches | 10 | Gear (Consumable) | 1 hour burn each |
+| Rations | 10 | Gear (Consumable) | 1 day food each |
+| Waterskin | 1 | Gear | Holds 4 pints |
+| Hempen Rope | 50 ft | Gear (Consumable) | Can be cut |
+| Traveler's Clothes | 1 | Clothing | Outfit |
+| **Gold Pieces** | **12** | Currency | 9 (Druid) + 3 (Guide) |
+
+> **NOTE**: Dagger and Shortbow are commonly added as they are simple weapons Druids are proficient with.
+
+---
+
+# PART 4: GEAR DESCRIPTIONS
+
+## Tools
+
+### Herbalism Kit
+**Contents**: Pouches for herbs, clippers, mortar and pestle, glass jars, distilling equipment
+
+**Uses**:
+- Identify plants with Herbalism Kit check
+- Create antitoxin, healing potions (with DM rules)
+- Prepare herbal remedies
+- Craft poultices and salves
+
+**Related Checks**: Medicine, Nature, Survival
+
+### Cartographer's Tools
+**Contents**: Quill, ink, parchment, compass, calipers, ruler
+
+**Uses**:
+- Create accurate maps
+- Determine your position on a map
+- Estimate distance between locations
+- Navigate unfamiliar terrain
+
+**Related Checks**: Nature, Survival, Investigation
+
+## Adventuring Gear
+
+| Item | Description |
+|------|-------------|
+| **Backpack** | A backpack can hold one cubic foot or 30 pounds of gear. You can also strap items to the outside. |
+| **Bedroll** | A sleeping bag for keeping warm and dry while camping outdoors. Roll it up and strap to backpack. |
+| **Mess Kit** | A tin box containing a plate, cup, and eating utensils (fork, spoon, knife). The lid doubles as a pan. |
+| **Tinderbox** | Contains flint, fire steel, and tinder. Using it to light a torch or start a campfire takes 1 minute. |
+| **Torch** | Burns for 1 hour, providing bright light in a 20-foot radius and dim light for an additional 20 feet. Can be used as improvised weapon (1 fire damage). |
+| **Rations (1 day)** | Dried, preserved food sufficient for one day. Consists of jerky, dried fruit, hardtack, and nuts. |
+| **Waterskin** | A leather pouch that holds up to 4 pints of liquid. One pint of water per day prevents dehydration. |
+| **Hempen Rope (50 ft)** | Has 2 HP and can be burst with DC 17 Strength check. Can be cut into smaller lengths. |
+| **Tent (2-person)** | A canvas shelter that accommodates two Medium creatures. Takes 10 minutes to set up or break down. |
+| **Traveler's Clothes** | A set of durable, practical clothes for traveling: boots, trousers, shirt, vest, belt, and cloak. |
+| **Quiver** | A leather container that holds up to 20 arrows or bolts. |
+| **Arrows (20)** | Ammunition for bows. |
+
+---
+
+# PART 5: SPELLS
+
+## Cantrips Known
+
+| Cantrip | Source | Casting Time | Range | Effect |
+|---------|--------|--------------|-------|--------|
+| Produce Flame | Magic Initiate | Action | Self/30 ft | Light, or throw for 2d8 fire damage |
+| Mending | Magic Initiate | 1 Minute | Touch | Repair break/tear in object |
+| Guidance | Star Map | Action | Touch | +1d4 to ability check, Concentration |
+| Druidcraft | Druid | Action | 30 ft | Minor nature effects |
+| Thorn Whip | Druid | Action | 30 ft | 2d6 piercing, pull 10 ft |
+| Starry Wisp | Druid | Action | 60 ft | 2d8 radiant, reveal Invisible |
+| Light | Light Bearer | Action | Touch | Object sheds bright light 20 ft |
+
+> **CANTRIP CHOICES MADE**:
+> - Magic Initiate: Produce Flame, Mending
+> - Druid Class: Druidcraft, Thorn Whip, Starry Wisp (Magician grants extra)
+> - Star Map: Guidance
+> - Aasimar: Light
+
+## Always Prepared Spells
+
+| Spell | Level | Source | Free Uses |
+|-------|-------|--------|-----------|
+| Guiding Bolt | 1st | Star Map | 4/Long Rest |
+| Healing Word | 1st | Magic Initiate | 1/Long Rest |
+
+## Prepared Spells (Level 5: 9 slots)
+
+Druids can change prepared spells after each Long Rest.
+
+> **CURRENT PREPARED SPELLS**: (to be confirmed with player)
+
+---
+
+# PART 6: IMPLEMENTATION NOTES
+
+## Proficiency Enforcement
+
+### Weapon Attacks
+```
+IF weapon.category == 'martial' AND CLASS_PROFICIENCIES.weapons does NOT include 'martial':
+  attackBonus = abilityMod (NO proficiency bonus)
+  showWarning("Not proficient - no proficiency bonus to attack")
+ELSE:
+  attackBonus = abilityMod + proficiencyBonus
+```
+
+### Armor/Shield Equipping
+```
+IF armor.type == 'medium' OR armor.type == 'heavy':
+  IF CLASS_PROFICIENCIES.armor does NOT include armor.type:
+    showWarning("Not proficient - disadvantage on STR/DEX, CANNOT cast spells")
+    DISABLE all spell casting buttons
+    SET canCastSpells = false
+```
 
 ### Wild Shape
-- When transforming, update:
-  - STR, DEX, CON scores (visual indicator)
-  - Skill modifiers (recalculate based on new ability scores)
-  - AC (use beast's AC)
-  - Speed (use beast's speed)
-- **DO NOT show beast HP** - keep showing character's HP
-- **Add 5 temp HP** when transforming (druid level)
-- Keep INT, WIS, CHA and proficiency bonuses
-- Show beast's attack information
-- **DISABLE spell casting** while in Wild Shape beast form
-  - Grey out or hide Cast Spell buttons
-  - Show warning if user tries to cast
-- When Wild Shape ends, restore all stats to normal
+```
+IF inWildShape AND wildShapeType == 'beast':
+  DISABLE all spell casting buttons
+  SET canCastSpells = false
 
-### Starry Form
-- Uses Wild Shape resource but is NOT beast transformation
-- CAN still cast spells in Starry Form
-- Show form-specific bonus action (Archer attack) if applicable
+IF inStarryForm:
+  KEEP spell casting ENABLED
+```
 
-### Action Bar
-- Wild Companion should be in the MIDDLE of the action bar (not at the end)
-- Large touch targets for mobile (min 44px)
+## Inventory Corrections Needed
 
-### General UI
-- Collapsible spell level sections to reduce scrolling
-- Tap features to see full detailed description
-- Show damage/healing previews when selecting spells
-- Concentration warnings when casting new concentration spell
+| Current Item | Issue | Correction |
+|--------------|-------|------------|
+| Scimitar | Martial weapon, not proficient | Replace with Sickle (simple) |
+| Hide Armor | Medium armor, not proficient | Replace with Leather Armor (light) |
+| Missing | — | Add Quarterstaff (Druidic Focus) |
+| Missing | — | Add Herbalism Kit |
+| Missing | — | Add Mess Kit |
+| Missing | — | Add proper gear descriptions |
 
 ---
 
-## Cantrip Scaling (Level 5)
-
-| Cantrip | Level 1-4 | Level 5-10 | Level 11-16 | Level 17+ |
-|---------|-----------|------------|-------------|-----------|
-| Produce Flame | 1d8 | 2d8 | 3d8 | 4d8 |
-| Thorn Whip | 1d6 | 2d6 | 3d6 | 4d6 |
-| Guidance | +1d4 | +1d4 | +1d4 | +1d4 |
-| Druidcraft | N/A | N/A | N/A | N/A |
-| Light | N/A | N/A | N/A | N/A |
-
----
-
-## Spells Known/Prepared
-
-### Always Prepared (cannot change)
-- **Guiding Bolt** (Star Map - Circle of Stars)
-- **Healing Word** (Magic Initiate: Druid feat)
-
-### Prepared Spells (can change on long rest)
-- Druids prepare WIS mod + Druid level spells = 4 + 5 = 9 spells
-- (List needs to be confirmed with user)
-
----
-
-## Inventory System (Planned)
-- Equipment slots: Armor, Shield, Weapon (main), Weapon (off-hand), etc.
-- When equipping armor/shield, update AC display
-- When equipping weapon, add attack option
-- Track attunement slots (max 3)
-- Track carrying capacity
-
----
-
-## Technical Details
-- **Platform**: PWA hosted on GitHub Pages
-- **URL**: https://shivori.github.io/ashvael/
-- **Device**: iPhone 15 Pro (primary)
-- **Browser**: Safari for iOS
-- **Local files**: `c:\Users\Lirid\Nextcloud\DND\Character sheets\ashvael-pwa\`
-- **GitHub**: Shivori/ashvael
-
----
-
-## Error Checking
-- Always check browser console (F12) for JavaScript errors after changes
-- Service Worker errors on file:// protocol are expected (only works on http/https)
-- CORS errors on file:// protocol are expected (test on GitHub Pages for full functionality)
-
----
-
-## Change Log
+# PART 7: CHANGE LOG
 
 ### Session 1 (Initial)
 - Created PWA with manifest and service worker
@@ -245,188 +787,55 @@
 - Added clickable ability descriptions for companions
 - Fixed Wild Shape skill modifier updates
 
-### Session 3 (Current)
-- **Multiple Companions**: Now supports both Familiar AND Summon Beast simultaneously
-  - Each companion shown with separate stat block
-  - Different colors: Blue for Familiar, Purple for Beast
-- **Cantrip Damage**: Updated to 2 dice for level 5
-  - Produce Flame: 2d8
-  - Thorn Whip: 2d6
-  - Starry Wisp: 2d8
-- **Always Prepared Spells**:
-  - Guiding Bolt (Star Map) and Healing Word (Magic Initiate) now shown as always prepared
-  - Removed separate "Free" buttons - now in Cast Spell menus
-- **Wild Companion**: Moved to middle of action bar (after Cast Spell)
-- **Wild Shape Fixes**:
-  - Added safety checks for missing element IDs
-  - Spell buttons are disabled during Wild Shape
-- **Fixed JS Errors**: Added null checks to prevent crashes
+### Session 3
+- Multiple Companions support (Familiar AND Summon Beast)
+- Cantrip Damage updated to 2 dice for level 5
+- Always Prepared Spells shown correctly
+- Wild Companion moved to middle of action bar
+- Wild Shape spell disable fixes
 
 ### Session 4 - Inventory System
-- **Complete Equipment System Implemented**:
-  - Equipment slots: Main Hand, Off Hand, Armor, Head, Neck, Hands, Feet, Ring 1, Ring 2
-  - Starting gear: Scimitar (main hand), Shield (off hand), Hide Armor (equipped), Shortbow (in inventory)
-  - Two-handed weapon switching: Automatically unequips shield when equipping bow
-  - Auto AC calculation from equipped armor + shield
-- **Add Equipment Forms**:
-  - Weapon form: type, hands, damage die, modifier (STR/DEX/finesse), magic properties
-  - Armor form: type, base AC, max DEX, stealth disadvantage, magic properties
-  - Shield form: AC bonus, magic properties
-  - Accessory form: slot, attunement, effects
-- **Attunement tracking**: Shows attuned items (max 3)
-- **Updated Starting Gold**: 3 GP (from Guide background)
+- Complete Equipment System with slots
+- Add Equipment forms (weapon, armor, shield, accessory)
+- Magic item effects (Phase 1 & 2)
+- Attunement tracking
 
-### Session 5 - Magic Item Effects System (Phase 1 & 2)
-- **Phase 1 - Basic Magic Effects**:
-  - Damage resistances/immunities
-  - Condition immunities
-  - Extra damage (always or command word)
-  - Extra damage vs creature types
-  - Speed bonuses (fly, swim, climb)
-  - Advantage on checks/saves
-  - Light sources
-  - Darkvision
-- **Phase 2 - Charges & Spells**:
-  - Charge-based items (wands, staffs): configurable max charges, recharge dice, break chance
-  - Spells from charges with different costs
-  - Item-granted spells (at-will, 1/day, 2/day, 3/day)
-  - Item spells appear in Cast Spell menu
-  - Recharge on short/long rest with roll notification
-  - Magic Item Charges card on Stats tab
-- **Wild Shape Skills Fix** (in progress):
-  - Created dynamic skill calculation system
-  - Skills now use formula: ability mod + proficiency bonus (if proficient) + static bonus
-  - Physical skills (STR/DEX based) recalculate when Wild Shape changes ability scores
-  - Mental skills (INT/WIS/CHA based) unchanged in Wild Shape
-  - All skill elements now have IDs for dynamic updates
+### Session 5 - Magic Items & Corrections
+- Charge-based items (wands, staffs)
+- Spells from charges
+- Wild Shape skills fix
+- Stealth proficiency correction
 
-### Session 5 - Corrections Made
-- **Stealth**: Now correctly marked as PROFICIENT (+5 = DEX +2 + Prof +3)
-- **Guide Background**: Gives Stealth + Survival proficiency (not Insight)
+### Session 6 - Collapsible UI & Consumables
+- All cards collapsible with state saved
+- Ammunition auto-decrement
+- Thrown weapons system
+- Adventuring gear improvements
+- Custom spell details for magic items
 
-### Session 6 - Completed Features
-- **Druid Armor Proficiency**: Removed medium armor (only Light + Shields now)
-- **Collapsible Sections**: All cards expandable/collapsible with state saved to localStorage
-  - Skills, Character Info, Resource Slots, Actions cards all collapsible
-  - Magic Item Charges integrated into Resource Slots card
-- **Ammunition Tracking**:
-  - Auto-decrement arrows/bolts on ranged attacks
-  - Shows ammo count in attack selection menu
-  - Disables attack when out of ammo
-  - "Add Ammo" button in inventory to replenish
-- **Thrown Weapons**:
-  - Added "melee/thrown" weapon type option
-  - Thrown weapons appear in BOTH melee AND ranged attack sections
-  - When thrown: weapon unequips and goes to "thrown weapons" list
-  - "Reclaim" buttons to pick up thrown weapons
-  - Added sample Dagger to starting inventory
-- **Adventuring Gear Improvements**:
-  - Enhanced gear data structure with descriptions, weight, consumable flag, units
-  - Click any gear item to see full details in modal
-  - Tool proficiency info shows related checks and common uses (Cartographer's Tools)
-  - +/- buttons for consumable items (rations, torches, rope)
-  - "Use" button in detail modal for consumables
-  - "Add Gear" modal with quantity, weight, unit, consumable options
-  - Icons distinguish gear types: 🛠️ tools, 📦 consumables, 🎒 general
-- **Custom Spell Details** (for Magic Items):
-  - When adding "Other (Custom)" spell to magic item, full spell editor appears
-  - Captures: School, Casting Time, Range, Duration, Concentration, Ritual
-  - Components (V/S/M with material details)
-  - Damage/Healing dice, Save DC type
-  - Full description text, At Higher Levels scaling
-  - Custom spell details display in spell modal when casting
-- **Equipment Reformatting**:
-  - Verified DEFAULT_INVENTORY uses consistent new format
-  - Fixed starting gold in background description (3 GP, not 7 GP)
-  - Added Tent and Cartographer's Tools to starting equipment description
-  - Cleaned up duplicate HTML comments
+### Session 7 - Tools & Proficiency
+- Clickable tools with proficiency info
+- Reclaim button for thrown weapons
+- Weapon categories (Simple/Martial)
+- Improved custom spell editor
+- Added proficiency warnings
 
-### All Feature Backlog Items Complete!
+### Session 8 - Rules Reference & Corrections (Current)
+- Created comprehensive D&D 2024 rules reference
+- Document proficiency enforcement rules
+- Identified inventory corrections needed
+- Added official starting equipment
 
 ---
 
-## Answered Questions
-- **Background**: Guide (skill proficiencies: Survival, tool: Cartographer's Tools)
-- **Prepared Spells**: User will select in-app
-- **Feats**: Magic Initiate (from Background) + War Caster (from Level 4 ASI)
+# PART 8: QUESTIONS/CONFIRMATIONS NEEDED
 
----
+1. **Druid Skill Proficiencies**: Which 2 skills were chosen from Druid class?
+   - Options: Arcana, Animal Handling, Insight, Medicine, Nature, Perception, Religion, Survival
 
-## Starting Equipment (from Guide Background + existing)
+2. **Currently Prepared Spells**: What 9 spells are currently prepared?
 
-### Currently Owned
-| Item | Type | Notes |
-|------|------|-------|
-| Scimitar | Weapon (melee) | 1d6 slashing, finesse, one-handed |
-| Dagger | Weapon (melee/thrown) | 1d4 piercing, finesse, 20/60 ft thrown |
-| Shield | Armor | +2 AC |
-| Shortbow | Weapon (ranged) | 1d6 piercing, two-handed, 80/320 ft |
-| 20 Arrows | Ammunition | |
-| Quiver | Container | |
-| Hide Armor | Armor | AC 12 + DEX (max 2) = AC 14 |
-| Cartographer's Tools | Tool | Proficient |
-| Bedroll | Adventuring Gear | |
-| Tent | Adventuring Gear | |
-| Traveler's Clothes | Clothing | |
-| 3 GP | Currency | Starting gold |
+3. **Shortbow/Dagger**: Did you add these separately, or should they not be in inventory?
+   - Official Druid starting equipment doesn't include ranged weapons
 
----
-
-## Inventory System Design
-
-### Equipment Slots
-| Slot | Current | Notes |
-|------|---------|-------|
-| Main Hand | Scimitar | One-handed weapon |
-| Off Hand | Shield | +2 AC |
-| Armor | Hide Armor | AC 12 + DEX (max 2) |
-| Head | Empty | Hats, helmets, circlets |
-| Neck | Empty | Amulets, necklaces |
-| Hands | Empty | Gloves, gauntlets |
-| Feet | Empty | Boots |
-| Ring 1 | Empty | |
-| Ring 2 | Empty | |
-
-### Weapon Switching Logic
-- **Two-handed weapons** (shortbow, greataxe, etc.) = uses BOTH hand slots
-- When equipping two-handed: automatically unequips shield
-- When equipping one-handed + shield: automatically unequips two-handed
-- **Versatile weapons**: Can be used one or two-handed (different damage)
-
-### Weapon Creation Fields
-```
-- Name
-- Type: Melee / Ranged / Mixed (thrown)
-- Hands: One-handed / Two-handed / Versatile
-- Damage Die: d4, d6, d8, d10, d12
-- Damage Type: Slashing, Piercing, Bludgeoning, etc.
-- Modifier: STR / DEX / Finesse (choose)
-- Range (if ranged): Normal/Long
-- Properties: Light, Heavy, Finesse, Thrown, etc.
-- Magic Item: Yes/No
-  - If Yes:
-    - Requires Attunement: Yes/No
-    - Attack Bonus: +1, +2, +3
-    - Damage Bonus: +1, +2, +3
-    - Special Effect: (text description)
-    - Grants Spells: (list)
-```
-
-### Armor Creation Fields
-```
-- Name
-- Type: Light / Medium / Heavy / Shield
-- Base AC (or bonus for shield)
-- Max DEX bonus (if applicable)
-- Stealth Disadvantage: Yes/No
-- Magic Item: Yes/No
-  - If Yes:
-    - Requires Attunement: Yes/No
-    - AC Bonus: +1, +2, +3
-    - Special Effect: (text description)
-```
-
-### Attunement
-- Maximum 3 attuned items
-- Track which items require attunement
-- Warning when at limit
+4. **Tiefling Traits**: What specific Infernal Legacy features (if any) from the Tiefling half?

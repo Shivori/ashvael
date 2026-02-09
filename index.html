@@ -2211,7 +2211,7 @@
                 <div class="currency-row">
                     <div class="currency-item"><label>CP</label><input type="number" id="currencyCP" value="0" min="0"></div>
                     <div class="currency-item"><label>SP</label><input type="number" id="currencySP" value="0" min="0"></div>
-                    <div class="currency-item"><label>GP</label><input type="number" id="currencyGP" value="3" min="0"></div>
+                    <div class="currency-item"><label>GP</label><input type="number" id="currencyGP" value="12" min="0"></div>
                     <div class="currency-item"><label>PP</label><input type="number" id="currencyPP" value="0" min="0"></div>
                 </div>
             </div>
@@ -3443,6 +3443,10 @@
             let damageMod = 0;
             const profBonus = PROFICIENCY_BONUS;
 
+            // Check weapon proficiency - only add proficiency bonus if proficient
+            const profCheck = checkWeaponProficiency(weapon);
+            const isProficient = profCheck.proficient;
+
             // Determine which ability modifier to use
             // Thrown weapons can use STR or DEX (finesse-like)
             if (weapon.modifier === 'finesse' || asThrown) {
@@ -3456,7 +3460,8 @@
                 damageMod = getAbilityMod(BASE_ABILITY_SCORES.str);
             }
 
-            attackBonus = profBonus + damageMod;
+            // Only add proficiency bonus if proficient with weapon
+            attackBonus = isProficient ? (profBonus + damageMod) : damageMod;
 
             // Add magic bonuses
             if (weapon.isMagic) {
@@ -3470,7 +3475,10 @@
             const rangeStr = (asThrown || weapon.weaponType === 'ranged' || weapon.weaponType === 'thrown') && weapon.range
                 ? `, ${weapon.range} ft` : '';
 
-            return `${attackStr} to hit, ${weapon.damageDie}${damageStr} ${weapon.damageType}${rangeStr}`;
+            // Add warning if not proficient
+            const profWarning = isProficient ? '' : ' ⚠️';
+
+            return `${attackStr} to hit${profWarning}, ${weapon.damageDie}${damageStr} ${weapon.damageType}${rangeStr}`;
         }
 
         function performWeaponAttack(weaponId, attackType) {
@@ -3706,8 +3714,14 @@
         }
 
         function openCastSpellSelection(actionType) {
-            if (state.activeForm && state.activeForm.type === 'wild-shape') {
-                alert('Cannot cast spells while in Wild Shape beast form!');
+            // Check if spellcasting is blocked (armor proficiency, Wild Shape, etc.)
+            const castCheck = canCastSpells();
+            if (!castCheck.canCast) {
+                showModal('Cannot Cast Spells', `<div style="text-align:center; padding:20px;">
+                    <div style="font-size:2em; margin-bottom:15px;">🚫</div>
+                    <p style="color:var(--accent-red); margin-bottom:15px;">${castCheck.reason}</p>
+                    <p style="color:var(--text-muted); font-size:0.9em;">According to D&D 2024 rules, wearing armor you are not proficient with prevents you from casting spells.</p>
+                </div>`);
                 return;
             }
 
@@ -5422,69 +5436,79 @@
 
         // Default starting inventory
         const DEFAULT_INVENTORY = [
-            // Weapons
-            { id: 'scimitar', type: 'weapon', name: 'Scimitar', category: 'martial', weaponType: 'melee', hands: 'one',
-              damageDie: '1d6', damageType: 'slashing', modifier: 'finesse', properties: ['light', 'finesse'],
+            // Weapons (Official Druid Starting Equipment)
+            { id: 'sickle', type: 'weapon', name: 'Sickle', category: 'simple', weaponType: 'melee', hands: 'one',
+              damageDie: '1d4', damageType: 'slashing', modifier: 'str', properties: ['light'],
               isMagic: false, equipped: 'mainHand' },
+            { id: 'quarterstaff', type: 'weapon', name: 'Quarterstaff', category: 'simple', weaponType: 'melee', hands: 'versatile',
+              damageDie: '1d6', damageDieVersatile: '1d8', damageType: 'bludgeoning', modifier: 'str', properties: ['versatile'],
+              isMagic: false, equipped: null, description: 'Acts as Druidic Focus. 1d6 one-handed, 1d8 two-handed.' },
             { id: 'dagger', type: 'weapon', name: 'Dagger', category: 'simple', weaponType: 'melee/thrown', hands: 'one',
               damageDie: '1d4', damageType: 'piercing', modifier: 'finesse', range: '20/60',
               properties: ['light', 'finesse', 'thrown'], isMagic: false, equipped: null },
-            { id: 'shield', type: 'shield', name: 'Wooden Shield', acBonus: 2, isMagic: false, equipped: 'offHand' },
             { id: 'shortbow', type: 'weapon', name: 'Shortbow', category: 'simple', weaponType: 'ranged', hands: 'two',
               damageDie: '1d6', damageType: 'piercing', modifier: 'dex', range: '80/320',
               properties: ['ammunition', 'two-handed'], isMagic: false, equipped: null },
-            // Armor
-            { id: 'hide-armor', type: 'armor', name: 'Hide Armor', armorType: 'medium',
-              baseAC: 12, maxDex: 2, stealthDisadvantage: false, isMagic: false, equipped: 'armor' },
-            // Focus
+            // Shield
+            { id: 'shield', type: 'shield', name: 'Wooden Shield', acBonus: 2, isMagic: false, equipped: 'offHand' },
+            // Armor (Light - Druid proficient)
+            { id: 'leather-armor', type: 'armor', name: 'Leather Armor', armorType: 'light',
+              baseAC: 11, maxDex: null, stealthDisadvantage: false, isMagic: false, equipped: 'armor' },
+            // Focus (Circle of Stars)
             { id: 'star-map', type: 'focus', name: 'Star Map', isMagic: true, equipped: null,
-              description: 'Spellcasting focus. Grants free Guiding Bolt casts (4/long rest).' },
+              description: 'Spellcasting focus from Circle of Stars. Grants Guidance cantrip and free Guiding Bolt casts (4/long rest).' },
             // Ammunition
             { id: 'arrows', type: 'ammo', name: 'Arrows', quantity: 20 }
         ];
 
         const DEFAULT_GEAR = [
+            // Container
             { id: 'backpack', name: 'Backpack', qty: 1, consumable: false,
               desc: 'A backpack can hold one cubic foot or 30 pounds of gear. You can also strap items to the outside.' },
+            // From Explorer's Pack
             { id: 'bedroll', name: 'Bedroll', qty: 1, consumable: false,
-              desc: 'A sleeping bag to keep you warm and comfortable while camping outdoors.' },
-            { id: 'quiver', name: 'Quiver', qty: 1, consumable: false,
-              desc: 'A quiver can hold up to 20 arrows.' },
+              desc: 'A sleeping bag for keeping warm and dry while camping outdoors. Roll it up and strap to backpack.' },
+            { id: 'mess-kit', name: 'Mess Kit', qty: 1, consumable: false,
+              desc: 'A tin box containing a plate, cup, and eating utensils (fork, spoon, knife). The lid doubles as a cooking pan.' },
+            { id: 'tinderbox', name: 'Tinderbox', qty: 1, consumable: false,
+              desc: 'This small container holds flint, fire steel, and tinder. Using it to light a torch takes an action. Lighting any other fire takes 1 minute.' },
+            { id: 'torches', name: 'Torch', qty: 10, consumable: true,
+              desc: 'Burns for 1 hour, providing bright light in a 20-foot radius and dim light for an additional 20 feet. Can be used as improvised weapon (1 fire damage).' },
+            { id: 'rations', name: 'Rations', qty: 10, consumable: true, unit: 'days',
+              desc: 'Dried, preserved food sufficient for one day. Consists of jerky, dried fruit, hardtack, and nuts.' },
+            { id: 'waterskin', name: 'Waterskin', qty: 1, consumable: false,
+              desc: 'A leather pouch that holds up to 4 pints of liquid. One pint of water per day prevents dehydration.' },
+            { id: 'rope', name: 'Hempen Rope', qty: 50, consumable: true, unit: 'ft',
+              desc: 'Has 2 HP and can be burst with DC 17 Strength check. Can be cut into smaller lengths for various uses.' },
+            // From Guide Background
             { id: 'tent', name: 'Tent (2-person)', qty: 1, consumable: false,
-              desc: 'A simple, portable canvas shelter that sleeps two.' },
+              desc: 'A canvas shelter that accommodates two Medium creatures. Takes 10 minutes to set up or break down.' },
             { id: 'travelers-clothes', name: "Traveler's Clothes", qty: 1, consumable: false,
-              desc: 'Sturdy boots, leather breeches, a belt, a shirt, and a hooded cloak.' },
+              desc: 'A set of durable, practical clothes for traveling: boots, trousers, shirt, vest, belt, and cloak.' },
+            { id: 'quiver', name: 'Quiver', qty: 1, consumable: false,
+              desc: 'A leather container that holds up to 20 arrows or bolts.' },
+            // Tools (Proficient)
             { id: 'herbalism-kit', name: "Herbalism Kit", qty: 1, consumable: false, isTool: true,
-              desc: 'This kit contains pouches to store herbs, clippers, mortar and pestle, and several glass jars.',
+              desc: 'This kit contains pouches for herbs, clippers, mortar and pestle, glass jars, and distilling equipment.',
               proficient: true,
               uses: [
-                'Identify plants (DC 10-15 INT check)',
+                'Identify plants with Herbalism Kit check',
                 'Create antitoxin (DC 15, 25 gp materials, 8 hours)',
                 'Create healing potion (DC 15, 25 gp materials, 1 day)',
-                'Create herbal remedies for common ailments',
+                'Prepare herbal remedies and poultices',
                 'Forage for medicinal herbs in the wild'
               ],
-              checks: 'INT (Nature) or WIS (Medicine) for herbal identification and remedies' },
+              checks: 'Medicine, Nature, Survival - add proficiency bonus when using kit for these checks' },
             { id: 'cartographers-tools', name: "Cartographer's Tools", qty: 1, consumable: false, isTool: true,
-              desc: 'These tools include a quill, ink, parchment, a pair of compasses, calipers, and a ruler.',
+              desc: 'These tools include a quill, ink, parchment, compass, calipers, and ruler.',
               proficient: true,
               uses: [
                 'Create accurate maps of areas you explore',
-                'Determine your position on a map (DC 10-15 WIS check)',
-                'Identify terrain features and estimate distances',
-                'Copy or forge maps (DC 15+ DEX check)'
+                'Determine your position on a map',
+                'Estimate distance between locations',
+                'Navigate unfamiliar terrain'
               ],
-              checks: 'INT (Investigation) or WIS (Survival) when navigating or mapping' },
-            { id: 'tinderbox', name: 'Tinderbox', qty: 1, consumable: false,
-              desc: 'This small container holds flint, fire steel, and tinder. Using it to light a torch takes an action. Lighting any other fire takes 1 minute.' },
-            { id: 'rations', name: 'Rations', qty: 10, consumable: true, unit: 'days',
-              desc: 'Dry foods suitable for extended travel: jerky, dried fruit, hardtack, and nuts.' },
-            { id: 'waterskin', name: 'Waterskin', qty: 1, consumable: false,
-              desc: 'Holds 4 pints of liquid. A creature needs 1 gallon (8 pints) of water per day, or twice that in hot weather.' },
-            { id: 'rope', name: 'Hempen Rope', qty: 50, consumable: true, unit: 'ft',
-              desc: 'Rope has 2 HP and can be burst with DC 17 Strength. Use for climbing, tying, or improvised tools.' },
-            { id: 'torches', name: 'Torch', qty: 5, consumable: true,
-              desc: 'Burns for 1 hour, providing bright light (20 ft) and dim light (+20 ft). Can deal 1 fire damage as improvised weapon.' }
+              checks: 'Nature, Survival, Investigation - add proficiency bonus when using tools for these checks' }
         ];
 
         function initInventory() {
@@ -6000,6 +6024,31 @@
                 proficient: false,
                 warning: '⚠️ Not proficient - disadvantage on STR/DEX checks and saves, cannot cast spells'
             };
+        }
+
+        // Check if character can cast spells (blocked by non-proficient armor or Wild Shape beast form)
+        function canCastSpells() {
+            // Check Wild Shape - beast form blocks casting
+            if (state.wildShape && state.wildShape.active && state.wildShape.type === 'beast') {
+                return { canCast: false, reason: 'Cannot cast spells while in Wild Shape beast form' };
+            }
+
+            // Check equipped armor for proficiency
+            const equippedArmor = state.inventory.find(i => i.type === 'armor' && i.equipped === 'armor');
+            if (equippedArmor) {
+                const profCheck = checkArmorProficiency(equippedArmor);
+                if (!profCheck.proficient) {
+                    return { canCast: false, reason: `Cannot cast spells while wearing ${equippedArmor.name} (not proficient)` };
+                }
+            }
+
+            // Check equipped shield for proficiency (shields also block casting if not proficient)
+            const equippedShield = state.inventory.find(i => i.type === 'shield' && i.equipped === 'offHand');
+            if (equippedShield && !CLASS_PROFICIENCIES.shields) {
+                return { canCast: false, reason: `Cannot cast spells while using ${equippedShield.name} (not proficient)` };
+            }
+
+            return { canCast: true };
         }
 
         function equipToSlot(itemId, slot) {
@@ -6547,14 +6596,15 @@
                                 <button type="button" onclick="addChargeSpell('${itemType}')" style="padding:8px 12px; background:var(--accent-green);">+</button>
                             </div>
                         </div>
-                        <div id="${itemType}ChargeCustomSpellForm" style="display:none; margin-top:10px; padding:10px; background:rgba(100,149,237,0.1); border-radius:8px; font-size:0.9em;">
-                            <div style="color:var(--accent-blue); font-weight:bold; margin-bottom:8px;">Custom Spell Details</div>
-                            <div class="form-group" style="margin-bottom:8px;">
-                                <input type="text" id="${itemType}ChargeCustomName" placeholder="Spell name">
+                        <div id="${itemType}ChargeCustomSpellForm" style="display:none; margin-top:10px; padding:12px; background:rgba(100,149,237,0.1); border-radius:8px;">
+                            <div style="color:var(--accent-blue); font-weight:bold; margin-bottom:10px;">Custom Spell Details</div>
+                            <div class="form-group">
+                                <label>Spell Name</label>
+                                <input type="text" id="${itemType}ChargeCustomName" placeholder="Enter spell name">
                             </div>
-                            <div class="effect-form-row">
+                            <div class="effect-form-row" style="margin-top:8px;">
                                 <div>
-                                    <label style="font-size:0.85em;">Level</label>
+                                    <label>Level</label>
                                     <select id="${itemType}ChargeCustomLevel">
                                         <option value="0">Cantrip</option>
                                         <option value="1" selected>1st</option>
@@ -6562,20 +6612,149 @@
                                         <option value="3">3rd</option>
                                         <option value="4">4th</option>
                                         <option value="5">5th</option>
+                                        <option value="6">6th</option>
+                                        <option value="7">7th</option>
+                                        <option value="8">8th</option>
+                                        <option value="9">9th</option>
                                     </select>
                                 </div>
                                 <div>
-                                    <label style="font-size:0.85em;">School</label>
+                                    <label>School</label>
                                     <select id="${itemType}ChargeCustomSchool">
                                         <option value="Abjuration">Abjuration</option>
-                                        <option value="Evocation">Evocation</option>
                                         <option value="Conjuration">Conjuration</option>
+                                        <option value="Divination">Divination</option>
+                                        <option value="Enchantment">Enchantment</option>
+                                        <option value="Evocation">Evocation</option>
+                                        <option value="Illusion">Illusion</option>
+                                        <option value="Necromancy">Necromancy</option>
                                         <option value="Transmutation">Transmutation</option>
                                     </select>
                                 </div>
                             </div>
+                            <div class="effect-form-row" style="margin-top:8px;">
+                                <div>
+                                    <label>Casting Time</label>
+                                    <select id="${itemType}ChargeCustomTime">
+                                        <option value="Action">Action</option>
+                                        <option value="Bonus Action">Bonus Action</option>
+                                        <option value="Reaction">Reaction</option>
+                                        <option value="1 Minute">1 Minute</option>
+                                        <option value="10 Minutes">10 Minutes</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label>Range</label>
+                                    <select id="${itemType}ChargeCustomRange" onchange="toggleChargeCustomRange('${itemType}')">
+                                        <option value="Self">Self</option>
+                                        <option value="Touch">Touch</option>
+                                        <option value="30 feet">30 feet</option>
+                                        <option value="60 feet">60 feet</option>
+                                        <option value="90 feet">90 feet</option>
+                                        <option value="120 feet">120 feet</option>
+                                        <option value="Sight">Sight</option>
+                                        <option value="custom">Other...</option>
+                                    </select>
+                                    <input type="number" id="${itemType}ChargeCustomRangeFeet" placeholder="feet" style="display:none; margin-top:5px; width:80px;" min="5" step="5">
+                                </div>
+                            </div>
+                            <div class="effect-form-row" style="margin-top:8px;">
+                                <div>
+                                    <label>Duration</label>
+                                    <select id="${itemType}ChargeCustomDuration">
+                                        <option value="Instantaneous">Instantaneous</option>
+                                        <option value="1 round">1 round</option>
+                                        <option value="1 minute">1 minute</option>
+                                        <option value="10 minutes">10 minutes</option>
+                                        <option value="1 hour">1 hour</option>
+                                        <option value="8 hours">8 hours</option>
+                                        <option value="24 hours">24 hours</option>
+                                        <option value="Until dispelled">Until dispelled</option>
+                                        <option value="Special">Special</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label>Area (optional)</label>
+                                    <div style="display:flex; gap:5px;">
+                                        <select id="${itemType}ChargeCustomAreaShape" style="flex:1;">
+                                            <option value="">None</option>
+                                            <option value="Sphere">Sphere</option>
+                                            <option value="Cube">Cube</option>
+                                            <option value="Cone">Cone</option>
+                                            <option value="Line">Line</option>
+                                            <option value="Cylinder">Cylinder</option>
+                                        </select>
+                                        <input type="number" id="${itemType}ChargeCustomAreaSize" placeholder="ft" style="width:50px;" min="5" step="5">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="effect-form-row" style="margin-top:8px;">
+                                <div style="display:flex; gap:15px; align-items:center;">
+                                    <label style="display:flex; gap:5px; align-items:center; cursor:pointer;">
+                                        <input type="checkbox" id="${itemType}ChargeCustomConc" style="width:18px; height:18px;">
+                                        <span>Concentration</span>
+                                    </label>
+                                    <label style="display:flex; gap:5px; align-items:center; cursor:pointer;">
+                                        <input type="checkbox" id="${itemType}ChargeCustomRitual" style="width:18px; height:18px;">
+                                        <span>Ritual</span>
+                                    </label>
+                                </div>
+                            </div>
                             <div class="form-group" style="margin-top:8px;">
-                                <textarea id="${itemType}ChargeCustomDesc" rows="2" placeholder="Brief spell description (optional)"></textarea>
+                                <label>Components</label>
+                                <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                                    <label style="display:flex; gap:5px; align-items:center; cursor:pointer;">
+                                        <input type="checkbox" id="${itemType}ChargeCustomV" checked style="width:18px; height:18px;">
+                                        <span>V</span>
+                                    </label>
+                                    <label style="display:flex; gap:5px; align-items:center; cursor:pointer;">
+                                        <input type="checkbox" id="${itemType}ChargeCustomS" checked style="width:18px; height:18px;">
+                                        <span>S</span>
+                                    </label>
+                                    <label style="display:flex; gap:5px; align-items:center; cursor:pointer;">
+                                        <input type="checkbox" id="${itemType}ChargeCustomM" style="width:18px; height:18px;" onchange="toggleChargeCustomMaterial('${itemType}')">
+                                        <span>M</span>
+                                    </label>
+                                </div>
+                                <input type="text" id="${itemType}ChargeCustomMaterial" placeholder="Material component details" style="margin-top:5px; display:none;">
+                            </div>
+                            <div class="effect-form-row" style="margin-top:8px;">
+                                <div>
+                                    <label>Damage/Healing</label>
+                                    <input type="text" id="${itemType}ChargeCustomDamage" placeholder="e.g., 8d6 fire">
+                                </div>
+                                <div>
+                                    <label>Save DC</label>
+                                    <select id="${itemType}ChargeCustomSave" onchange="toggleChargeCustomDC('${itemType}')">
+                                        <option value="">None</option>
+                                        <option value="character">Character's DC (15)</option>
+                                        <option value="STR">STR save</option>
+                                        <option value="DEX">DEX save</option>
+                                        <option value="CON">CON save</option>
+                                        <option value="INT">INT save</option>
+                                        <option value="WIS">WIS save</option>
+                                        <option value="CHA">CHA save</option>
+                                        <option value="custom">Custom DC...</option>
+                                    </select>
+                                    <input type="number" id="${itemType}ChargeCustomDCValue" placeholder="DC" style="display:none; margin-top:5px; width:60px;" min="1" max="30">
+                                </div>
+                            </div>
+                            <div class="form-group" style="margin-top:8px;">
+                                <label>Description</label>
+                                <textarea id="${itemType}ChargeCustomDesc" rows="3" placeholder="Full spell description..."></textarea>
+                            </div>
+                            <div class="form-group" style="margin-top:8px;">
+                                <label>Upcast Scaling (optional)</label>
+                                <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+                                    <input type="text" id="${itemType}ChargeCustomUpcastDice" placeholder="Extra dice" style="width:80px;">
+                                    <span style="color:var(--text-muted);">per</span>
+                                    <select id="${itemType}ChargeCustomUpcastInterval" style="width:100px;">
+                                        <option value="1">1 level</option>
+                                        <option value="2">2 levels</option>
+                                    </select>
+                                    <span style="color:var(--text-muted);">above base</span>
+                                </div>
+                                <div style="font-size:0.8em; color:var(--text-muted); margin-top:4px;">e.g., "1d6" per 1 level = +1d6 at 2nd, +2d6 at 3rd...</div>
                             </div>
                         </div>`;
                     // Initialize empty spell list for this item
@@ -6986,6 +7165,30 @@
             }
         }
 
+        function toggleChargeCustomRange(itemType) {
+            const rangeSelect = document.getElementById(itemType + 'ChargeCustomRange');
+            const rangeFeetInput = document.getElementById(itemType + 'ChargeCustomRangeFeet');
+            if (rangeFeetInput) {
+                rangeFeetInput.style.display = rangeSelect.value === 'custom' ? 'block' : 'none';
+            }
+        }
+
+        function toggleChargeCustomMaterial(itemType) {
+            const mCheckbox = document.getElementById(itemType + 'ChargeCustomM');
+            const materialInput = document.getElementById(itemType + 'ChargeCustomMaterial');
+            if (materialInput) {
+                materialInput.style.display = mCheckbox.checked ? 'block' : 'none';
+            }
+        }
+
+        function toggleChargeCustomDC(itemType) {
+            const saveSelect = document.getElementById(itemType + 'ChargeCustomSave');
+            const dcInput = document.getElementById(itemType + 'ChargeCustomDCValue');
+            if (dcInput) {
+                dcInput.style.display = saveSelect.value === 'custom' ? 'block' : 'none';
+            }
+        }
+
         function addChargeSpell(itemType) {
             const spellSelect = document.getElementById(itemType + 'ChargeSpellSelect');
             const costInput = document.getElementById(itemType + 'ChargeSpellCost');
@@ -7006,9 +7209,61 @@
                 }
                 level = parseInt(document.getElementById(itemType + 'ChargeCustomLevel').value);
                 isCustom = true;
+
+                // Get range (handle custom range)
+                let range = document.getElementById(itemType + 'ChargeCustomRange').value;
+                if (range === 'custom') {
+                    const customFeet = document.getElementById(itemType + 'ChargeCustomRangeFeet').value;
+                    range = customFeet ? customFeet + ' feet' : '30 feet';
+                }
+
+                // Build components string
+                const compV = document.getElementById(itemType + 'ChargeCustomV').checked;
+                const compS = document.getElementById(itemType + 'ChargeCustomS').checked;
+                const compM = document.getElementById(itemType + 'ChargeCustomM').checked;
+                let components = '';
+                if (compV) components += 'V';
+                if (compS) components += (components ? ', ' : '') + 'S';
+                if (compM) components += (components ? ', ' : '') + 'M';
+                const material = compM ? document.getElementById(itemType + 'ChargeCustomMaterial').value : null;
+
+                // Get save DC
+                let saveDC = document.getElementById(itemType + 'ChargeCustomSave').value || null;
+                if (saveDC === 'custom') {
+                    const customDC = document.getElementById(itemType + 'ChargeCustomDCValue').value;
+                    saveDC = customDC ? 'DC ' + customDC : null;
+                }
+
+                // Get area of effect
+                const areaShape = document.getElementById(itemType + 'ChargeCustomAreaShape').value;
+                const areaSize = document.getElementById(itemType + 'ChargeCustomAreaSize').value;
+                let area = null;
+                if (areaShape && areaSize) {
+                    area = areaSize + '-foot ' + areaShape;
+                }
+
+                // Get upcast scaling
+                const upcastDice = document.getElementById(itemType + 'ChargeCustomUpcastDice').value;
+                const upcastInterval = document.getElementById(itemType + 'ChargeCustomUpcastInterval').value;
+                let upcast = null;
+                if (upcastDice) {
+                    upcast = { dice: upcastDice, perLevels: parseInt(upcastInterval) || 1 };
+                }
+
                 customDetails = {
                     school: document.getElementById(itemType + 'ChargeCustomSchool').value,
-                    description: document.getElementById(itemType + 'ChargeCustomDesc').value || null
+                    castingTime: document.getElementById(itemType + 'ChargeCustomTime').value,
+                    range: range,
+                    duration: document.getElementById(itemType + 'ChargeCustomDuration').value,
+                    concentration: document.getElementById(itemType + 'ChargeCustomConc').checked,
+                    ritual: document.getElementById(itemType + 'ChargeCustomRitual').checked,
+                    components: components,
+                    material: material,
+                    damage: document.getElementById(itemType + 'ChargeCustomDamage').value || null,
+                    save: saveDC,
+                    area: area,
+                    description: document.getElementById(itemType + 'ChargeCustomDesc').value || null,
+                    upcast: upcast
                 };
             } else {
                 spellName = spellValue;
@@ -7037,6 +7292,27 @@
             if (spellValue === 'custom') {
                 document.getElementById(itemType + 'ChargeCustomName').value = '';
                 document.getElementById(itemType + 'ChargeCustomDesc').value = '';
+                document.getElementById(itemType + 'ChargeCustomDamage').value = '';
+                document.getElementById(itemType + 'ChargeCustomUpcastDice').value = '';
+                document.getElementById(itemType + 'ChargeCustomLevel').value = '1';
+                document.getElementById(itemType + 'ChargeCustomSchool').value = 'Abjuration';
+                document.getElementById(itemType + 'ChargeCustomTime').value = 'Action';
+                document.getElementById(itemType + 'ChargeCustomRange').value = 'Self';
+                document.getElementById(itemType + 'ChargeCustomDuration').value = 'Instantaneous';
+                document.getElementById(itemType + 'ChargeCustomAreaShape').value = '';
+                document.getElementById(itemType + 'ChargeCustomAreaSize').value = '';
+                document.getElementById(itemType + 'ChargeCustomConc').checked = false;
+                document.getElementById(itemType + 'ChargeCustomRitual').checked = false;
+                document.getElementById(itemType + 'ChargeCustomV').checked = true;
+                document.getElementById(itemType + 'ChargeCustomS').checked = true;
+                document.getElementById(itemType + 'ChargeCustomM').checked = false;
+                document.getElementById(itemType + 'ChargeCustomMaterial').value = '';
+                document.getElementById(itemType + 'ChargeCustomMaterial').style.display = 'none';
+                document.getElementById(itemType + 'ChargeCustomSave').value = '';
+                document.getElementById(itemType + 'ChargeCustomDCValue').value = '';
+                document.getElementById(itemType + 'ChargeCustomDCValue').style.display = 'none';
+                document.getElementById(itemType + 'ChargeCustomRangeFeet').value = '';
+                document.getElementById(itemType + 'ChargeCustomRangeFeet').style.display = 'none';
                 spellSelect.value = ITEM_SPELLS[0].name;
                 toggleChargeCustomSpell(itemType);
             }
