@@ -1831,7 +1831,7 @@
                     </div>
                     <div class="stat-box">
                         <div class="stat-name">CHA</div>
-                        <div class="stat-score">12</div>
+                        <div class="stat-score">13</div>
                         <div class="stat-mod">+1</div>
                         <div class="stat-save">+1</div>
                     </div>
@@ -4835,9 +4835,11 @@
 
         // ===== SPELL DATA (2024 Druid) =====
         const CANTRIPS = [
-            { id: 'guidance', name: 'Guidance', source: 'Druid (Level 1)', school: 'Divination', time: 'Action', range: 'Touch', dur: '1 min (C)', comp: 'V, S',
+            { id: 'druidcraft', name: 'Druidcraft', source: 'Druid', school: 'Transmutation', time: 'Action', range: '30 ft', dur: 'Instant', comp: 'V, S',
+              desc: 'Whispering to the spirits of nature, you create one of the following effects within range: You create a tiny, harmless sensory effect that predicts the weather for the next 24 hours. You instantly make a flower blossom, a seed pod open, or a leaf bud bloom. You create an instantaneous, harmless sensory effect (falling leaves, a puff of wind, the sound of an animal, or faint odor). You instantly light or snuff out a candle, torch, or small campfire.' },
+            { id: 'guidance', name: 'Guidance', source: 'Star Map (Circle of Stars)', school: 'Divination', time: 'Action', range: 'Touch', dur: '1 min (C)', comp: 'V, S',
               desc: 'You touch a willing creature and choose one of the following: Ability Check or Saving Throw. Once before the spell ends, the target can roll 1d4 and add the number rolled to one ability check or saving throw (your choice) of its choice. It can roll before or after making the roll. The spell then ends.' },
-            { id: 'starry-wisp', name: 'Starry Wisp', source: 'Druid (Level 1)', school: 'Evocation', time: 'Action', range: '60 ft', dur: 'Instant', comp: 'V, S',
+            { id: 'starry-wisp', name: 'Starry Wisp', source: 'Druid', school: 'Evocation', time: 'Action', range: '60 ft', dur: 'Instant', comp: 'V, S',
               desc: 'You launch a mote of light at one creature or object within range. Make a ranged spell attack against the target. On a hit, the target takes 1d8 Radiant damage, and until the end of your next turn, it emits Dim Light in a 10-foot radius and can\'t benefit from the Invisible condition. Damage increases: 2d8 at 5th level, 3d8 at 11th level, 4d8 at 17th level.' },
             { id: 'thorn-whip', name: 'Thorn Whip', source: 'Druid (Level 4)', school: 'Transmutation', time: 'Action', range: '30 ft', dur: 'Instant', comp: 'V, S, M (stem of a thorny plant)',
               desc: 'You create a vine-like whip covered in thorns that lashes out at your command toward a creature within range. Make a melee spell attack against the target. If the attack hits, the creature takes 1d6 Piercing damage, and if the creature is Large or smaller, you can pull the creature up to 10 feet closer to you. Damage increases: 2d6 at 5th level, 3d6 at 11th level, 4d6 at 17th level.' },
@@ -5298,12 +5300,12 @@
                 {
                     name: 'Druid Class Features',
                     source: 'Class Overview',
-                    desc: '<strong>Hit Dice:</strong> 1d8 per level (5d8 total)<br><strong>Hit Points:</strong> 38 (8 + 4×CON mod + 4×average roll)<br><br><strong style="color: var(--accent-gold);">Saving Throw Proficiencies:</strong><br>• <strong>Intelligence</strong> (+2)<br>• <strong>Wisdom</strong> (+7)<br><br><strong style="color: var(--accent-blue);">Skill Proficiencies (chose 2):</strong><br>• <strong>Perception</strong> (chosen)<br>• <strong>Nature</strong> (chosen)<br>• Other options: Arcana, Animal Handling, Insight, Medicine, Religion, Survival<br><br><strong style="color: var(--accent-purple);">Armor Proficiencies:</strong> Light Armor, Medium Armor, Shields (druids won\'t wear metal armor or shields)<br><br><strong style="color: var(--accent-green);">Weapon Proficiencies:</strong> Simple Weapons<br><br><strong style="color: var(--text-muted);">Tool Proficiencies:</strong> Herbalism Kit'
+                    desc: '<strong>Hit Dice:</strong> 1d8 per level (5d8 total)<br><strong>Hit Points:</strong> 38 (8 + 4×CON mod + 4×average roll)<br><br><strong style="color: var(--accent-gold);">Saving Throw Proficiencies:</strong><br>• <strong>Intelligence</strong> (+2)<br>• <strong>Wisdom</strong> (+7)<br><br><strong style="color: var(--accent-blue);">Skill Proficiencies (chose 2):</strong><br>• <strong>Perception</strong> (chosen)<br>• <strong>Nature</strong> (chosen)<br>• Other options: Arcana, Animal Handling, Insight, Medicine, Religion, Survival<br><br><strong style="color: var(--accent-purple);">Armor Proficiencies:</strong> Light Armor, Shields only (NO medium armor - requires Warden subclass)<br><br><strong style="color: var(--accent-green);">Weapon Proficiencies:</strong> Simple Weapons<br><br><strong style="color: var(--text-muted);">Tool Proficiencies:</strong> Herbalism Kit'
                 },
                 {
                     name: 'Spellcasting',
                     source: 'Level 1',
-                    desc: '<strong>Spell Slots (Level 5):</strong> 4 × 1st, 3 × 2nd, 2 × 3rd<br><strong>Spellcasting Ability:</strong> Wisdom<br><strong>Spell Save DC:</strong> 15 (8 + 3 + 4)<br><strong>Spell Attack Bonus:</strong> +7 (3 + 4)<br><br><strong style="color: var(--accent-gold);">Cantrips Known:</strong> 4 (class) + 1 (Magician) + 2 (Magic Initiate) = 7 total<br><br><strong style="color: var(--accent-blue);">Prepared Spells:</strong> 9 (Druid level + WIS mod)<br><br><strong style="color: var(--accent-purple);">Ritual Casting:</strong> You can cast any spell with the Ritual tag as a ritual (adds 10 minutes to casting time, doesn\'t use a spell slot).<br><br><strong style="color: var(--accent-green);">Spellcasting Focus:</strong> Druidic Focus (Star Map)'
+                    desc: '<strong>Spell Slots (Level 5):</strong> 4 × 1st, 3 × 2nd, 2 × 3rd<br><strong>Spellcasting Ability:</strong> Wisdom<br><strong>Spell Save DC:</strong> 15 (8 + 3 + 4)<br><strong>Spell Attack Bonus:</strong> +7 (3 + 4)<br><br><strong style="color: var(--accent-gold);">Cantrips Known:</strong> 3 (Druid) + 1 (Magician) + 1 (Star Map) + 2 (Magic Initiate) = 7 total<br><br><strong style="color: var(--accent-blue);">Prepared Spells:</strong> 9 (Druid level + WIS mod)<br><br><strong style="color: var(--accent-purple);">Ritual Casting:</strong> You can cast any spell with the Ritual tag as a ritual (adds 10 minutes to casting time, doesn\'t use a spell slot).<br><br><strong style="color: var(--accent-green);">Spellcasting Focus:</strong> Druidic Focus (Star Map)'
                 },
                 {
                     name: 'Primal Order: Magician',

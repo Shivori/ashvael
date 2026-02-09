@@ -107,10 +107,10 @@
 | Armor Type | AC Formula | Ashvael Note |
 |------------|------------|--------------|
 | No Armor | 10 + DEX mod | 10 + 2 = 12 |
-| Light Armor | Base AC + DEX mod | Leather: 11 + 2 = 13 |
-| Medium Armor | Base AC + DEX mod (max +2) | Hide: 12 + 2 = 14 |
+| Light Armor | Base AC + DEX mod | Leather: 11 + 2 = 13 ✓ |
+| Medium Armor | Base AC + DEX mod (max +2) | NOT PROFICIENT |
 | Heavy Armor | Base AC (no DEX) | NOT PROFICIENT |
-| Shield | +2 to AC | Adds to above |
+| Shield | +2 to AC | +2 ✓ |
 
 **Ashvael's Current AC (Leather + Shield): 11 + 2 (DEX) + 2 (Shield) = 15**
 
@@ -699,19 +699,19 @@ Removing duplicates from overlapping packs:
 
 | Cantrip | Source | Casting Time | Range | Effect |
 |---------|--------|--------------|-------|--------|
-| Produce Flame | Magic Initiate | Action | Self/30 ft | Light, or throw for 2d8 fire damage |
-| Mending | Magic Initiate | 1 Minute | Touch | Repair break/tear in object |
-| Guidance | Star Map | Action | Touch | +1d4 to ability check, Concentration |
 | Druidcraft | Druid | Action | 30 ft | Minor nature effects |
-| Thorn Whip | Druid | Action | 30 ft | 2d6 piercing, pull 10 ft |
+| Guidance | Star Map (Circle of Stars) | Action | Touch | +1d4 to ability check, Concentration |
 | Starry Wisp | Druid | Action | 60 ft | 2d8 radiant, reveal Invisible |
-| Light | Light Bearer | Action | Touch | Object sheds bright light 20 ft |
+| Thorn Whip | Druid | Action | 30 ft | 2d6 piercing, pull 10 ft |
+| Message | Magician (Primal Order) | Action | 120 ft | Whisper to creature, they can reply |
+| Produce Flame | Magic Initiate | Bonus Action | Self/60 ft | Light, or throw for 2d8 fire damage |
+| Mending | Magic Initiate | 1 Minute | Touch | Repair break/tear in object |
 
-> **CANTRIP CHOICES MADE**:
-> - Magic Initiate: Produce Flame, Mending
-> - Druid Class: Druidcraft, Thorn Whip, Starry Wisp (Magician grants extra)
+> **CANTRIP CHOICES (7 total)**:
+> - Druid Class (3): Druidcraft, Starry Wisp, Thorn Whip
+> - Magician Primal Order (+1): Message
 > - Star Map: Guidance
-> - Aasimar: Light
+> - Magic Initiate (2): Produce Flame, Mending
 
 ## Always Prepared Spells
 
