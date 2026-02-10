@@ -333,6 +333,15 @@
             text-transform: uppercase;
         }
 
+        .movement-counter {
+            cursor: pointer;
+            border: 2px solid var(--accent-gold);
+            transition: background 0.2s;
+        }
+        .movement-counter:active {
+            background: var(--bg-card);
+        }
+
         /* HP Section */
         .hp-section {
             display: flex;
@@ -686,6 +695,55 @@
             pointer-events: none;
         }
 
+        .action-item.extra-action {
+            background: linear-gradient(135deg, var(--bg-card-hover), var(--bg-card));
+            border-style: dashed;
+        }
+
+        /* Activation Section (DC Save) */
+        .activation-section {
+            margin: 15px 0;
+            padding: 12px;
+            background: rgba(123, 104, 238, 0.1);
+            border: 1px solid var(--accent-purple);
+            border-radius: 8px;
+        }
+
+        /* Extra Menu Styles */
+        .extra-menu-section {
+            margin-bottom: 15px;
+        }
+        .extra-menu-section h4 {
+            margin: 0 0 8px 0;
+            color: var(--accent-gold);
+            font-size: 0.9em;
+        }
+        .extra-menu-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+        }
+        .extra-menu-item {
+            padding: 10px;
+            background: var(--bg-card-hover);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            font-size: 0.85em;
+            transition: all 0.2s;
+        }
+        .extra-menu-item:hover {
+            border-color: var(--accent-purple);
+            background: rgba(123, 104, 238, 0.2);
+        }
+        .extra-menu-item .skill-mod {
+            display: block;
+            color: var(--accent-gold);
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
         /* Form Mode Indicator */
         .form-indicator {
             display: none;
@@ -720,6 +778,26 @@
         }
 
         /* Modal */
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--accent-gold);
+            color: var(--bg-dark);
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: bold;
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 10000;
+            pointer-events: none;
+        }
+        .toast.show {
+            opacity: 1;
+        }
+
         .modal-overlay {
             display: none;
             position: fixed;
@@ -1669,6 +1747,50 @@
 
         .note-item:hover { background: rgba(123, 104, 238, 0.2); }
 
+        /* Battle Log Display */
+        .battle-record {
+            border-left: 3px solid var(--accent-gold);
+        }
+        .battle-log-details {
+            padding: 10px;
+            background: var(--bg-card);
+            border-radius: 0 0 8px 8px;
+        }
+        .battle-log-summary {
+            padding: 8px;
+            background: var(--bg-card-hover);
+            border-radius: 6px;
+            margin-bottom: 10px;
+            font-size: 0.9em;
+        }
+        .battle-log-entries {
+            max-height: 200px;
+            overflow-y: auto;
+            margin-bottom: 10px;
+        }
+        .battle-log-entry {
+            padding: 4px 8px;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.85em;
+        }
+        .battle-log-entry .battle-log-time {
+            color: var(--text-secondary);
+            margin-right: 8px;
+            font-size: 0.8em;
+        }
+        .battle-notes-input {
+            width: 100%;
+            min-height: 60px;
+            padding: 8px;
+            background: var(--bg-card-hover);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 0.9em;
+            resize: vertical;
+        }
+
         .add-note-row {
             display: flex;
             gap: 8px;
@@ -1752,6 +1874,10 @@
                     <div class="combat-stat">
                         <div class="combat-stat-value">+3</div>
                         <div class="combat-stat-label">Prof</div>
+                    </div>
+                    <div class="combat-stat movement-counter" id="movementCounter" style="display:none;" onclick="openMovementModal()">
+                        <div class="combat-stat-value" id="movementDisplay">0/30</div>
+                        <div class="combat-stat-label">Movement</div>
                     </div>
                 </div>
             </div>
@@ -1971,6 +2097,7 @@
                                 <div class="action-item" onclick="useAction('action', this)">Dodge</div>
                                 <div class="action-item" onclick="useAction('action', this)">Help</div>
                                 <div class="action-item" onclick="useAction('action', this)">Hide</div>
+                                <div class="action-item extra-action" onclick="openExtraMenu('action')">Extra...</div>
                             </div>
                         </div>
                         <div class="action-category bonus">
@@ -1980,6 +2107,7 @@
                                 <div class="action-item" onclick="openCelestialRevelation()">Celestial Revelation</div>
                                 <div class="action-item" onclick="openCastSpellSelection('bonus')">Cast Spell (Bonus)</div>
                                 <div class="action-item archer-action" style="display:none" onclick="useArcherAttack()">Archer Attack (1d8+4)</div>
+                                <div class="action-item extra-action" onclick="openExtraMenu('bonus')">Extra...</div>
                             </div>
                         </div>
                         <div class="action-category reaction">
@@ -2296,6 +2424,7 @@
                     <button class="notes-tab active" onclick="showNotesCategory('sessions')">Sessions</button>
                     <button class="notes-tab" onclick="showNotesCategory('cities')">Cities</button>
                     <button class="notes-tab" onclick="showNotesCategory('npcs')">NPCs</button>
+                    <button class="notes-tab" onclick="showNotesCategory('battles')">Battles</button>
                     <button class="notes-tab" onclick="showNotesCategory('other')">Other</button>
                 </div>
                 <div class="notes-content" id="notesContent">
@@ -2345,6 +2474,9 @@
             <span>Notes</span>
         </div>
     </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast"></div>
 
     <!-- Modals -->
     <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
@@ -2460,12 +2592,13 @@
             actionsUsed: { action: false, bonus: false, reaction: false },
             equipment: [],
             inventory: [],
-            notes: { sessions: [], cities: [], npcs: [], other: [] },
+            notes: { sessions: [], cities: [], npcs: [], battles: [], other: [] },
             concentration: null,
             companions: [],  // Array to support multiple companions (familiar + summon beast)
             itemCharges: {},  // Track charges for magic items: { itemId: { current: N, usedToday: [] } }
             itemSpellsUsed: {},  // Track 1/day spell usage: { itemId_spellName: true }
-            thrownWeapons: []  // Track weapons that have been thrown and can be reclaimed
+            thrownWeapons: [],  // Track weapons that have been thrown and can be reclaimed
+            movementUsed: 0  // Track movement used in current round
         };
 
         let state = JSON.parse(JSON.stringify(DEFAULT_STATE));
@@ -3124,6 +3257,7 @@
             state.battleRound = 1;
             state.battleLog = [];
             state.actionsUsed = { action: false, bonus: false, reaction: false };
+            state.movementUsed = 0;
             addBattleLog('Combat started!');
             updateBattleUI();
             saveState();
@@ -3132,15 +3266,31 @@
         function endBattle() {
             saveForUndo();
             if (state.battleLog.length > 0) {
+                // Save to battleHistory (legacy, keep last 3)
                 state.battleHistory.push({
                     date: new Date().toLocaleDateString(),
                     rounds: state.battleRound,
                     log: [...state.battleLog]
                 });
                 if (state.battleHistory.length > 3) state.battleHistory.shift();
+
+                // Save structured record to notes.battles
+                initNotes();
+                const battleRecord = {
+                    type: 'battle',
+                    id: Date.now(),
+                    name: `Battle - ${new Date().toLocaleDateString()} (${state.battleRound} rounds)`,
+                    date: new Date().toISOString(),
+                    totalRounds: state.battleRound,
+                    log: [...state.battleLog],
+                    notes: ''
+                };
+                state.notes.battles.unshift(battleRecord);
+                showToast(`Battle saved! (${state.battleRound} rounds)`);
             }
             state.inBattle = false;
             state.battleLog = [];
+            state.movementUsed = 0;
             updateBattleUI();
             saveState();
         }
@@ -3149,6 +3299,7 @@
             saveForUndo();
             state.battleRound++;
             state.actionsUsed = { action: false, bonus: false, reaction: false };
+            state.movementUsed = 0;
             addBattleLog(`--- Round ${state.battleRound} ---`);
             updateBattleUI();
             saveState();
@@ -3170,11 +3321,18 @@
             const banner = document.getElementById('battleBanner');
             const log = document.getElementById('battleLog');
             const toggle = document.getElementById('battleToggle');
+            const movementCounter = document.getElementById('movementCounter');
 
             banner.classList.toggle('active', state.inBattle);
             log.classList.toggle('active', state.inBattle);
             toggle.textContent = state.inBattle ? '🏳 End' : '⚔ Battle';
             document.getElementById('roundCount').textContent = state.battleRound;
+
+            // Show/hide movement counter
+            if (movementCounter) {
+                movementCounter.style.display = state.inBattle ? 'block' : 'none';
+                updateMovementDisplay();
+            }
 
             // Update action availability
             document.querySelectorAll('#actionList .action-item').forEach(el => {
@@ -3190,6 +3348,56 @@
             updateBattleLogDisplay();
         }
 
+        function updateMovementDisplay() {
+            const speed = parseInt(document.getElementById('displaySpeed').textContent) || 30;
+            const display = document.getElementById('movementDisplay');
+            if (display) {
+                display.textContent = `${state.movementUsed || 0}/${speed}`;
+            }
+        }
+
+        function openMovementModal() {
+            const speed = parseInt(document.getElementById('displaySpeed').textContent) || 30;
+            const used = state.movementUsed || 0;
+            const remaining = speed - used;
+
+            showModal('Movement', `
+                <div style="text-align: center;">
+                    <p style="font-size: 1.2em; margin-bottom: 15px;">
+                        <strong>Used:</strong> ${used} / ${speed} ft<br>
+                        <strong>Remaining:</strong> ${remaining} ft
+                    </p>
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-bottom: 15px;">
+                        <button class="modal-btn" onclick="addMovement(5)" ${remaining < 5 ? 'disabled style="opacity:0.5"' : ''}>+5 ft</button>
+                        <button class="modal-btn" onclick="addMovement(10)" ${remaining < 10 ? 'disabled style="opacity:0.5"' : ''}>+10 ft</button>
+                        <button class="modal-btn" onclick="addMovement(15)" ${remaining < 15 ? 'disabled style="opacity:0.5"' : ''}>+15 ft</button>
+                        <button class="modal-btn" onclick="addMovement(${remaining})" ${remaining <= 0 ? 'disabled style="opacity:0.5"' : ''}>Max (${remaining} ft)</button>
+                    </div>
+                    <button class="modal-btn secondary" onclick="resetMovement()">Reset to 0</button>
+                </div>
+            `);
+        }
+
+        function addMovement(feet) {
+            if (feet <= 0) return;
+            const speed = parseInt(document.getElementById('displaySpeed').textContent) || 30;
+            saveForUndo();
+            state.movementUsed = Math.min((state.movementUsed || 0) + feet, speed);
+            addBattleLog(`Moved ${feet} ft (${state.movementUsed}/${speed} used)`);
+            updateMovementDisplay();
+            saveState();
+            closeModal();
+        }
+
+        function resetMovement() {
+            saveForUndo();
+            state.movementUsed = 0;
+            addBattleLog('Movement reset');
+            updateMovementDisplay();
+            saveState();
+            closeModal();
+        }
+
         function useAction(type, el) {
             if (state.inBattle) {
                 if (state.actionsUsed[type]) return;
@@ -3198,6 +3406,86 @@
                 addBattleLog(`Used ${type}: ${el.textContent}`);
                 updateBattleUI();
                 saveState();
+            }
+        }
+
+        // ===== EXTRA ACTIONS MENU =====
+        const SKILLS_DATA = [
+            { id: 'acrobatics', name: 'Acrobatics', ability: 'DEX' },
+            { id: 'animal', name: 'Animal Handling', ability: 'WIS' },
+            { id: 'arcana', name: 'Arcana', ability: 'INT' },
+            { id: 'athletics', name: 'Athletics', ability: 'STR' },
+            { id: 'deception', name: 'Deception', ability: 'CHA' },
+            { id: 'history', name: 'History', ability: 'INT' },
+            { id: 'insight', name: 'Insight', ability: 'WIS' },
+            { id: 'intimidation', name: 'Intimidation', ability: 'CHA' },
+            { id: 'investigation', name: 'Investigation', ability: 'INT' },
+            { id: 'medicine', name: 'Medicine', ability: 'WIS' },
+            { id: 'nature', name: 'Nature', ability: 'INT' },
+            { id: 'perception', name: 'Perception', ability: 'WIS' },
+            { id: 'performance', name: 'Performance', ability: 'CHA' },
+            { id: 'persuasion', name: 'Persuasion', ability: 'CHA' },
+            { id: 'religion', name: 'Religion', ability: 'INT' },
+            { id: 'sleight', name: 'Sleight of Hand', ability: 'DEX' },
+            { id: 'stealth', name: 'Stealth', ability: 'DEX' },
+            { id: 'survival', name: 'Survival', ability: 'WIS' }
+        ];
+
+        function openExtraMenu(actionType) {
+            // Get current skill modifiers from the display
+            const skillsHtml = SKILLS_DATA.map(skill => {
+                const modEl = document.getElementById(`skillMod-${skill.id}`);
+                const mod = modEl ? modEl.textContent : '+0';
+                return `
+                    <div class="extra-menu-item" onclick="useSkillCheck('${actionType}', '${skill.name}', '${mod}')">
+                        ${skill.name}
+                        <span class="skill-mod">${mod}</span>
+                    </div>
+                `;
+            }).join('');
+
+            const utilityHtml = `
+                <div class="extra-menu-item" onclick="useUtilityAction('${actionType}', 'Talk / Roleplay')">Talk / Roleplay</div>
+                <div class="extra-menu-item" onclick="useUtilityAction('${actionType}', 'Interact with Object')">Interact with Object</div>
+                <div class="extra-menu-item" onclick="useUtilityAction('${actionType}', 'Use Item')">Use Item</div>
+                <div class="extra-menu-item" onclick="openMovementModal(); closeModal();">Free Movement</div>
+            `;
+
+            showModal(`Extra (${actionType === 'action' ? 'Action' : 'Bonus Action'})`, `
+                <div class="extra-menu-section">
+                    <h4>Skill Checks</h4>
+                    <div class="extra-menu-grid">${skillsHtml}</div>
+                </div>
+                <div class="extra-menu-section">
+                    <h4>Utility</h4>
+                    <div class="extra-menu-grid">${utilityHtml}</div>
+                </div>
+            `);
+        }
+
+        function useSkillCheck(actionType, skillName, modifier) {
+            if (state.inBattle) {
+                saveForUndo();
+                state.actionsUsed[actionType] = true;
+                addBattleLog(`${skillName} check (${modifier})`);
+                updateBattleUI();
+                saveState();
+            }
+            closeModal();
+            showToast(`${skillName} check: ${modifier}`);
+        }
+
+        function useUtilityAction(actionType, actionName) {
+            if (state.inBattle && actionName !== 'Free Movement') {
+                saveForUndo();
+                state.actionsUsed[actionType] = true;
+                addBattleLog(`${actionName}`);
+                updateBattleUI();
+                saveState();
+            }
+            closeModal();
+            if (actionName !== 'Free Movement') {
+                showToast(actionName);
             }
         }
 
@@ -3278,6 +3566,13 @@
             if (!e || e.target === document.getElementById('modalOverlay')) {
                 document.getElementById('modalOverlay').classList.remove('active');
             }
+        }
+
+        function showToast(message, duration = 2500) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), duration);
         }
 
         function showSpellInfo(spellId) {
@@ -7822,6 +8117,42 @@
                     <label>Range (normal/long)</label>
                     <input type="text" id="weaponRange" placeholder="e.g., 80/320">
                 </div>
+
+                <div class="activation-section">
+                    <label style="font-weight:bold; margin-bottom:8px; display:block;">Activation (DC Save)</label>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="weaponHasDCSave" onchange="toggleWeaponDCSave()">
+                        <label>Requires Saving Throw</label>
+                    </div>
+                    <div id="weaponDCSaveFields" style="display:none; margin-top:10px;">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Save Type</label>
+                                <select id="weaponSaveType">
+                                    <option value="STR">Strength</option>
+                                    <option value="DEX">Dexterity</option>
+                                    <option value="CON">Constitution</option>
+                                    <option value="INT">Intelligence</option>
+                                    <option value="WIS">Wisdom</option>
+                                    <option value="CHA">Charisma</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>DC Value</label>
+                                <input type="number" id="weaponSaveDC" value="15" min="1" max="30" style="width:60px;">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>On Successful Save</label>
+                            <select id="weaponSaveEffect">
+                                <option value="half">Half Damage</option>
+                                <option value="none">No Effect</option>
+                                <option value="other">Other (see description)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="form-group">
                     <div class="checkbox-group">
                         <input type="checkbox" id="weaponMagic">
@@ -7879,6 +8210,22 @@
             }, 100);
         }
 
+        function toggleWeaponDCSave() {
+            const checkbox = document.getElementById('weaponHasDCSave');
+            const fields = document.getElementById('weaponDCSaveFields');
+            if (checkbox && fields) {
+                fields.style.display = checkbox.checked ? 'block' : 'none';
+            }
+        }
+
+        function toggleAccessoryDCSave() {
+            const checkbox = document.getElementById('accessoryHasDCSave');
+            const fields = document.getElementById('accessoryDCSaveFields');
+            if (checkbox && fields) {
+                fields.style.display = checkbox.checked ? 'block' : 'none';
+            }
+        }
+
         function saveNewWeapon() {
             const name = document.getElementById('weaponName').value.trim();
             if (!name) { alert('Please enter a weapon name'); return; }
@@ -7899,6 +8246,15 @@
 
             if (['ranged', 'thrown', 'melee/thrown'].includes(weapon.weaponType)) {
                 weapon.range = document.getElementById('weaponRange').value || '20/60';
+            }
+
+            // DC Save (Activation)
+            if (document.getElementById('weaponHasDCSave').checked) {
+                weapon.dcSave = {
+                    type: document.getElementById('weaponSaveType').value,
+                    dc: parseInt(document.getElementById('weaponSaveDC').value) || 15,
+                    onSave: document.getElementById('weaponSaveEffect').value
+                };
             }
 
             if (weapon.isMagic) {
@@ -8146,6 +8502,42 @@
                         <label>Requires Attunement</label>
                     </div>
                 </div>
+
+                <div class="activation-section">
+                    <label style="font-weight:bold; margin-bottom:8px; display:block;">Activation (DC Save)</label>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="accessoryHasDCSave" onchange="toggleAccessoryDCSave()">
+                        <label>Requires Saving Throw</label>
+                    </div>
+                    <div id="accessoryDCSaveFields" style="display:none; margin-top:10px;">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Save Type</label>
+                                <select id="accessorySaveType">
+                                    <option value="STR">Strength</option>
+                                    <option value="DEX">Dexterity</option>
+                                    <option value="CON">Constitution</option>
+                                    <option value="INT">Intelligence</option>
+                                    <option value="WIS">Wisdom</option>
+                                    <option value="CHA">Charisma</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>DC Value</label>
+                                <input type="number" id="accessorySaveDC" value="15" min="1" max="30" style="width:60px;">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>On Successful Save</label>
+                            <select id="accessorySaveEffect">
+                                <option value="half">Half Damage</option>
+                                <option value="none">No Effect</option>
+                                <option value="other">Other (see description)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="form-group">
                     <label>Magic Effects</label>
                     <div id="accessoryEffectsList" class="effects-list"></div>
@@ -8174,6 +8566,15 @@
                 equipped: null
             };
 
+            // DC Save (Activation)
+            if (document.getElementById('accessoryHasDCSave').checked) {
+                accessory.dcSave = {
+                    type: document.getElementById('accessorySaveType').value,
+                    dc: parseInt(document.getElementById('accessorySaveDC').value) || 15,
+                    onSave: document.getElementById('accessorySaveEffect').value
+                };
+            }
+
             saveForUndo();
             state.inventory.push(accessory);
             initializeItemCharges(accessory);
@@ -8199,9 +8600,9 @@
 
         function initNotes() {
             if (!state.notes) {
-                state.notes = { sessions: [], cities: [], npcs: [], other: [] };
+                state.notes = { sessions: [], cities: [], npcs: [], battles: [], other: [] };
             }
-            ['sessions', 'cities', 'npcs', 'other'].forEach(cat => {
+            ['sessions', 'cities', 'npcs', 'battles', 'other'].forEach(cat => {
                 if (!state.notes[cat]) state.notes[cat] = [];
             });
         }
@@ -8219,11 +8620,53 @@
             const notes = state.notes[currentNoteCategory] || [];
 
             if (notes.length === 0) {
-                view.innerHTML = '<p class="text-muted text-center">No notes yet. Add one below!</p>';
+                const emptyMsg = currentNoteCategory === 'battles'
+                    ? 'No battle records yet. End a battle to create one!'
+                    : 'No notes yet. Add one below!';
+                view.innerHTML = `<p class="text-muted text-center">${emptyMsg}</p>`;
                 return;
             }
 
-            view.innerHTML = renderNoteTree(notes, 0);
+            // Special rendering for battles
+            if (currentNoteCategory === 'battles') {
+                view.innerHTML = renderBattleNotes(notes);
+            } else {
+                view.innerHTML = renderNoteTree(notes, 0);
+            }
+        }
+
+        function renderBattleNotes(battles) {
+            return battles.map((battle, i) => `
+                <div class="note-folder battle-record">
+                    <div class="note-folder-header" onclick="toggleFolder(this)">
+                        <span>⚔️</span> ${battle.name}
+                        <button class="delete-btn" onclick="event.stopPropagation(); deleteNote(${i})">✕</button>
+                    </div>
+                    <div class="note-folder-items battle-log-details" style="display:none;">
+                        <div class="battle-log-summary">
+                            <strong>${battle.totalRounds} rounds</strong> - ${new Date(battle.date).toLocaleString()}
+                        </div>
+                        <div class="battle-log-entries">
+                            ${battle.log.map(entry => `
+                                <div class="battle-log-entry">
+                                    <span class="battle-log-time">${entry.time}</span>
+                                    <span>${entry.text}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <div class="battle-notes-section">
+                            <textarea class="battle-notes-input" placeholder="Add notes about this battle..."
+                                onchange="updateBattleNotes(${i}, this.value)">${battle.notes || ''}</textarea>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function updateBattleNotes(index, notes) {
+            saveForUndo();
+            state.notes.battles[index].notes = notes;
+            saveState();
         }
 
         function renderNoteTree(items, depth) {
