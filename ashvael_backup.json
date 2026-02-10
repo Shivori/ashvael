@@ -1,0 +1,337 @@
+{
+  "version": 3,
+  "exportDate": "2026-02-10T17:33:25.453Z",
+  "characterName": "Ashvael",
+  "state": {
+    "version": 3,
+    "hp": {
+      "current": 38,
+      "max": 38,
+      "temp": 0
+    },
+    "hpHistory": [],
+    "slots": {
+      "1": [
+        false,
+        false,
+        false,
+        false
+      ],
+      "2": [
+        false,
+        false,
+        false
+      ],
+      "3": [
+        false,
+        false
+      ]
+    },
+    "resources": {
+      "guidingBolt": 4,
+      "wildShape": 2,
+      "healingHands": 1,
+      "healingWordFree": 1,
+      "celestialRevelation": 1
+    },
+    "preparedSpells": [
+      {
+        "id": "cure-wounds",
+        "name": "Cure Wounds",
+        "level": 1
+      },
+      {
+        "id": "purify-food",
+        "name": "Purify Food and Drink",
+        "level": 1
+      },
+      {
+        "id": "longstrider",
+        "name": "Longstrider",
+        "level": 1
+      },
+      {
+        "id": "jump",
+        "name": "Jump",
+        "level": 1
+      },
+      {
+        "id": "pass-without-trace",
+        "name": "Pass Without Trace",
+        "level": 2
+      },
+      {
+        "id": "barkskin",
+        "name": "Barkskin",
+        "level": 2
+      },
+      {
+        "id": "conjure-animals",
+        "name": "Conjure Animals",
+        "level": 3
+      },
+      {
+        "id": "call-lightning",
+        "name": "Call Lightning",
+        "level": 3
+      },
+      {
+        "id": "goodberry",
+        "name": "Goodberry",
+        "level": 1
+      }
+    ],
+    "knownBeastForms": [
+      "cat",
+      "wolf",
+      "panther",
+      "giant-wolf-spider",
+      "black-bear",
+      "ape"
+    ],
+    "activeForm": null,
+    "inBattle": false,
+    "battleRound": 1,
+    "battleLog": [],
+    "battleHistory": [],
+    "actionsUsed": {
+      "action": false,
+      "bonus": false,
+      "reaction": false
+    },
+    "equipment": [],
+    "inventory": [
+      {
+        "id": "sickle",
+        "type": "weapon",
+        "name": "Sickle",
+        "category": "simple",
+        "weaponType": "melee",
+        "hands": "one",
+        "damageDie": "1d4",
+        "damageType": "slashing",
+        "modifier": "str",
+        "properties": [
+          "light"
+        ],
+        "isMagic": false,
+        "equipped": null
+      },
+      {
+        "id": "quarterstaff",
+        "type": "weapon",
+        "name": "Quarterstaff",
+        "category": "simple",
+        "weaponType": "melee",
+        "hands": "versatile",
+        "damageDie": "1d6",
+        "damageDieVersatile": "1d8",
+        "damageType": "bludgeoning",
+        "modifier": "str",
+        "properties": [
+          "versatile"
+        ],
+        "isMagic": false,
+        "equipped": "mainHand",
+        "description": "Acts as Druidic Focus. 1d6 one-handed, 1d8 two-handed."
+      },
+      {
+        "id": "dagger",
+        "type": "weapon",
+        "name": "Dagger",
+        "category": "simple",
+        "weaponType": "melee/thrown",
+        "hands": "one",
+        "damageDie": "1d4",
+        "damageType": "piercing",
+        "modifier": "finesse",
+        "range": "20/60",
+        "properties": [
+          "light",
+          "finesse",
+          "thrown"
+        ],
+        "isMagic": false,
+        "equipped": null
+      },
+      {
+        "id": "shortbow",
+        "type": "weapon",
+        "name": "Shortbow",
+        "category": "simple",
+        "weaponType": "ranged",
+        "hands": "two",
+        "damageDie": "1d6",
+        "damageType": "piercing",
+        "modifier": "dex",
+        "range": "80/320",
+        "properties": [
+          "ammunition",
+          "two-handed"
+        ],
+        "isMagic": false,
+        "equipped": null
+      },
+      {
+        "id": "shield",
+        "type": "shield",
+        "name": "Wooden Shield",
+        "acBonus": 2,
+        "isMagic": false,
+        "equipped": "offHand"
+      },
+      {
+        "id": "leather-armor",
+        "type": "armor",
+        "name": "Leather Armor",
+        "armorType": "light",
+        "baseAC": 11,
+        "maxDex": 99,
+        "stealthDisadvantage": false,
+        "isMagic": false,
+        "equipped": "armor"
+      },
+      {
+        "id": "star-map",
+        "type": "focus",
+        "name": "Star Map",
+        "isMagic": true,
+        "equipped": null,
+        "description": "Spellcasting focus from Circle of Stars. Grants Guidance cantrip and free Guiding Bolt casts (4/long rest)."
+      },
+      {
+        "id": "arrows",
+        "type": "ammo",
+        "name": "Arrows",
+        "quantity": 20
+      }
+    ],
+    "notes": {
+      "sessions": [],
+      "cities": [],
+      "npcs": [],
+      "battles": [],
+      "other": []
+    },
+    "concentration": null,
+    "companions": [],
+    "itemCharges": {},
+    "itemSpellsUsed": {},
+    "thrownWeapons": [],
+    "movementUsed": 0,
+    "gear": [
+      {
+        "id": "backpack",
+        "name": "Backpack",
+        "qty": 1,
+        "consumable": false,
+        "desc": "A backpack can hold one cubic foot or 30 pounds of gear. You can also strap items to the outside."
+      },
+      {
+        "id": "bedroll",
+        "name": "Bedroll",
+        "qty": 1,
+        "consumable": false,
+        "desc": "A sleeping bag for keeping warm and dry while camping outdoors. Roll it up and strap to backpack."
+      },
+      {
+        "id": "mess-kit",
+        "name": "Mess Kit",
+        "qty": 1,
+        "consumable": false,
+        "desc": "A tin box containing a plate, cup, and eating utensils (fork, spoon, knife). The lid doubles as a cooking pan."
+      },
+      {
+        "id": "tinderbox",
+        "name": "Tinderbox",
+        "qty": 1,
+        "consumable": false,
+        "desc": "This small container holds flint, fire steel, and tinder. Using it to light a torch takes an action. Lighting any other fire takes 1 minute."
+      },
+      {
+        "id": "torches",
+        "name": "Torch",
+        "qty": 10,
+        "consumable": true,
+        "desc": "Burns for 1 hour, providing bright light in a 20-foot radius and dim light for an additional 20 feet. Can be used as improvised weapon (1 fire damage)."
+      },
+      {
+        "id": "rations",
+        "name": "Rations",
+        "qty": 10,
+        "consumable": true,
+        "unit": "days",
+        "desc": "Dried, preserved food sufficient for one day. Consists of jerky, dried fruit, hardtack, and nuts."
+      },
+      {
+        "id": "waterskin",
+        "name": "Waterskin",
+        "qty": 1,
+        "consumable": false,
+        "desc": "A leather pouch that holds up to 4 pints of liquid. One pint of water per day prevents dehydration."
+      },
+      {
+        "id": "rope",
+        "name": "Hempen Rope",
+        "qty": 50,
+        "consumable": true,
+        "unit": "ft",
+        "desc": "Has 2 HP and can be burst with DC 17 Strength check. Can be cut into smaller lengths for various uses."
+      },
+      {
+        "id": "tent",
+        "name": "Tent (2-person)",
+        "qty": 1,
+        "consumable": false,
+        "desc": "A canvas shelter that accommodates two Medium creatures. Takes 10 minutes to set up or break down."
+      },
+      {
+        "id": "travelers-clothes",
+        "name": "Traveler's Clothes",
+        "qty": 1,
+        "consumable": false,
+        "desc": "A set of durable, practical clothes for traveling: boots, trousers, shirt, vest, belt, and cloak."
+      },
+      {
+        "id": "quiver",
+        "name": "Quiver",
+        "qty": 1,
+        "consumable": false,
+        "desc": "A leather container that holds up to 20 arrows or bolts."
+      },
+      {
+        "id": "herbalism-kit",
+        "name": "Herbalism Kit",
+        "qty": 1,
+        "consumable": false,
+        "isTool": true,
+        "desc": "This kit contains pouches for herbs, clippers, mortar and pestle, glass jars, and distilling equipment.",
+        "proficient": true,
+        "uses": [
+          "Identify plants with Herbalism Kit check",
+          "Create antitoxin (DC 15, 25 gp materials, 8 hours)",
+          "Create healing potion (DC 15, 25 gp materials, 1 day)",
+          "Prepare herbal remedies and poultices",
+          "Forage for medicinal herbs in the wild"
+        ],
+        "checks": "Medicine, Nature, Survival - add proficiency bonus when using kit for these checks"
+      },
+      {
+        "id": "cartographers-tools",
+        "name": "Cartographer's Tools",
+        "qty": 1,
+        "consumable": false,
+        "isTool": true,
+        "desc": "These tools include a quill, ink, parchment, compass, calipers, and ruler.",
+        "proficient": true,
+        "uses": [
+          "Create accurate maps of areas you explore",
+          "Determine your position on a map",
+          "Estimate distance between locations",
+          "Navigate unfamiliar terrain"
+        ],
+        "checks": "Nature, Survival, Investigation - add proficiency bonus when using tools for these checks"
+      }
+    ]
+  }
+}
