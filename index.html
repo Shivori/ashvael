@@ -2107,6 +2107,7 @@
                                 <div class="action-item" onclick="openCelestialRevelation()">Celestial Revelation</div>
                                 <div class="action-item" onclick="openCastSpellSelection('bonus')">Cast Spell (Bonus)</div>
                                 <div class="action-item archer-action" style="display:none" onclick="useArcherAttack()">Archer Attack (1d8+4)</div>
+                                <div class="action-item offhand-attack" style="display:none" onclick="openOffhandAttack()">Off-hand Attack</div>
                                 <div class="action-item extra-action" onclick="openExtraMenu('bonus')">Extra...</div>
                             </div>
                         </div>
@@ -3710,25 +3711,6 @@
                         </div>
                     `;
                 });
-
-                body += '<hr style="border-color: var(--border-color); margin: 12px 0;">';
-                body += '<div style="color: var(--accent-purple); font-weight: bold; margin-bottom: 8px;">✨ Cantrips</div>';
-
-                // Cantrip attacks
-                body += `
-                    <div class="form-option" onclick="useAction('action', {textContent:'Thorn Whip (+7, 2d6)'}); closeModal();">
-                        <div class="form-option-title">Thorn Whip</div>
-                        <div class="form-option-desc">+7 to hit, 30ft, 2d6 piercing, pull 10ft</div>
-                    </div>
-                    <div class="form-option" onclick="useAction('action', {textContent:'Produce Flame (+7, 2d8)'}); closeModal();">
-                        <div class="form-option-title">Produce Flame</div>
-                        <div class="form-option-desc">+7 to hit, 30ft, 2d8 fire</div>
-                    </div>
-                    <div class="form-option" onclick="useAction('action', {textContent:'Starry Wisp (+7, 2d8)'}); closeModal();">
-                        <div class="form-option-title">Starry Wisp</div>
-                        <div class="form-option-desc">+7 to hit, 60ft, 2d8 radiant</div>
-                    </div>
-                `;
             }
             body += '</div>';
             showModal('Choose Attack', body);
@@ -3841,6 +3823,103 @@
             saveState();
             renderInventory();
             updateReclaimButton();
+        }
+
+        // Off-hand weapon attack functions
+        function openOffhandAttack() {
+            const offhandWeapon = state.inventory ? state.inventory.find(item =>
+                item.type === 'weapon' && item.equipped === 'offHand'
+            ) : null;
+
+            if (!offhandWeapon) {
+                showToast('No off-hand weapon equipped');
+                return;
+            }
+
+            const attackInfo = getOffhandAttackInfo(offhandWeapon);
+            const body = `
+                <div class="form-options">
+                    <div class="form-option" onclick="performOffhandAttack('${offhandWeapon.id}'); closeModal();">
+                        <div class="form-option-title">${offhandWeapon.name} ${offhandWeapon.isMagic ? '✦' : ''}</div>
+                        <div class="form-option-desc">${attackInfo}</div>
+                        <div class="form-option-note" style="color: var(--accent-orange); font-size: 0.85em; margin-top: 4px;">
+                            ⚡ Bonus Action (no ability mod to damage)
+                        </div>
+                    </div>
+                </div>
+            `;
+            showModal('Off-hand Attack', body);
+        }
+
+        function getOffhandAttackInfo(weapon) {
+            // Off-hand attacks: attack roll normal, but NO ability modifier to damage (unless negative)
+            let attackBonus = 0;
+            const profBonus = PROFICIENCY_BONUS;
+
+            const profCheck = checkWeaponProficiency(weapon);
+            const isProficient = profCheck.proficient;
+
+            // Determine ability modifier for attack roll
+            let abilityMod = 0;
+            if (weapon.modifier === 'finesse') {
+                const strMod = getAbilityMod(BASE_ABILITY_SCORES.str);
+                const dexMod = getAbilityMod(BASE_ABILITY_SCORES.dex);
+                abilityMod = Math.max(strMod, dexMod);
+            } else if (weapon.modifier === 'dex') {
+                abilityMod = getAbilityMod(BASE_ABILITY_SCORES.dex);
+            } else {
+                abilityMod = getAbilityMod(BASE_ABILITY_SCORES.str);
+            }
+
+            attackBonus = isProficient ? (profBonus + abilityMod) : abilityMod;
+
+            // Add magic attack bonus
+            if (weapon.isMagic) {
+                attackBonus += weapon.attackBonus || 0;
+            }
+
+            // Off-hand damage: only add ability mod if negative, plus magic bonus
+            let damageMod = abilityMod < 0 ? abilityMod : 0;
+            if (weapon.isMagic) {
+                damageMod += weapon.damageBonus || 0;
+            }
+
+            const attackStr = attackBonus >= 0 ? '+' + attackBonus : '' + attackBonus;
+            const damageStr = damageMod !== 0 ? (damageMod >= 0 ? '+' + damageMod : '' + damageMod) : '';
+            const profWarning = isProficient ? '' : ' ⚠️';
+
+            return `${attackStr} to hit, ${weapon.damage}${damageStr}${profWarning}`;
+        }
+
+        function performOffhandAttack(weaponId) {
+            const weapon = state.inventory.find(w => w.id === weaponId);
+            if (!weapon) return;
+
+            saveForUndo();
+            const attackInfo = getOffhandAttackInfo(weapon);
+
+            if (state.inBattle) {
+                state.actionsUsed.bonus = true;
+                addBattleLog(`Off-hand: ${weapon.name} (${attackInfo})`);
+                updateBattleUI();
+            }
+
+            saveState();
+            showToast(`Off-hand Attack: ${weapon.name}`);
+        }
+
+        function updateOffhandButton() {
+            const offhandBtn = document.querySelector('.offhand-attack');
+            if (!offhandBtn) return;
+
+            const offhandWeapon = state.inventory ? state.inventory.find(item =>
+                item.type === 'weapon' && item.equipped === 'offHand'
+            ) : null;
+
+            offhandBtn.style.display = offhandWeapon ? '' : 'none';
+            if (offhandWeapon) {
+                offhandBtn.textContent = `Off-hand Attack (${offhandWeapon.name})`;
+            }
         }
 
         function reclaimWeapon(weaponId) {
@@ -5936,6 +6015,7 @@
             renderGearList();
             renderAttunement();
             updateACFromEquipment();
+            updateOffhandButton();
         }
 
         function renderEquipmentSlots() {
