@@ -1957,7 +1957,7 @@
                     </div>
                     <div class="stat-box">
                         <div class="stat-name">CHA</div>
-                        <div class="stat-score">13</div>
+                        <div class="stat-score">12</div>
                         <div class="stat-mod">+1</div>
                         <div class="stat-save">+1</div>
                     </div>
@@ -2499,7 +2499,7 @@
             con: 15,  // +2
             int: 8,   // -1
             wis: 18,  // +4
-            cha: 13   // +1
+            cha: 12   // +1
         };
 
         // Skills with their governing ability and proficiency status
@@ -2557,24 +2557,26 @@
 
         // Get current ability scores (considers Wild Shape)
         function getCurrentAbilityScores() {
-            if (state.activeForm && state.activeForm.type === 'wild-shape') {
-                const beast = BEAST_FORMS ? BEAST_FORMS.find(b => b.id === state.activeForm.beastId) : null;
-                if (beast) {
+            // Only use beast scores if actively in wild shape AND beast exists
+            if (state.activeForm && state.activeForm.type === 'wild-shape' && state.activeForm.beastId) {
+                const beast = (typeof BEAST_FORMS !== 'undefined') ? BEAST_FORMS.find(b => b.id === state.activeForm.beastId) : null;
+                if (beast && beast.str && beast.dex) {
                     return {
                         str: beast.str,
                         dex: beast.dex,
-                        con: beast.con || 12, // Default if not specified
-                        int: BASE_ABILITY_SCORES.int,  // Keep mental stats
+                        con: beast.con || 12,
+                        int: BASE_ABILITY_SCORES.int,
                         wis: BASE_ABILITY_SCORES.wis,
                         cha: BASE_ABILITY_SCORES.cha
                     };
                 }
             }
+            // Always fall back to base scores
             return { ...BASE_ABILITY_SCORES };
         }
 
         // ===== STATE MANAGEMENT =====
-        const STATE_VERSION = 2; // Increment to force state reset
+        const STATE_VERSION = 3; // Increment to force state reset
 
         const DEFAULT_STATE = {
             version: STATE_VERSION,
@@ -5396,7 +5398,7 @@
                                 <p><strong>Attacks:</strong> ${b.attacks}</p>
                                 <p><strong>Senses:</strong> ${b.senses}</p>
                                 <p><strong>Special:</strong> ${b.special}</p>
-                                <p><strong>Stats:</strong> STR ${b.str} (${formatMod(b.str)}) | DEX ${b.dex} (${formatMod(b.dex)}) | CON ${b.con} (${formatMod(b.con)})</p>
+                                <p><strong>Stats:</strong> STR ${b.str} (${formatScoreAsMod(b.str)}) | DEX ${b.dex} (${formatScoreAsMod(b.dex)}) | CON ${b.con} (${formatScoreAsMod(b.con)})</p>
                             </div>
                         </div>
                     `;
@@ -5407,7 +5409,7 @@
             container.innerHTML = html;
         }
 
-        function formatMod(score) {
+        function formatScoreAsMod(score) {
             const mod = Math.floor((score - 10) / 2);
             return mod >= 0 ? '+' + mod : '' + mod;
         }
@@ -6100,6 +6102,12 @@
                 body += `</div>`;
             }
 
+            // Edit button
+            body += `<div style="display: flex; gap: 10px; margin-top: 15px;">`;
+            body += `<button onclick="editGear(${index})" style="flex: 1; padding: 12px; background: var(--accent-purple); border: none; border-radius: 6px; color: white; font-weight: bold; cursor: pointer;">✏️ Edit</button>`;
+            body += `<button onclick="deleteGearItem(${index}); closeModal();" style="padding: 12px; background: var(--accent-red); border: none; border-radius: 6px; color: white; font-weight: bold; cursor: pointer;">🗑️</button>`;
+            body += `</div>`;
+
             body += `</div>`;
 
             showModal(item.name, body);
@@ -6113,6 +6121,77 @@
             item.qty = Math.max(0, (item.qty || 1) + amount);
             saveState();
             renderGearList();
+        }
+
+        function editGear(index) {
+            const item = state.gear[index];
+            if (!item) return;
+
+            const body = `
+                <div class="form-group">
+                    <label>Item Name</label>
+                    <input type="text" id="editGearName" value="${item.name || ''}" placeholder="e.g., Rope, Torch, Rations">
+                </div>
+                <div class="form-row" style="display: flex; gap: 10px;">
+                    <div class="form-group" style="flex: 1;">
+                        <label>Quantity</label>
+                        <input type="number" id="editGearQty" value="${item.qty || 1}" min="0">
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label>Unit (optional)</label>
+                        <select id="editGearUnit">
+                            <option value="" ${!item.unit ? 'selected' : ''}>-</option>
+                            <option value="ft" ${item.unit === 'ft' ? 'selected' : ''}>ft</option>
+                            <option value="days" ${item.unit === 'days' ? 'selected' : ''}>days</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group" style="display: flex; align-items: center;">
+                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                        <input type="checkbox" id="editGearConsumable" ${item.consumable ? 'checked' : ''} style="width: 20px; height: 20px;">
+                        <span>Consumable (can be used up)</span>
+                    </label>
+                </div>
+                <div class="form-group" style="display: flex; align-items: center;">
+                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                        <input type="checkbox" id="editGearTool" ${item.isTool ? 'checked' : ''} style="width: 20px; height: 20px;">
+                        <span>Tool (proficiency check)</span>
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="editGearDesc" rows="3" placeholder="What does this item do?">${item.desc || ''}</textarea>
+                </div>
+                <button onclick="saveEditGear(${index})" style="width: 100%; padding: 12px; background: var(--accent-green); border: none; border-radius: 6px; color: white; font-weight: bold; cursor: pointer;">Save Changes</button>
+            `;
+            showModal('Edit: ' + item.name, body);
+        }
+
+        function saveEditGear(index) {
+            const name = document.getElementById('editGearName').value.trim();
+            if (!name) { alert('Please enter an item name'); return; }
+
+            saveForUndo();
+            state.gear[index].name = name;
+            state.gear[index].qty = parseInt(document.getElementById('editGearQty').value) || 1;
+            state.gear[index].unit = document.getElementById('editGearUnit').value || null;
+            state.gear[index].consumable = document.getElementById('editGearConsumable').checked;
+            state.gear[index].isTool = document.getElementById('editGearTool').checked;
+            state.gear[index].desc = document.getElementById('editGearDesc').value.trim() || null;
+
+            saveState();
+            closeModal();
+            renderGearList();
+            showToast('Gear updated!');
+        }
+
+        function deleteGearItem(index) {
+            if (!confirm('Delete this item?')) return;
+            saveForUndo();
+            state.gear.splice(index, 1);
+            saveState();
+            renderGearList();
+            showToast('Item deleted');
         }
 
         function showToolInfo(toolId) {
@@ -6505,8 +6584,36 @@
             }
             body += `</div>`;
 
+            // Edit and Delete buttons
+            body += `<div style="display: flex; gap: 10px; margin-top: 15px; padding: 0 10px 10px 10px;">`;
+            body += `<button onclick="editInventoryItem('${itemId}')" style="flex: 1; padding: 12px; background: var(--accent-purple); border: none; border-radius: 6px; color: white; font-weight: bold; cursor: pointer;">✏️ Edit</button>`;
+            body += `<button onclick="deleteInventoryItem('${itemId}'); closeModal();" style="padding: 12px; background: var(--accent-red); border: none; border-radius: 6px; color: white; font-weight: bold; cursor: pointer;">🗑️</button>`;
+            body += `</div>`;
+
             body += '</div>';
             showModal(item.name, body);
+        }
+
+        function editInventoryItem(itemId) {
+            const item = state.inventory.find(i => i.id === itemId);
+            if (!item) return;
+
+            switch(item.type) {
+                case 'weapon':
+                    editWeapon(itemId);
+                    break;
+                case 'armor':
+                    editArmor(itemId);
+                    break;
+                case 'shield':
+                    editShield(itemId);
+                    break;
+                case 'accessory':
+                    editAccessory(itemId);
+                    break;
+                default:
+                    alert('Unknown item type');
+            }
         }
 
         function deleteInventoryItem(itemId) {
@@ -8275,6 +8382,123 @@
             saveState();
         }
 
+        function editWeapon(itemId) {
+            const item = state.inventory.find(i => i.id === itemId);
+            if (!item) return;
+
+            const body = `
+                <div class="form-group">
+                    <label>Weapon Name</label>
+                    <input type="text" id="editWeaponName" value="${item.name || ''}">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Category</label>
+                        <select id="editWeaponCategory">
+                            <option value="simple" ${item.category === 'simple' ? 'selected' : ''}>Simple</option>
+                            <option value="martial" ${item.category === 'martial' ? 'selected' : ''}>Martial</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Type</label>
+                        <select id="editWeaponType">
+                            <option value="melee" ${item.weaponType === 'melee' ? 'selected' : ''}>Melee</option>
+                            <option value="ranged" ${item.weaponType === 'ranged' ? 'selected' : ''}>Ranged</option>
+                            <option value="thrown" ${item.weaponType === 'thrown' ? 'selected' : ''}>Thrown Only</option>
+                            <option value="melee/thrown" ${item.weaponType === 'melee/thrown' ? 'selected' : ''}>Melee/Thrown</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Hands</label>
+                        <select id="editWeaponHands">
+                            <option value="one" ${item.hands === 'one' ? 'selected' : ''}>One-handed</option>
+                            <option value="two" ${item.hands === 'two' ? 'selected' : ''}>Two-handed</option>
+                            <option value="versatile" ${item.hands === 'versatile' ? 'selected' : ''}>Versatile</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Range</label>
+                        <input type="text" id="editWeaponRange" value="${item.range || ''}" placeholder="e.g., 80/320">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Damage Die</label>
+                        <select id="editWeaponDamageDie">
+                            <option value="1d4" ${item.damageDie === '1d4' ? 'selected' : ''}>1d4</option>
+                            <option value="1d6" ${item.damageDie === '1d6' ? 'selected' : ''}>1d6</option>
+                            <option value="1d8" ${item.damageDie === '1d8' ? 'selected' : ''}>1d8</option>
+                            <option value="1d10" ${item.damageDie === '1d10' ? 'selected' : ''}>1d10</option>
+                            <option value="1d12" ${item.damageDie === '1d12' ? 'selected' : ''}>1d12</option>
+                            <option value="2d6" ${item.damageDie === '2d6' ? 'selected' : ''}>2d6</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Damage Type</label>
+                        <select id="editWeaponDamageType">
+                            <option value="slashing" ${item.damageType === 'slashing' ? 'selected' : ''}>Slashing</option>
+                            <option value="piercing" ${item.damageType === 'piercing' ? 'selected' : ''}>Piercing</option>
+                            <option value="bludgeoning" ${item.damageType === 'bludgeoning' ? 'selected' : ''}>Bludgeoning</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Modifier</label>
+                    <select id="editWeaponModifier">
+                        <option value="str" ${item.modifier === 'str' ? 'selected' : ''}>Strength</option>
+                        <option value="dex" ${item.modifier === 'dex' ? 'selected' : ''}>Dexterity</option>
+                        <option value="finesse" ${item.modifier === 'finesse' ? 'selected' : ''}>Finesse (STR or DEX)</option>
+                    </select>
+                </div>
+                ${item.isMagic ? `
+                <div class="form-row" style="margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border-color);">
+                    <div class="form-group">
+                        <label>Attack Bonus</label>
+                        <input type="number" id="editWeaponAttackBonus" value="${item.attackBonus || 0}" min="0" max="3" style="width:60px;">
+                    </div>
+                    <div class="form-group">
+                        <label>Damage Bonus</label>
+                        <input type="number" id="editWeaponDamageBonus" value="${item.damageBonus || 0}" min="0" max="3" style="width:60px;">
+                    </div>
+                </div>
+                <p style="color: var(--text-muted); font-size: 0.85em; margin: 10px 0;">Note: To edit magic effects, delete and re-add the weapon.</p>
+                ` : ''}
+                <button onclick="saveEditWeapon('${itemId}')" style="width: 100%; padding: 12px; background: var(--accent-green); border: none; border-radius: 6px; color: white; font-weight: bold; cursor: pointer; margin-top: 10px;">Save Changes</button>
+            `;
+            showModal('Edit: ' + item.name, body);
+        }
+
+        function saveEditWeapon(itemId) {
+            const item = state.inventory.find(i => i.id === itemId);
+            if (!item) return;
+
+            const name = document.getElementById('editWeaponName').value.trim();
+            if (!name) { alert('Please enter a weapon name'); return; }
+
+            saveForUndo();
+            item.name = name;
+            item.category = document.getElementById('editWeaponCategory').value;
+            item.weaponType = document.getElementById('editWeaponType').value;
+            item.hands = document.getElementById('editWeaponHands').value;
+            item.range = document.getElementById('editWeaponRange').value || null;
+            item.damageDie = document.getElementById('editWeaponDamageDie').value;
+            item.damageType = document.getElementById('editWeaponDamageType').value;
+            item.modifier = document.getElementById('editWeaponModifier').value;
+
+            if (item.isMagic) {
+                item.attackBonus = parseInt(document.getElementById('editWeaponAttackBonus').value) || 0;
+                item.damageBonus = parseInt(document.getElementById('editWeaponDamageBonus').value) || 0;
+            }
+
+            saveState();
+            closeModal();
+            renderInventory();
+            updateAttackOptions();
+            showToast('Weapon updated!');
+        }
+
         function openAddArmorForm() {
             resetTempEffects('armor');
             const body = `
@@ -8394,6 +8618,82 @@
             saveState();
         }
 
+        function editArmor(itemId) {
+            const item = state.inventory.find(i => i.id === itemId);
+            if (!item) return;
+
+            const body = `
+                <div class="form-group">
+                    <label>Armor Name</label>
+                    <input type="text" id="editArmorName" value="${item.name || ''}">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Armor Type</label>
+                        <select id="editArmorType">
+                            <option value="light" ${item.armorType === 'light' ? 'selected' : ''}>Light</option>
+                            <option value="medium" ${item.armorType === 'medium' ? 'selected' : ''}>Medium</option>
+                            <option value="heavy" ${item.armorType === 'heavy' ? 'selected' : ''}>Heavy</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Base AC</label>
+                        <input type="number" id="editArmorBaseAC" value="${item.baseAC || 11}" min="10" max="20" style="width:60px;">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Max DEX Bonus</label>
+                        <select id="editArmorMaxDex">
+                            <option value="99" ${item.maxDex >= 99 ? 'selected' : ''}>No limit</option>
+                            <option value="2" ${item.maxDex === 2 ? 'selected' : ''}>+2</option>
+                            <option value="0" ${item.maxDex === 0 ? 'selected' : ''}>+0</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="display: flex; align-items: center;">
+                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                            <input type="checkbox" id="editArmorStealth" ${item.stealthDisadvantage ? 'checked' : ''} style="width: 20px; height: 20px;">
+                            <span>Stealth Disadvantage</span>
+                        </label>
+                    </div>
+                </div>
+                ${item.isMagic ? `
+                <div class="form-group" style="margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border-color);">
+                    <label>Magic AC Bonus</label>
+                    <input type="number" id="editArmorMagicBonus" value="${item.magicBonus || 0}" min="0" max="3" style="width:60px;">
+                </div>
+                <p style="color: var(--text-muted); font-size: 0.85em; margin: 10px 0;">Note: To edit magic effects, delete and re-add the armor.</p>
+                ` : ''}
+                <button onclick="saveEditArmor('${itemId}')" style="width: 100%; padding: 12px; background: var(--accent-green); border: none; border-radius: 6px; color: white; font-weight: bold; cursor: pointer; margin-top: 10px;">Save Changes</button>
+            `;
+            showModal('Edit: ' + item.name, body);
+        }
+
+        function saveEditArmor(itemId) {
+            const item = state.inventory.find(i => i.id === itemId);
+            if (!item) return;
+
+            const name = document.getElementById('editArmorName').value.trim();
+            if (!name) { alert('Please enter an armor name'); return; }
+
+            saveForUndo();
+            item.name = name;
+            item.armorType = document.getElementById('editArmorType').value;
+            item.baseAC = parseInt(document.getElementById('editArmorBaseAC').value) || 11;
+            item.maxDex = parseInt(document.getElementById('editArmorMaxDex').value);
+            item.stealthDisadvantage = document.getElementById('editArmorStealth').checked;
+
+            if (item.isMagic) {
+                item.magicBonus = parseInt(document.getElementById('editArmorMagicBonus').value) || 0;
+            }
+
+            saveState();
+            closeModal();
+            renderInventory();
+            updateACDisplay();
+            showToast('Armor updated!');
+        }
+
         function openAddShieldForm() {
             resetTempEffects('shield');
             const body = `
@@ -8477,6 +8777,54 @@
             updateResistancesDisplay();
             updateItemChargesDisplay();
             saveState();
+        }
+
+        function editShield(itemId) {
+            const item = state.inventory.find(i => i.id === itemId);
+            if (!item) return;
+
+            const body = `
+                <div class="form-group">
+                    <label>Shield Name</label>
+                    <input type="text" id="editShieldName" value="${item.name || 'Shield'}">
+                </div>
+                <div class="form-group">
+                    <label>AC Bonus</label>
+                    <select id="editShieldACBonus">
+                        <option value="1" ${item.acBonus === 1 ? 'selected' : ''}>+1</option>
+                        <option value="2" ${item.acBonus === 2 ? 'selected' : ''}>+2</option>
+                        <option value="3" ${item.acBonus === 3 ? 'selected' : ''}>+3</option>
+                    </select>
+                </div>
+                ${item.isMagic ? `
+                <div class="form-group" style="margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border-color);">
+                    <label>Magic Bonus</label>
+                    <input type="number" id="editShieldMagicBonus" value="${item.magicBonus || 0}" min="0" max="3" style="width:60px;">
+                </div>
+                <p style="color: var(--text-muted); font-size: 0.85em; margin: 10px 0;">Note: To edit magic effects, delete and re-add the shield.</p>
+                ` : ''}
+                <button onclick="saveEditShield('${itemId}')" style="width: 100%; padding: 12px; background: var(--accent-green); border: none; border-radius: 6px; color: white; font-weight: bold; cursor: pointer; margin-top: 10px;">Save Changes</button>
+            `;
+            showModal('Edit: ' + item.name, body);
+        }
+
+        function saveEditShield(itemId) {
+            const item = state.inventory.find(i => i.id === itemId);
+            if (!item) return;
+
+            saveForUndo();
+            item.name = document.getElementById('editShieldName').value.trim() || 'Shield';
+            item.acBonus = parseInt(document.getElementById('editShieldACBonus').value) || 2;
+
+            if (item.isMagic) {
+                item.magicBonus = parseInt(document.getElementById('editShieldMagicBonus').value) || 0;
+            }
+
+            saveState();
+            closeModal();
+            renderInventory();
+            updateACDisplay();
+            showToast('Shield updated!');
         }
 
         function openAddAccessoryForm() {
@@ -8584,6 +8932,122 @@
             updateResistancesDisplay();
             updateItemChargesDisplay();
             saveState();
+        }
+
+        function editAccessory(itemId) {
+            const item = state.inventory.find(i => i.id === itemId);
+            if (!item) return;
+
+            resetTempEffects('accessory');
+            if (item.effects) {
+                tempEffects.accessory = [...item.effects];
+            }
+
+            const hasDCSave = item.dcSave ? 'checked' : '';
+            const dcSaveDisplay = item.dcSave ? '' : 'display:none;';
+
+            const body = `
+                <div class="form-group">
+                    <label>Item Name</label>
+                    <input type="text" id="editAccessoryName" value="${item.name || ''}" placeholder="e.g., Ring of Protection">
+                </div>
+                <div class="form-group">
+                    <label>Slot</label>
+                    <select id="editAccessorySlot">
+                        <option value="head" ${item.slotType === 'head' ? 'selected' : ''}>Head</option>
+                        <option value="neck" ${item.slotType === 'neck' ? 'selected' : ''}>Neck</option>
+                        <option value="hands" ${item.slotType === 'hands' ? 'selected' : ''}>Hands</option>
+                        <option value="feet" ${item.slotType === 'feet' ? 'selected' : ''}>Feet</option>
+                        <option value="ring1" ${item.slotType === 'ring1' ? 'selected' : ''}>Ring</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="editAccessoryAttunement" ${item.requiresAttunement ? 'checked' : ''}>
+                        <label>Requires Attunement</label>
+                    </div>
+                </div>
+
+                <div class="activation-section">
+                    <label style="font-weight:bold; margin-bottom:8px; display:block;">Activation (DC Save)</label>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="editAccessoryHasDCSave" ${hasDCSave} onchange="document.getElementById('editAccessoryDCSaveFields').style.display = this.checked ? '' : 'none';">
+                        <label>Requires Saving Throw</label>
+                    </div>
+                    <div id="editAccessoryDCSaveFields" style="${dcSaveDisplay} margin-top:10px;">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Save Type</label>
+                                <select id="editAccessorySaveType">
+                                    <option value="STR" ${item.dcSave?.type === 'STR' ? 'selected' : ''}>Strength</option>
+                                    <option value="DEX" ${item.dcSave?.type === 'DEX' ? 'selected' : ''}>Dexterity</option>
+                                    <option value="CON" ${item.dcSave?.type === 'CON' ? 'selected' : ''}>Constitution</option>
+                                    <option value="INT" ${item.dcSave?.type === 'INT' ? 'selected' : ''}>Intelligence</option>
+                                    <option value="WIS" ${item.dcSave?.type === 'WIS' ? 'selected' : ''}>Wisdom</option>
+                                    <option value="CHA" ${item.dcSave?.type === 'CHA' ? 'selected' : ''}>Charisma</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>DC Value</label>
+                                <input type="number" id="editAccessorySaveDC" value="${item.dcSave?.dc || 15}" min="1" max="30" style="width:60px;">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>On Successful Save</label>
+                            <select id="editAccessorySaveEffect">
+                                <option value="half" ${item.dcSave?.onSave === 'half' ? 'selected' : ''}>Half Damage</option>
+                                <option value="none" ${item.dcSave?.onSave === 'none' ? 'selected' : ''}>No Effect</option>
+                                <option value="other" ${item.dcSave?.onSave === 'other' ? 'selected' : ''}>Other (see description)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Magic Effects</label>
+                    <div id="accessoryEffectsList" class="effects-list"></div>
+                    <div class="add-effect-btn" onclick="showAddEffectForm('accessory')">+ Add Effect</div>
+                    <div id="accessoryEffectForm" style="display:none;"></div>
+                </div>
+                <div style="margin-top: 15px;">
+                    <button onclick="saveEditAccessory('${itemId}')" style="width: 100%; padding: 12px; background: var(--accent-green); border: none; border-radius: 6px; color: white; font-weight: bold; cursor: pointer;">Save Changes</button>
+                </div>
+            `;
+            showModal('Edit: ' + item.name, body);
+            setTimeout(() => renderEffectsList('accessory'), 50);
+        }
+
+        function saveEditAccessory(itemId) {
+            const name = document.getElementById('editAccessoryName').value.trim();
+            if (!name) { alert('Please enter an item name'); return; }
+
+            const item = state.inventory.find(i => i.id === itemId);
+            if (!item) return;
+
+            saveForUndo();
+            item.name = name;
+            item.slotType = document.getElementById('editAccessorySlot').value;
+            item.requiresAttunement = document.getElementById('editAccessoryAttunement').checked;
+            item.effects = [...tempEffects.accessory];
+
+            // DC Save (Activation)
+            if (document.getElementById('editAccessoryHasDCSave').checked) {
+                item.dcSave = {
+                    type: document.getElementById('editAccessorySaveType').value,
+                    dc: parseInt(document.getElementById('editAccessorySaveDC').value) || 15,
+                    onSave: document.getElementById('editAccessorySaveEffect').value
+                };
+            } else {
+                delete item.dcSave;
+            }
+
+            resetTempEffects('accessory');
+            closeModal();
+            renderInventory();
+            updateResistancesDisplay();
+            updateItemChargesDisplay();
+            saveState();
+            showToast('Accessory updated!');
         }
 
         function deleteItem(type, index) {
@@ -8779,6 +9243,7 @@
                 updateResourceSlots();
                 updatePreparedDisplay();
                 updateFormIndicator();
+                updateAllSkillDisplays(); // Recalculate skills on load
                 updateWildShapeDisplay();
                 updateBattleUI();
                 updateConcentrationDisplay();
