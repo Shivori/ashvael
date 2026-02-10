@@ -1957,7 +1957,7 @@
                     </div>
                     <div class="stat-box">
                         <div class="stat-name">CHA</div>
-                        <div class="stat-score">13</div>
+                        <div class="stat-score">12</div>
                         <div class="stat-mod">+1</div>
                         <div class="stat-save">+1</div>
                     </div>
@@ -2499,7 +2499,7 @@
             con: 15,  // +2
             int: 8,   // -1
             wis: 18,  // +4
-            cha: 13   // +1
+            cha: 12   // +1
         };
 
         // Skills with their governing ability and proficiency status
@@ -9241,6 +9241,7 @@
                 updateResourceSlots();
                 updatePreparedDisplay();
                 updateFormIndicator();
+                updateAllSkillDisplays(); // Recalculate skills on load
                 updateWildShapeDisplay();
                 updateBattleUI();
                 updateConcentrationDisplay();

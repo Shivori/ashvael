@@ -204,6 +204,10 @@ Cantrips increase in power at levels 5, 11, and 17.
 
 ## Ability Scores
 
+**Method**: Point Buy (27 points)
+
+### Final Ability Scores
+
 | Ability | Score | Modifier | Save (Prof?) |
 |---------|-------|----------|--------------|
 | Strength | 8 | -1 | -1 |
@@ -211,7 +215,32 @@ Cantrips increase in power at levels 5, 11, and 17.
 | Constitution | 15 | +2 | +2 |
 | Intelligence | 8 | -1 | +2 (Prof) |
 | Wisdom | 18 | +4 | +7 (Prof) |
-| Charisma | 13 | +1 | +1 |
+| Charisma | 12 | +1 | +1 |
+
+### Point Buy Breakdown
+
+| Ability | Base (Point Buy) | Cost | Bonus | Final |
+|---------|------------------|------|-------|-------|
+| STR | 8 | 0 | - | 8 |
+| DEX | 14 | 7 | - | 14 |
+| CON | 14 | 7 | +1 (Guide Background) | 15 |
+| INT | 8 | 0 | - | 8 |
+| WIS | 15 | 9 | +2 (Guide Background) +1 (War Caster) | 18 |
+| CHA | 12 | 4 | - | 12 |
+| **Total** | | **27** | | |
+
+### Point Buy Cost Table
+
+| Score | Cost |
+|-------|------|
+| 8 | 0 |
+| 9 | 1 |
+| 10 | 2 |
+| 11 | 3 |
+| 12 | 4 |
+| 13 | 5 |
+| 14 | 7 |
+| 15 | 9 |
 
 ---
 
@@ -377,13 +406,16 @@ Choose Option A or B:
 #### Primal Order
 Druids choose Magician or Warden at level 1.
 
-| Order | Benefit |
-|-------|---------|
-| **Magician** | Know extra cantrip from Druid list |
+| Order | Benefits |
+|-------|----------|
+| **Magician** | 1) Know one extra cantrip from Druid list. 2) Add WIS modifier to INT (Arcana) and INT (Nature) checks |
 | Warden | Martial weapon proficiency, Medium armor proficiency |
 
-> **CHOICE MADE**: Magician (extra cantrip)
-> Note: This is why Ashvael is NOT proficient with medium armor.
+> **CHOICE MADE**: Magician
+> - Extra cantrip: Message
+> - Arcana checks: INT (-1) + WIS (+4) = +3
+> - Nature checks: INT (-1) + Prof (+3) + WIS (+4) = +6
+> - Note: This is why Ashvael is NOT proficient with medium armor.
 
 ### Level 2 Features
 
@@ -517,11 +549,16 @@ Uses = Proficiency Bonus per Long Rest
 
 ### War Caster (Level 4 ASI)
 
+**Prerequisite**: Level 4+, Spellcasting or Pact Magic feature
+
 | Benefit | Description |
 |---------|-------------|
-| **Advantage on Concentration** | Advantage on CON saves to maintain Concentration |
+| **Ability Score Increase** | +1 to Intelligence, Wisdom, or Charisma (max 20) |
+| **Concentration** | Advantage on CON saves to maintain Concentration |
 | **Somatic Components** | Can perform somatic components while holding weapon/shield |
-| **Opportunity Spell** | Can cast spell instead of opportunity attack (spell must target only that creature, 1 Action casting time) |
+| **Reactive Spell** | Can cast spell instead of opportunity attack (spell must target only that creature, 1 Action casting time) |
+
+> **CHOICE MADE**: +1 Wisdom (Base 15 + 2 Guide + 1 War Caster = 18 final)
 
 ---
 
