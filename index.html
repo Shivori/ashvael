@@ -2445,6 +2445,56 @@
                 <textarea id="noteEditor" class="note-textarea" placeholder="Write your notes here..."></textarea>
                 <button class="save-note-btn" onclick="saveCurrentNote()">Save Note</button>
             </div>
+
+            <!-- BACKUP SECTION -->
+            <div class="card">
+                <h2 class="card-title">💾 Backup & Sync</h2>
+                <div style="padding: 10px 0;">
+                    <p style="color: var(--text-muted); margin-bottom: 15px; font-size: 0.9em;">
+                        Export your character data after each session. Import to restore from a backup.
+                    </p>
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                        <button onclick="exportBackup()" style="flex: 1; min-width: 120px; padding: 12px; background: var(--accent-green); border: none; border-radius: 6px; color: white; font-weight: bold; cursor: pointer;">
+                            📤 Export Backup
+                        </button>
+                        <button onclick="document.getElementById('importBackupInput').click()" style="flex: 1; min-width: 120px; padding: 12px; background: var(--accent-blue); border: none; border-radius: 6px; color: white; font-weight: bold; cursor: pointer;">
+                            📥 Import Backup
+                        </button>
+                        <input type="file" id="importBackupInput" accept=".json" onchange="importBackup(event)" style="display: none;">
+                    </div>
+                    <div id="lastBackupInfo" style="margin-top: 15px; padding: 10px; background: var(--bg-tertiary); border-radius: 6px; font-size: 0.85em; color: var(--text-muted);"></div>
+                </div>
+
+                <!-- GitHub Sync -->
+                <div style="border-top: 1px solid var(--border-color); margin-top: 15px; padding-top: 15px;">
+                    <h3 style="font-size: 1em; margin-bottom: 10px;">☁️ GitHub Sync</h3>
+                    <div id="githubSyncStatus"></div>
+                    <div id="githubSyncButtons" style="display: none;">
+                        <button onclick="pushToGitHub()" style="width: 100%; padding: 12px; background: var(--accent-purple); border: none; border-radius: 6px; color: white; font-weight: bold; cursor: pointer; margin-bottom: 10px;">
+                            🚀 Push to GitHub
+                        </button>
+                        <button onclick="pullFromGitHub()" style="width: 100%; padding: 12px; background: var(--accent-blue); border: none; border-radius: 6px; color: white; font-weight: bold; cursor: pointer; margin-bottom: 10px;">
+                            📥 Pull from GitHub
+                        </button>
+                        <div style="display: flex; gap: 10px;">
+                            <button onclick="openGitHubSettings()" style="flex: 1; padding: 8px; background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: 6px; color: var(--text-muted); cursor: pointer;">
+                                ⚙️ Settings
+                            </button>
+                            <button onclick="disconnectGitHub()" style="padding: 8px; background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: 6px; color: var(--accent-red); cursor: pointer;">
+                                Disconnect
+                            </button>
+                        </div>
+                    </div>
+                    <div id="githubSetupPrompt">
+                        <p style="color: var(--text-muted); font-size: 0.9em; margin-bottom: 10px;">
+                            Connect to GitHub to sync your character sheet directly to your repository.
+                        </p>
+                        <button onclick="openGitHubSettings()" style="width: 100%; padding: 12px; background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: 6px; color: var(--text-primary); font-weight: bold; cursor: pointer;">
+                            🔗 Connect GitHub
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -6113,59 +6163,435 @@
             const gearList = document.getElementById('gearList');
             if (!gearList) return;
 
-            gearList.innerHTML = state.gear.map((item, i) => {
-                const qtyDisplay = item.unit ? `${item.qty} ${item.unit}` : `×${item.qty || 1}`;
-                const isConsumable = item.consumable;
-                const isTool = item.isTool;
-                const icon = isTool ? '🛠️' : (isConsumable ? '📦' : '🎒');
+            // Categorize items - assign gearType to legacy items
+            const categorized = {
+                consumable: [],
+                gear: [],
+                tool: [],
+                material: []
+            };
 
-                return `
-                    <div class="inventory-item ${isTool ? 'tool-item' : ''}" onclick="showGearDetails(${i})" style="cursor: pointer;">
-                        <div class="inventory-item-left">
-                            <span class="inventory-item-name">${icon} ${item.name}</span>
-                        </div>
-                        <div class="inventory-item-actions" onclick="event.stopPropagation();">
-                            ${isConsumable ? `
-                                <button class="qty-btn" onclick="adjustGearQty(${i}, -1)" style="padding: 4px 8px; background: var(--accent-red); border: none; border-radius: 4px; color: white; cursor: pointer;">−</button>
-                                <span style="color: var(--text-muted); min-width: 50px; text-align: center;">${qtyDisplay}</span>
-                                <button class="qty-btn" onclick="adjustGearQty(${i}, 1)" style="padding: 4px 8px; background: var(--accent-green); border: none; border-radius: 4px; color: white; cursor: pointer;">+</button>
-                            ` : `
-                                <span style="color: var(--text-muted);">${qtyDisplay}</span>
-                            `}
-                            <button class="delete-btn" onclick="deleteItem('gear', ${i})">✕</button>
-                        </div>
+            state.gear.forEach((item, i) => {
+                // Determine type for legacy items
+                let type = item.gearType;
+                if (!type) {
+                    if (item.isTool) type = 'tool';
+                    else if (item.consumable) type = 'consumable';
+                    else type = 'gear';
+                }
+                categorized[type] = categorized[type] || [];
+                categorized[type].push({ ...item, originalIndex: i });
+            });
+
+            let html = '';
+
+            // Render each category
+            const categories = [
+                { key: 'consumable', icon: '📦', title: 'Consumables' },
+                { key: 'gear', icon: '🎒', title: 'Gear' },
+                { key: 'tool', icon: '🛠️', title: 'Tools' },
+                { key: 'material', icon: '💎', title: 'Materials' }
+            ];
+
+            categories.forEach(cat => {
+                const items = categorized[cat.key];
+                if (!items || items.length === 0) return;
+
+                html += `<div class="gear-category">
+                    <div class="gear-category-title" style="color: var(--accent-gold); font-weight: bold; padding: 8px 0; border-bottom: 1px solid var(--border-color); margin-bottom: 8px;">
+                        ${cat.icon} ${cat.title}
+                    </div>`;
+
+                if (cat.key === 'material') {
+                    // Group materials by name for stacking
+                    html += renderMaterialsGrouped(items);
+                } else {
+                    items.forEach(item => {
+                        html += renderGearItem(item, cat.key);
+                    });
+                }
+
+                html += '</div>';
+            });
+
+            if (html === '') {
+                html = '<div class="text-muted" style="padding: 10px;">No adventuring gear yet</div>';
+            }
+
+            gearList.innerHTML = html;
+        }
+
+        function renderGearItem(item, type) {
+            const i = item.originalIndex;
+            const qtyDisplay = item.unit ? `${item.qty} ${item.unit}` : `×${item.qty || 1}`;
+            const isConsumable = type === 'consumable';
+            const isTool = type === 'tool';
+            const showQtyControls = isConsumable || (item.qty > 1);
+
+            // For tools, show proficiency indicator
+            const profBadge = isTool && item.proficient ? ' <span style="color: var(--accent-green); font-size: 0.8em;">✓</span>' : '';
+
+            return `
+                <div class="inventory-item ${isTool ? 'tool-item' : ''}" onclick="showGearDetails(${i})" style="cursor: pointer;">
+                    <div class="inventory-item-left">
+                        <span class="inventory-item-name">${item.name}${profBadge}</span>
                     </div>
-                `;
-            }).join('');
+                    <div class="inventory-item-actions" onclick="event.stopPropagation();">
+                        ${showQtyControls ? `
+                            <button class="qty-btn" onclick="adjustGearQty(${i}, -1)" style="padding: 4px 8px; background: var(--accent-red); border: none; border-radius: 4px; color: white; cursor: pointer;">−</button>
+                            <span style="color: var(--text-muted); min-width: 40px; text-align: center;">${qtyDisplay}</span>
+                            <button class="qty-btn" onclick="adjustGearQty(${i}, 1)" style="padding: 4px 8px; background: var(--accent-green); border: none; border-radius: 4px; color: white; cursor: pointer;">+</button>
+                        ` : `
+                            <span style="color: var(--text-muted);">${qtyDisplay}</span>
+                        `}
+                        <button class="delete-btn" onclick="deleteItem('gear', ${i})">✕</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderMaterialsGrouped(items) {
+            // Group materials by name
+            const grouped = {};
+            items.forEach(item => {
+                const key = item.name.toLowerCase();
+                if (!grouped[key]) {
+                    grouped[key] = {
+                        name: item.name,
+                        items: [],
+                        totalWorth: 0,
+                        totalQty: 0,
+                        currency: item.currency || 'gp'
+                    };
+                }
+                grouped[key].items.push(item);
+                grouped[key].totalQty += item.qty || 1;
+                grouped[key].totalWorth += (item.worth || 0) * (item.qty || 1);
+            });
+
+            let html = '';
+            Object.values(grouped).forEach(group => {
+                const hasMultiple = group.items.length > 1 || group.totalQty > 1;
+                const worthDisplay = group.totalWorth > 0 ? `${group.totalWorth} ${group.currency}` : '';
+                const qtyDisplay = group.totalQty > 1 ? `${group.totalQty}p` : '';
+                const summaryParts = [qtyDisplay, worthDisplay].filter(Boolean).join(', ');
+
+                if (group.items.length === 1 && group.items[0].qty === 1) {
+                    // Single item - simple display
+                    const item = group.items[0];
+                    const i = item.originalIndex;
+                    const worthText = item.worth ? `${item.worth} ${item.currency || 'gp'}` : '';
+                    html += `
+                        <div class="inventory-item" onclick="showGearDetails(${i})" style="cursor: pointer;">
+                            <div class="inventory-item-left">
+                                <span class="inventory-item-name">${item.name}${worthText ? ` (${worthText})` : ''}</span>
+                            </div>
+                            <div class="inventory-item-actions" onclick="event.stopPropagation();">
+                                <button class="qty-btn" onclick="adjustGearQty(${i}, -1)" style="padding: 4px 8px; background: var(--accent-red); border: none; border-radius: 4px; color: white; cursor: pointer;">−</button>
+                                <span style="color: var(--text-muted); min-width: 30px; text-align: center;">×${item.qty}</span>
+                                <button class="qty-btn" onclick="adjustGearQty(${i}, 1)" style="padding: 4px 8px; background: var(--accent-green); border: none; border-radius: 4px; color: white; cursor: pointer;">+</button>
+                                <button class="delete-btn" onclick="deleteItem('gear', ${i})">✕</button>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    // Multiple items or qty > 1 - expandable group
+                    const groupId = 'mat-' + group.name.toLowerCase().replace(/[^a-z0-9]/g, '');
+                    const escapedName = group.name.replace(/'/g, "\\'");
+                    html += `
+                        <div class="material-group">
+                            <div class="inventory-item material-group-header" style="cursor: pointer;">
+                                <div class="inventory-item-left" onclick="showMaterialGroupInfo('${escapedName}')">
+                                    <span class="inventory-item-name">${group.name}${group.items.length > 1 ? 's' : ''} (${summaryParts})</span>
+                                </div>
+                                <div class="inventory-item-actions">
+                                    <button onclick="toggleMaterialGroup('${groupId}')" style="padding: 4px 10px; background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: 4px; color: var(--text-muted); cursor: pointer; font-size: 0.9em;">▼</button>
+                                </div>
+                            </div>
+                            <div id="${groupId}" class="material-group-items" style="display: none; padding-left: 15px; border-left: 2px solid var(--border-color); margin-left: 10px;">
+                                ${group.items.map(item => {
+                                    const i = item.originalIndex;
+                                    const worthText = item.worth ? `${item.worth} ${item.currency || 'gp'}` : 'no value';
+                                    return `
+                                        <div class="inventory-item" onclick="showMaterialItemInfo(${i})" style="padding: 6px 0; cursor: pointer;">
+                                            <div class="inventory-item-left">
+                                                <span style="color: var(--text-muted);">${worthText} × ${item.qty}</span>
+                                            </div>
+                                            <div class="inventory-item-actions" onclick="event.stopPropagation();">
+                                                <button class="qty-btn" onclick="adjustGearQty(${i}, -1)" style="padding: 2px 6px; background: var(--accent-red); border: none; border-radius: 4px; color: white; cursor: pointer; font-size: 0.9em;">−</button>
+                                                <button class="qty-btn" onclick="adjustGearQty(${i}, 1)" style="padding: 2px 6px; background: var(--accent-green); border: none; border-radius: 4px; color: white; cursor: pointer; font-size: 0.9em;">+</button>
+                                                <button class="delete-btn" onclick="deleteItem('gear', ${i})" style="font-size: 0.9em;">✕</button>
+                                            </div>
+                                        </div>
+                                    `;
+                                }).join('')}
+                                <div style="padding: 8px 0;">
+                                    <button onclick="addMoreMaterial('${escapedName}', '')" style="width: 100%; padding: 6px; background: var(--bg-tertiary); border: 1px dashed var(--border-color); border-radius: 4px; color: var(--text-muted); cursor: pointer; font-size: 0.9em;">+ Add ${group.name}</button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+
+            return html;
+        }
+
+        function toggleMaterialGroup(groupId) {
+            const el = document.getElementById(groupId);
+            if (el) {
+                el.style.display = el.style.display === 'none' ? 'block' : 'none';
+            }
+        }
+
+        function showMaterialGroupInfo(groupName) {
+            // Find all items with this name
+            const items = state.gear.filter(item =>
+                item.name.toLowerCase() === groupName.toLowerCase() &&
+                (item.gearType === 'material' || item.worth !== undefined)
+            );
+
+            if (items.length === 0) return;
+
+            const firstItem = items[0];
+            const totalQty = items.reduce((sum, item) => sum + (item.qty || 1), 0);
+            const totalWorth = items.reduce((sum, item) => sum + ((item.worth || 0) * (item.qty || 1)), 0);
+            const currency = firstItem.currency || 'gp';
+
+            let body = `<div style="padding: 10px;">`;
+
+            // Type badge
+            body += `<div style="display: inline-block; padding: 4px 10px; background: var(--bg-tertiary); border-radius: 12px; font-size: 0.85em; color: var(--text-muted); margin-bottom: 10px;">
+                💎 Material Group
+            </div>`;
+
+            // Description
+            body += `<div style="font-size: 1.1em; margin-bottom: 10px;">${firstItem.desc || 'No description available.'}</div>`;
+
+            // Stats
+            body += `<div style="margin-bottom: 15px; color: var(--text-muted);">`;
+            body += `<div>📦 Total: ${totalQty} pieces (${items.length} stack${items.length > 1 ? 's' : ''})</div>`;
+            body += `<div>💰 Total Worth: ${totalWorth} ${currency}</div>`;
+            body += `</div>`;
+
+            // Breakdown
+            body += `<div style="background: var(--bg-tertiary); padding: 10px; border-radius: 8px; margin-bottom: 15px;">`;
+            body += `<div style="font-weight: bold; margin-bottom: 8px;">Worth Breakdown:</div>`;
+            items.forEach(item => {
+                const worthText = item.worth ? `${item.worth} ${item.currency || 'gp'}` : 'no value';
+                body += `<div style="color: var(--text-muted);">• ${worthText} × ${item.qty || 1}</div>`;
+            });
+            body += `</div>`;
+
+            // Add more button
+            const escapedName = groupName.replace(/'/g, "\\'");
+            const escapedDesc = (firstItem.desc || '').replace(/'/g, "\\'");
+            body += `<div style="margin-bottom: 10px;">`;
+            body += `<button onclick="addMoreMaterial('${escapedName}', '${escapedDesc}')" style="width: 100%; padding: 12px; background: var(--accent-green); border: none; border-radius: 6px; color: white; font-weight: bold; cursor: pointer;">+ Add ${groupName}</button>`;
+            body += `</div>`;
+
+            // Edit button (for name/description)
+            body += `<div style="display: flex; gap: 10px;">`;
+            body += `<button onclick="editMaterialGroup('${escapedName}')" style="flex: 1; padding: 12px; background: var(--accent-purple); border: none; border-radius: 6px; color: white; font-weight: bold; cursor: pointer;">✏️ Edit Name/Description</button>`;
+            body += `</div>`;
+
+            body += `</div>`;
+
+            showModal(`💎 ${groupName}`, body);
+        }
+
+        function editMaterialGroup(groupName) {
+            // Find first item to get current values
+            const firstItem = state.gear.find(item =>
+                item.name.toLowerCase() === groupName.toLowerCase() &&
+                (item.gearType === 'material' || item.worth !== undefined)
+            );
+
+            if (!firstItem) return;
+
+            const escapedName = groupName.replace(/'/g, "\\'");
+
+            const body = `
+                <div class="form-group">
+                    <label>Material Name</label>
+                    <input type="text" id="editGroupName" value="${firstItem.name}" placeholder="e.g., Diamond, Pearl">
+                    <div style="font-size: 0.85em; color: var(--text-muted); margin-top: 4px;">Changes apply to all items in this group</div>
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="editGroupDesc" rows="3" placeholder="What spells use this?">${firstItem.desc || ''}</textarea>
+                </div>
+                <button onclick="saveMaterialGroup('${escapedName}')" style="width: 100%; padding: 12px; background: var(--accent-green); border: none; border-radius: 6px; color: white; font-weight: bold; cursor: pointer;">Save Changes</button>
+            `;
+
+            showModal(`✏️ Edit: ${groupName}`, body);
+        }
+
+        function saveMaterialGroup(originalName) {
+            const newName = document.getElementById('editGroupName').value.trim();
+            const newDesc = document.getElementById('editGroupDesc').value.trim();
+
+            if (!newName) { alert('Please enter a name'); return; }
+
+            saveForUndo();
+
+            // Update all items with the original name
+            state.gear.forEach(item => {
+                if (item.name.toLowerCase() === originalName.toLowerCase() &&
+                    (item.gearType === 'material' || item.worth !== undefined)) {
+                    item.name = newName;
+                    item.desc = newDesc || null;
+                }
+            });
+
+            saveState();
+            closeModal();
+            renderGearList();
+            showToast('Group updated!');
+        }
+
+        function showMaterialItemInfo(index) {
+            const item = state.gear[index];
+            if (!item) return;
+
+            const worthText = item.worth ? `${item.worth} ${item.currency || 'gp'}` : 'No value set';
+            const totalWorth = (item.worth || 0) * (item.qty || 1);
+
+            let body = `<div style="padding: 10px;">`;
+
+            // Type badge
+            body += `<div style="display: inline-block; padding: 4px 10px; background: var(--bg-tertiary); border-radius: 12px; font-size: 0.85em; color: var(--text-muted); margin-bottom: 10px;">
+                💎 Material
+            </div>`;
+
+            // Name display (read-only, edit via group)
+            body += `<div style="font-size: 1.2em; font-weight: bold; margin-bottom: 10px;">${item.name}</div>`;
+
+            // Description
+            body += `<div style="font-size: 1em; margin-bottom: 10px; color: var(--text-muted);">${item.desc || 'No description.'}</div>`;
+
+            // Stats
+            body += `<div style="margin-bottom: 15px;">`;
+            body += `<div>📦 Quantity: ${item.qty || 1}</div>`;
+            body += `<div>💰 Worth: ${worthText} each</div>`;
+            if (item.qty > 1) {
+                body += `<div>💰 Total: ${totalWorth} ${item.currency || 'gp'}</div>`;
+            }
+            body += `</div>`;
+
+            // Edit worth button
+            body += `<div style="display: flex; gap: 10px; margin-top: 15px;">`;
+            body += `<button onclick="editMaterialWorth(${index})" style="flex: 1; padding: 12px; background: var(--accent-purple); border: none; border-radius: 6px; color: white; font-weight: bold; cursor: pointer;">✏️ Edit Worth</button>`;
+            body += `<button onclick="deleteGearItem(${index}); closeModal();" style="padding: 12px; background: var(--accent-red); border: none; border-radius: 6px; color: white; font-weight: bold; cursor: pointer;">🗑️</button>`;
+            body += `</div>`;
+
+            body += `</div>`;
+
+            showModal(`💎 ${item.name}`, body);
+        }
+
+        function editMaterialWorth(index) {
+            const item = state.gear[index];
+            if (!item) return;
+
+            const body = `
+                <div class="form-group">
+                    <label>Quantity</label>
+                    <input type="number" id="editItemQty" value="${item.qty || 1}" min="1">
+                </div>
+                <div class="form-row" style="display: flex; gap: 10px;">
+                    <div class="form-group" style="flex: 2;">
+                        <label>Worth (per item)</label>
+                        <input type="number" id="editItemWorth" value="${item.worth || 0}" min="0">
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label>Currency</label>
+                        <select id="editItemCurrency">
+                            <option value="gp" ${item.currency === 'gp' || !item.currency ? 'selected' : ''}>GP</option>
+                            <option value="sp" ${item.currency === 'sp' ? 'selected' : ''}>SP</option>
+                            <option value="cp" ${item.currency === 'cp' ? 'selected' : ''}>CP</option>
+                        </select>
+                    </div>
+                </div>
+                <div style="font-size: 0.85em; color: var(--text-muted); margin-bottom: 15px;">To change name/description, edit from the group header</div>
+                <button onclick="saveMaterialWorth(${index})" style="width: 100%; padding: 12px; background: var(--accent-green); border: none; border-radius: 6px; color: white; font-weight: bold; cursor: pointer;">Save Changes</button>
+            `;
+
+            showModal(`💰 Edit Worth: ${item.name}`, body);
+        }
+
+        function saveMaterialWorth(index) {
+            const item = state.gear[index];
+            if (!item) return;
+
+            saveForUndo();
+
+            item.qty = parseInt(document.getElementById('editItemQty').value) || 1;
+            item.worth = parseInt(document.getElementById('editItemWorth').value) || 0;
+            item.currency = document.getElementById('editItemCurrency').value || 'gp';
+
+            saveState();
+            closeModal();
+            renderGearList();
+            showToast('Item updated!');
         }
 
         function showGearDetails(index) {
             const item = state.gear[index];
             if (!item) return;
 
-            let body = `<div style="padding: 10px;">`;
-
-            // Basic info
-            body += `<div style="font-size: 1.1em; margin-bottom: 10px;">${item.desc || 'No description available.'}</div>`;
-
-            // Stats row
-            if (item.qty !== undefined) {
-                body += `<div style="margin-bottom: 15px; color: var(--text-muted);">`;
-                body += `<span>📦 Qty: ${item.qty}${item.unit ? ' ' + item.unit : ''}</span>`;
-                body += `</div>`;
+            // Determine item type
+            let type = item.gearType;
+            if (!type) {
+                if (item.isTool) type = 'tool';
+                else if (item.consumable) type = 'consumable';
+                else if (item.worth !== undefined) type = 'material';
+                else type = 'gear';
             }
 
-            // Tool-specific info
-            if (item.isTool) {
-                body += `<div style="background: rgba(100,149,237,0.1); padding: 10px; border-radius: 8px; margin-bottom: 10px;">`;
-                body += `<div style="color: var(--accent-blue); font-weight: bold; margin-bottom: 8px;">🛠️ Tool Proficiency${item.proficient ? ' (Proficient)' : ''}</div>`;
+            const typeIcons = { consumable: '📦', gear: '🎒', tool: '🛠️', material: '💎' };
+            const typeNames = { consumable: 'Consumable', gear: 'Gear', tool: 'Tool', material: 'Material' };
 
+            let body = `<div style="padding: 10px;">`;
+
+            // Type badge
+            body += `<div style="display: inline-block; padding: 4px 10px; background: var(--bg-tertiary); border-radius: 12px; font-size: 0.85em; color: var(--text-muted); margin-bottom: 10px;">
+                ${typeIcons[type]} ${typeNames[type]}
+            </div>`;
+
+            // Description
+            body += `<div style="font-size: 1.1em; margin-bottom: 10px;">${item.desc || 'No description available.'}</div>`;
+
+            // Stats row based on type
+            body += `<div style="margin-bottom: 15px; color: var(--text-muted); display: flex; gap: 15px; flex-wrap: wrap;">`;
+
+            // Quantity for all types
+            body += `<span>📦 Qty: ${item.qty || 1}${item.unit ? ' ' + item.unit : ''}</span>`;
+
+            // Material-specific: worth
+            if (type === 'material' && item.worth) {
+                const totalWorth = item.worth * (item.qty || 1);
+                body += `<span>💰 Worth: ${item.worth} ${item.currency || 'gp'} each (${totalWorth} ${item.currency || 'gp'} total)</span>`;
+            }
+
+            body += `</div>`;
+
+            // Tool-specific info
+            if (type === 'tool') {
+                body += `<div style="background: rgba(100,149,237,0.1); padding: 10px; border-radius: 8px; margin-bottom: 10px;">`;
+                body += `<div style="color: var(--accent-blue); font-weight: bold; margin-bottom: 8px;">🛠️ Tool${item.proficient ? ' <span style="color: var(--accent-green);">(Proficient)</span>' : ''}</div>`;
+
+                if (item.toolFunction) {
+                    body += `<div style="white-space: pre-wrap;">${item.toolFunction}</div>`;
+                }
+
+                // Legacy fields support
                 if (item.checks) {
-                    body += `<div style="margin-bottom: 8px;"><strong>Related Checks:</strong> ${item.checks}</div>`;
+                    body += `<div style="margin-top: 8px;"><strong>Related Checks:</strong> ${item.checks}</div>`;
                 }
 
                 if (item.uses && item.uses.length > 0) {
-                    body += `<div style="margin-bottom: 5px;"><strong>Common Uses:</strong></div>`;
+                    body += `<div style="margin-top: 8px;"><strong>Common Uses:</strong></div>`;
                     body += `<ul style="margin: 0; padding-left: 20px;">`;
                     item.uses.forEach(use => {
                         body += `<li style="margin-bottom: 4px;">${use}</li>`;
@@ -6175,14 +6601,16 @@
                 body += `</div>`;
             }
 
-            // Consumable actions
-            if (item.consumable && item.qty > 0) {
-                body += `<div style="display: flex; gap: 10px; margin-top: 15px;">`;
-                body += `<button onclick="useGearItem(${index}); closeModal();" style="flex: 1; padding: 12px; background: var(--accent-orange); border: none; border-radius: 6px; color: white; font-weight: bold; cursor: pointer;">Use 1 ${item.name}</button>`;
+            // Material add more button
+            if (type === 'material') {
+                const escapedName = item.name.replace(/'/g, "\\'");
+                const escapedDesc = (item.desc || '').replace(/'/g, "\\'");
+                body += `<div style="margin-top: 15px;">`;
+                body += `<button onclick="addMoreMaterial('${escapedName}', '${escapedDesc}')" style="width: 100%; padding: 12px; background: var(--accent-green); border: none; border-radius: 6px; color: white; font-weight: bold; cursor: pointer;">+ Add ${item.name}</button>`;
                 body += `</div>`;
             }
 
-            // Edit button
+            // Edit & Delete buttons
             body += `<div style="display: flex; gap: 10px; margin-top: 15px;">`;
             body += `<button onclick="editGear(${index})" style="flex: 1; padding: 12px; background: var(--accent-purple); border: none; border-radius: 6px; color: white; font-weight: bold; cursor: pointer;">✏️ Edit</button>`;
             body += `<button onclick="deleteGearItem(${index}); closeModal();" style="padding: 12px; background: var(--accent-red); border: none; border-radius: 6px; color: white; font-weight: bold; cursor: pointer;">🗑️</button>`;
@@ -6190,7 +6618,19 @@
 
             body += `</div>`;
 
-            showModal(item.name, body);
+            showModal(`${typeIcons[type]} ${item.name}`, body);
+        }
+
+        function addMoreMaterial(name, desc) {
+            closeModal();
+            openAddGearForm('material');
+            // Wait for modal to render, then prefill
+            setTimeout(() => {
+                const nameEl = document.getElementById('gearName');
+                const descEl = document.getElementById('gearDesc');
+                if (nameEl) nameEl.value = name;
+                if (descEl) descEl.value = desc;
+            }, 50);
         }
 
         function adjustGearQty(index, amount) {
@@ -6198,7 +6638,16 @@
             if (!item) return;
 
             saveForUndo();
-            item.qty = Math.max(0, (item.qty || 1) + amount);
+            const newQty = (item.qty || 1) + amount;
+
+            if (newQty <= 0) {
+                // Auto-delete when quantity reaches 0
+                state.gear.splice(index, 1);
+                showToast(`${item.name} removed`);
+            } else {
+                item.qty = newQty;
+            }
+
             saveState();
             renderGearList();
         }
@@ -6207,57 +6656,171 @@
             const item = state.gear[index];
             if (!item) return;
 
-            const body = `
-                <div class="form-group">
-                    <label>Item Name</label>
-                    <input type="text" id="editGearName" value="${item.name || ''}" placeholder="e.g., Rope, Torch, Rations">
-                </div>
-                <div class="form-row" style="display: flex; gap: 10px;">
-                    <div class="form-group" style="flex: 1;">
+            // Determine item type
+            let type = item.gearType;
+            if (!type) {
+                if (item.isTool) type = 'tool';
+                else if (item.consumable) type = 'consumable';
+                else if (item.worth !== undefined) type = 'material';
+                else type = 'gear';
+            }
+
+            let body = '';
+
+            if (type === 'consumable') {
+                body = `
+                    <div class="form-group">
+                        <label>Item Name</label>
+                        <input type="text" id="editGearName" value="${item.name || ''}" placeholder="e.g., Potion of Healing, Torch">
+                    </div>
+                    <div class="form-row" style="display: flex; gap: 10px;">
+                        <div class="form-group" style="flex: 1;">
+                            <label>Quantity</label>
+                            <input type="number" id="editGearQty" value="${item.qty || 1}" min="1">
+                        </div>
+                        <div class="form-group" style="flex: 1;">
+                            <label>Unit (optional)</label>
+                            <select id="editGearUnit">
+                                <option value="" ${!item.unit ? 'selected' : ''}>-</option>
+                                <option value="ft" ${item.unit === 'ft' ? 'selected' : ''}>ft</option>
+                                <option value="days" ${item.unit === 'days' ? 'selected' : ''}>days</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea id="editGearDesc" rows="3" placeholder="What does this item do when used?">${item.desc || ''}</textarea>
+                    </div>
+                    <button onclick="saveEditGear(${index}, 'consumable')" style="width: 100%; padding: 12px; background: var(--accent-green); border: none; border-radius: 6px; color: white; font-weight: bold; cursor: pointer;">Save Changes</button>
+                `;
+            } else if (type === 'tool') {
+                body = `
+                    <div class="form-group">
+                        <label>Tool Name</label>
+                        <input type="text" id="editGearName" value="${item.name || ''}" placeholder="e.g., Herbalism Kit">
+                    </div>
+                    <div class="form-group">
                         <label>Quantity</label>
-                        <input type="number" id="editGearQty" value="${item.qty || 1}" min="0">
+                        <input type="number" id="editGearQty" value="${item.qty || 1}" min="1">
                     </div>
-                    <div class="form-group" style="flex: 1;">
-                        <label>Unit (optional)</label>
-                        <select id="editGearUnit">
-                            <option value="" ${!item.unit ? 'selected' : ''}>-</option>
-                            <option value="ft" ${item.unit === 'ft' ? 'selected' : ''}>ft</option>
-                            <option value="days" ${item.unit === 'days' ? 'selected' : ''}>days</option>
-                        </select>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea id="editGearDesc" rows="2" placeholder="What's in this tool kit?">${item.desc || ''}</textarea>
                     </div>
-                </div>
-                <div class="form-group" style="display: flex; align-items: center;">
-                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-                        <input type="checkbox" id="editGearConsumable" ${item.consumable ? 'checked' : ''} style="width: 20px; height: 20px;">
-                        <span>Consumable (can be used up)</span>
-                    </label>
-                </div>
-                <div class="form-group" style="display: flex; align-items: center;">
-                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-                        <input type="checkbox" id="editGearTool" ${item.isTool ? 'checked' : ''} style="width: 20px; height: 20px;">
-                        <span>Tool (proficiency check)</span>
-                    </label>
-                </div>
-                <div class="form-group">
-                    <label>Description</label>
-                    <textarea id="editGearDesc" rows="3" placeholder="What does this item do?">${item.desc || ''}</textarea>
-                </div>
-                <button onclick="saveEditGear(${index})" style="width: 100%; padding: 12px; background: var(--accent-green); border: none; border-radius: 6px; color: white; font-weight: bold; cursor: pointer;">Save Changes</button>
-            `;
-            showModal('Edit: ' + item.name, body);
+                    <div class="form-group" style="display: flex; align-items: center;">
+                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                            <input type="checkbox" id="editToolProficient" ${item.proficient ? 'checked' : ''} style="width: 20px; height: 20px;">
+                            <span>Proficient with this tool</span>
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label>Tool Functions / Related Checks</label>
+                        <textarea id="editToolFunction" rows="4" placeholder="What can you do with this tool?">${item.toolFunction || ''}</textarea>
+                    </div>
+                    <button onclick="saveEditGear(${index}, 'tool')" style="width: 100%; padding: 12px; background: var(--accent-green); border: none; border-radius: 6px; color: white; font-weight: bold; cursor: pointer;">Save Changes</button>
+                `;
+            } else if (type === 'material') {
+                const worthDisplay = item.worth ? `${item.worth} ${item.currency || 'gp'}` : 'No value set';
+                body = `
+                    <div class="form-group">
+                        <label>Material Name</label>
+                        <input type="text" id="editGearName" value="${item.name || ''}" placeholder="e.g., Diamond, Pearl">
+                    </div>
+                    <div class="form-group">
+                        <label>Quantity</label>
+                        <input type="number" id="editGearQty" value="${item.qty || 1}" min="1">
+                    </div>
+                    <div class="form-group">
+                        <label>Worth (per item)</label>
+                        <div style="padding: 10px; background: var(--bg-tertiary); border-radius: 6px; color: var(--text-muted);">
+                            💰 ${worthDisplay}
+                            <span style="font-size: 0.85em; display: block; margin-top: 4px;">To change worth, delete and add new</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea id="editGearDesc" rows="2" placeholder="What spells use this?">${item.desc || ''}</textarea>
+                    </div>
+                    <button onclick="saveEditGear(${index}, 'material')" style="width: 100%; padding: 12px; background: var(--accent-green); border: none; border-radius: 6px; color: white; font-weight: bold; cursor: pointer;">Save Changes</button>
+                `;
+            } else {
+                // Standard gear
+                body = `
+                    <div class="form-group">
+                        <label>Item Name</label>
+                        <input type="text" id="editGearName" value="${item.name || ''}" placeholder="e.g., Backpack, Waterskin">
+                    </div>
+                    <div class="form-group">
+                        <label>Quantity</label>
+                        <input type="number" id="editGearQty" value="${item.qty || 1}" min="1">
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea id="editGearDesc" rows="3" placeholder="Describe the item...">${item.desc || ''}</textarea>
+                    </div>
+                    <button onclick="saveEditGear(${index}, 'gear')" style="width: 100%; padding: 12px; background: var(--accent-green); border: none; border-radius: 6px; color: white; font-weight: bold; cursor: pointer;">Save Changes</button>
+                `;
+            }
+
+            const typeIcons = { consumable: '📦', gear: '🎒', tool: '🛠️', material: '💎' };
+            showModal(`${typeIcons[type] || ''} Edit: ${item.name}`, body);
         }
 
-        function saveEditGear(index) {
+        function saveEditGear(index, gearType) {
             const name = document.getElementById('editGearName').value.trim();
             if (!name) { alert('Please enter an item name'); return; }
 
             saveForUndo();
-            state.gear[index].name = name;
-            state.gear[index].qty = parseInt(document.getElementById('editGearQty').value) || 1;
-            state.gear[index].unit = document.getElementById('editGearUnit').value || null;
-            state.gear[index].consumable = document.getElementById('editGearConsumable').checked;
-            state.gear[index].isTool = document.getElementById('editGearTool').checked;
-            state.gear[index].desc = document.getElementById('editGearDesc').value.trim() || null;
+
+            const item = state.gear[index];
+            item.name = name;
+            item.qty = parseInt(document.getElementById('editGearQty').value) || 1;
+            item.gearType = gearType;
+
+            // Get description if exists
+            const descEl = document.getElementById('editGearDesc');
+            item.desc = descEl ? descEl.value.trim() || null : item.desc;
+
+            // Type-specific fields
+            if (gearType === 'consumable') {
+                item.consumable = true;
+                item.isTool = false;
+                const unitEl = document.getElementById('editGearUnit');
+                item.unit = unitEl ? unitEl.value || null : null;
+                // Clear material fields
+                delete item.worth;
+                delete item.currency;
+                delete item.toolFunction;
+                delete item.proficient;
+            } else if (gearType === 'tool') {
+                item.isTool = true;
+                item.consumable = false;
+                item.proficient = document.getElementById('editToolProficient').checked;
+                const funcEl = document.getElementById('editToolFunction');
+                item.toolFunction = funcEl ? funcEl.value.trim() || null : null;
+                // Clear material/consumable fields
+                delete item.worth;
+                delete item.currency;
+                delete item.unit;
+            } else if (gearType === 'material') {
+                item.consumable = false;
+                item.isTool = false;
+                // Worth and currency are preserved (not editable)
+                // Clear other type fields
+                delete item.unit;
+                delete item.toolFunction;
+                delete item.proficient;
+            } else {
+                // Standard gear
+                item.consumable = false;
+                item.isTool = false;
+                // Clear all type-specific fields
+                delete item.worth;
+                delete item.currency;
+                delete item.unit;
+                delete item.toolFunction;
+                delete item.proficient;
+            }
 
             saveState();
             closeModal();
@@ -6302,40 +6865,135 @@
 
         function openAddGearModal() {
             const body = `
-                <div class="form-group">
-                    <label>Item Name</label>
-                    <input type="text" id="gearName" placeholder="e.g., Rope, Torch, Rations">
-                </div>
-                <div class="form-row" style="display: flex; gap: 10px;">
-                    <div class="form-group" style="flex: 1;">
-                        <label>Quantity</label>
-                        <input type="number" id="gearQty" value="1" min="1">
+                <div class="form-options">
+                    <div class="form-option" onclick="openAddGearForm('consumable')">
+                        <div class="form-option-title">📦 Consumable</div>
+                        <div class="form-option-desc">Items that get used up (potions, rations, torches)</div>
                     </div>
-                    <div class="form-group" style="flex: 1;">
-                        <label>Unit (optional)</label>
-                        <select id="gearUnit">
-                            <option value="">-</option>
-                            <option value="ft">ft</option>
-                            <option value="days">days</option>
-                        </select>
+                    <div class="form-option" onclick="openAddGearForm('gear')">
+                        <div class="form-option-title">🎒 Gear</div>
+                        <div class="form-option-desc">Standard equipment (backpack, rope, bedroll)</div>
+                    </div>
+                    <div class="form-option" onclick="openAddGearForm('tool')">
+                        <div class="form-option-title">🛠️ Tool</div>
+                        <div class="form-option-desc">Tools you may be proficient with (herbalism kit)</div>
+                    </div>
+                    <div class="form-option" onclick="openAddGearForm('material')">
+                        <div class="form-option-title">💎 Material</div>
+                        <div class="form-option-desc">Spell components and valuables (diamond, incense)</div>
                     </div>
                 </div>
-                <div class="form-group" style="display: flex; align-items: center;">
-                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-                        <input type="checkbox" id="gearConsumable" style="width: 20px; height: 20px;">
-                        <span>Consumable (can be used up)</span>
-                    </label>
-                </div>
-                <div class="form-group">
-                    <label>Description (optional)</label>
-                    <textarea id="gearDesc" rows="2" placeholder="What does this item do?"></textarea>
-                </div>
-                <button onclick="saveNewGear()" style="width: 100%; padding: 12px; background: var(--accent-green); border: none; border-radius: 6px; color: white; font-weight: bold; cursor: pointer;">Add Gear</button>
             `;
             showModal('Add Adventuring Gear', body);
         }
 
-        function saveNewGear() {
+        function openAddGearForm(gearType) {
+            let body = '';
+
+            if (gearType === 'consumable') {
+                body = `
+                    <div class="form-group">
+                        <label>Item Name</label>
+                        <input type="text" id="gearName" placeholder="e.g., Potion of Healing, Torch">
+                    </div>
+                    <div class="form-row" style="display: flex; gap: 10px;">
+                        <div class="form-group" style="flex: 1;">
+                            <label>Quantity</label>
+                            <input type="number" id="gearQty" value="1" min="1">
+                        </div>
+                        <div class="form-group" style="flex: 1;">
+                            <label>Unit (optional)</label>
+                            <select id="gearUnit">
+                                <option value="">-</option>
+                                <option value="ft">ft</option>
+                                <option value="days">days</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea id="gearDesc" rows="3" placeholder="What does this item do when used?"></textarea>
+                    </div>
+                    <button onclick="saveNewGear('consumable')" style="width: 100%; padding: 12px; background: var(--accent-green); border: none; border-radius: 6px; color: white; font-weight: bold; cursor: pointer;">Add Consumable</button>
+                `;
+            } else if (gearType === 'gear') {
+                body = `
+                    <div class="form-group">
+                        <label>Item Name</label>
+                        <input type="text" id="gearName" placeholder="e.g., Backpack, Waterskin">
+                    </div>
+                    <div class="form-group">
+                        <label>Quantity</label>
+                        <input type="number" id="gearQty" value="1" min="1">
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea id="gearDesc" rows="3" placeholder="Describe the item..."></textarea>
+                    </div>
+                    <button onclick="saveNewGear('gear')" style="width: 100%; padding: 12px; background: var(--accent-green); border: none; border-radius: 6px; color: white; font-weight: bold; cursor: pointer;">Add Gear</button>
+                `;
+            } else if (gearType === 'tool') {
+                body = `
+                    <div class="form-group">
+                        <label>Tool Name</label>
+                        <input type="text" id="gearName" placeholder="e.g., Herbalism Kit, Thieves' Tools">
+                    </div>
+                    <div class="form-group">
+                        <label>Quantity</label>
+                        <input type="number" id="gearQty" value="1" min="1">
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea id="gearDesc" rows="2" placeholder="What's in this tool kit?"></textarea>
+                    </div>
+                    <div class="form-group" style="display: flex; align-items: center;">
+                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                            <input type="checkbox" id="toolProficient" style="width: 20px; height: 20px;">
+                            <span>Proficient with this tool</span>
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label>Tool Functions / Related Checks</label>
+                        <textarea id="toolFunction" rows="4" placeholder="What can you do with this tool? What skill checks does it apply to?"></textarea>
+                    </div>
+                    <button onclick="saveNewGear('tool')" style="width: 100%; padding: 12px; background: var(--accent-green); border: none; border-radius: 6px; color: white; font-weight: bold; cursor: pointer;">Add Tool</button>
+                `;
+            } else if (gearType === 'material') {
+                body = `
+                    <div class="form-group">
+                        <label>Material Name</label>
+                        <input type="text" id="gearName" placeholder="e.g., Diamond, Incense, Pearl">
+                    </div>
+                    <div class="form-group">
+                        <label>Quantity</label>
+                        <input type="number" id="gearQty" value="1" min="1">
+                    </div>
+                    <div class="form-row" style="display: flex; gap: 10px;">
+                        <div class="form-group" style="flex: 2;">
+                            <label>Worth (per item)</label>
+                            <input type="number" id="materialWorth" value="0" min="0" placeholder="0">
+                        </div>
+                        <div class="form-group" style="flex: 1;">
+                            <label>Currency</label>
+                            <select id="materialCurrency">
+                                <option value="gp">GP</option>
+                                <option value="sp">SP</option>
+                                <option value="cp">CP</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea id="gearDesc" rows="2" placeholder="What spells use this? Any special properties?"></textarea>
+                    </div>
+                    <button onclick="saveNewGear('material')" style="width: 100%; padding: 12px; background: var(--accent-green); border: none; border-radius: 6px; color: white; font-weight: bold; cursor: pointer;">Add Material</button>
+                `;
+            }
+
+            showModal(`Add ${gearType.charAt(0).toUpperCase() + gearType.slice(1)}`, body);
+        }
+
+        function saveNewGear(gearType) {
             const name = document.getElementById('gearName').value.trim();
             if (!name) { alert('Please enter an item name'); return; }
 
@@ -6343,12 +7001,23 @@
                 id: 'gear-' + Date.now(),
                 name: name,
                 qty: parseInt(document.getElementById('gearQty').value) || 1,
-                consumable: document.getElementById('gearConsumable').checked,
+                gearType: gearType,
                 desc: document.getElementById('gearDesc').value.trim() || null
             };
 
-            const unit = document.getElementById('gearUnit').value;
-            if (unit) newItem.unit = unit;
+            // Type-specific fields
+            if (gearType === 'consumable') {
+                newItem.consumable = true;
+                const unit = document.getElementById('gearUnit').value;
+                if (unit) newItem.unit = unit;
+            } else if (gearType === 'tool') {
+                newItem.isTool = true;
+                newItem.proficient = document.getElementById('toolProficient').checked;
+                newItem.toolFunction = document.getElementById('toolFunction').value.trim() || null;
+            } else if (gearType === 'material') {
+                newItem.worth = parseInt(document.getElementById('materialWorth').value) || 0;
+                newItem.currency = document.getElementById('materialCurrency').value || 'gp';
+            }
 
             saveForUndo();
             state.gear.push(newItem);
@@ -9292,6 +9961,372 @@
             saveState();
         }
 
+        // ===== BACKUP & SYNC =====
+        function exportBackup() {
+            const backup = {
+                version: STATE_VERSION,
+                exportDate: new Date().toISOString(),
+                characterName: 'Ashvael',
+                state: state
+            };
+
+            const jsonString = JSON.stringify(backup, null, 2);
+            const blob = new Blob([jsonString], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+
+            // Create filename with date
+            const date = new Date();
+            const dateStr = date.toISOString().split('T')[0];
+            const timeStr = date.toTimeString().split(' ')[0].replace(/:/g, '-');
+            const filename = `Ashvael_Backup_${dateStr}_${timeStr}.json`;
+
+            // Trigger download
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            // Save last backup time
+            localStorage.setItem('lastBackupDate', new Date().toISOString());
+            updateBackupInfo();
+
+            showToast('Backup exported!');
+        }
+
+        function importBackup(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const backup = JSON.parse(e.target.result);
+
+                    // Validate backup
+                    if (!backup.state) {
+                        alert('Invalid backup file: missing state data');
+                        return;
+                    }
+
+                    // Confirm import
+                    const exportDate = backup.exportDate ? new Date(backup.exportDate).toLocaleString() : 'Unknown';
+                    if (!confirm(`Import backup from ${exportDate}?\n\nThis will replace all current data.`)) {
+                        return;
+                    }
+
+                    // Import the state
+                    Object.assign(state, backup.state);
+                    saveState();
+
+                    // Record import
+                    localStorage.setItem('lastImportDate', new Date().toISOString());
+                    localStorage.setItem('lastImportFile', file.name);
+
+                    // Refresh everything
+                    location.reload();
+
+                } catch (err) {
+                    alert('Error reading backup file: ' + err.message);
+                }
+            };
+            reader.readAsText(file);
+
+            // Reset file input
+            event.target.value = '';
+        }
+
+        function updateBackupInfo() {
+            const infoEl = document.getElementById('lastBackupInfo');
+            if (!infoEl) return;
+
+            const lastBackup = localStorage.getItem('lastBackupDate');
+            const lastImport = localStorage.getItem('lastImportDate');
+            const lastImportFile = localStorage.getItem('lastImportFile');
+
+            let html = '';
+
+            if (lastBackup) {
+                const date = new Date(lastBackup);
+                html += `<div>📤 Last export: ${date.toLocaleDateString()} ${date.toLocaleTimeString()}</div>`;
+            }
+
+            if (lastImport) {
+                const date = new Date(lastImport);
+                html += `<div>📥 Last import: ${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
+                if (lastImportFile) {
+                    html += ` (${lastImportFile})`;
+                }
+                html += `</div>`;
+            }
+
+            if (!html) {
+                html = '<div>No backups yet. Export your first backup after your session!</div>';
+            }
+
+            infoEl.innerHTML = html;
+        }
+
+        // ===== GITHUB SYNC =====
+        function getGitHubConfig() {
+            const config = localStorage.getItem('githubConfig');
+            return config ? JSON.parse(config) : null;
+        }
+
+        function saveGitHubConfig(config) {
+            localStorage.setItem('githubConfig', JSON.stringify(config));
+            updateGitHubUI();
+        }
+
+        function updateGitHubUI() {
+            const config = getGitHubConfig();
+            const statusEl = document.getElementById('githubSyncStatus');
+            const buttonsEl = document.getElementById('githubSyncButtons');
+            const setupEl = document.getElementById('githubSetupPrompt');
+
+            if (!statusEl || !buttonsEl || !setupEl) return;
+
+            if (config && config.token && config.repo) {
+                // Connected
+                setupEl.style.display = 'none';
+                buttonsEl.style.display = 'block';
+
+                const lastPush = localStorage.getItem('lastGitHubPush');
+                const lastPull = localStorage.getItem('lastGitHubPull');
+
+                let statusHtml = `<div style="padding: 10px; background: var(--bg-tertiary); border-radius: 6px; margin-bottom: 10px; font-size: 0.85em;">`;
+                statusHtml += `<div style="color: var(--accent-green);">✓ Connected to ${config.repo}</div>`;
+                statusHtml += `<div style="color: var(--text-muted);">File: ${config.path || 'ashvael_backup.json'}</div>`;
+
+                if (lastPush) {
+                    const date = new Date(lastPush);
+                    statusHtml += `<div style="color: var(--text-muted); margin-top: 5px;">🚀 Last push: ${date.toLocaleDateString()} ${date.toLocaleTimeString()}</div>`;
+                }
+                if (lastPull) {
+                    const date = new Date(lastPull);
+                    statusHtml += `<div style="color: var(--text-muted);">📥 Last pull: ${date.toLocaleDateString()} ${date.toLocaleTimeString()}</div>`;
+                }
+
+                statusHtml += `</div>`;
+                statusEl.innerHTML = statusHtml;
+            } else {
+                // Not connected
+                setupEl.style.display = 'block';
+                buttonsEl.style.display = 'none';
+                statusEl.innerHTML = '';
+            }
+        }
+
+        function openGitHubSettings() {
+            const config = getGitHubConfig() || {};
+
+            const body = `
+                <div style="padding: 10px;">
+                    <p style="color: var(--text-muted); font-size: 0.9em; margin-bottom: 15px;">
+                        To sync with GitHub, you need a Personal Access Token with <strong>repo</strong> scope.
+                        <br><br>
+                        <a href="https://github.com/settings/tokens/new?description=Ashvael%20Character%20Sheet&scopes=repo" target="_blank" style="color: var(--accent-blue);">
+                            Create token on GitHub →
+                        </a>
+                    </p>
+
+                    <div class="form-group">
+                        <label>Personal Access Token</label>
+                        <input type="password" id="ghToken" value="${config.token || ''}" placeholder="ghp_xxxxxxxxxxxx" style="font-family: monospace;">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Repository (owner/repo)</label>
+                        <input type="text" id="ghRepo" value="${config.repo || ''}" placeholder="username/repo-name">
+                    </div>
+
+                    <div class="form-group">
+                        <label>File Path</label>
+                        <input type="text" id="ghPath" value="${config.path || 'ashvael_backup.json'}" placeholder="ashvael_backup.json">
+                        <div style="font-size: 0.85em; color: var(--text-muted); margin-top: 4px;">Path in your repo where the backup will be saved</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Branch (optional)</label>
+                        <input type="text" id="ghBranch" value="${config.branch || 'main'}" placeholder="main">
+                    </div>
+
+                    <button onclick="saveGitHubSettings()" style="width: 100%; padding: 12px; background: var(--accent-green); border: none; border-radius: 6px; color: white; font-weight: bold; cursor: pointer;">
+                        Save Settings
+                    </button>
+                </div>
+            `;
+
+            showModal('⚙️ GitHub Settings', body);
+        }
+
+        function saveGitHubSettings() {
+            const token = document.getElementById('ghToken').value.trim();
+            const repo = document.getElementById('ghRepo').value.trim();
+            const path = document.getElementById('ghPath').value.trim() || 'ashvael_backup.json';
+            const branch = document.getElementById('ghBranch').value.trim() || 'main';
+
+            if (!token || !repo) {
+                alert('Please enter both token and repository');
+                return;
+            }
+
+            if (!repo.includes('/')) {
+                alert('Repository should be in format: owner/repo-name');
+                return;
+            }
+
+            saveGitHubConfig({ token, repo, path, branch });
+            closeModal();
+            showToast('GitHub connected!');
+        }
+
+        function disconnectGitHub() {
+            if (!confirm('Disconnect from GitHub?')) return;
+            localStorage.removeItem('githubConfig');
+            localStorage.removeItem('lastGitHubPush');
+            localStorage.removeItem('lastGitHubPull');
+            updateGitHubUI();
+            showToast('GitHub disconnected');
+        }
+
+        async function pushToGitHub() {
+            const config = getGitHubConfig();
+            if (!config) {
+                openGitHubSettings();
+                return;
+            }
+
+            // Create backup data
+            const backup = {
+                version: STATE_VERSION,
+                exportDate: new Date().toISOString(),
+                characterName: 'Ashvael',
+                state: state
+            };
+
+            const content = JSON.stringify(backup, null, 2);
+            const contentBase64 = btoa(unescape(encodeURIComponent(content)));
+
+            try {
+                showToast('Pushing to GitHub...');
+
+                // First, try to get existing file to get its SHA
+                let sha = null;
+                try {
+                    const getResponse = await fetch(
+                        `https://api.github.com/repos/${config.repo}/contents/${config.path}?ref=${config.branch}`,
+                        {
+                            headers: {
+                                'Authorization': `token ${config.token}`,
+                                'Accept': 'application/vnd.github.v3+json'
+                            }
+                        }
+                    );
+                    if (getResponse.ok) {
+                        const fileData = await getResponse.json();
+                        sha = fileData.sha;
+                    }
+                } catch (e) {
+                    // File doesn't exist yet, that's fine
+                }
+
+                // Create or update file
+                const body = {
+                    message: `Update Ashvael backup - ${new Date().toLocaleString()}`,
+                    content: contentBase64,
+                    branch: config.branch
+                };
+                if (sha) {
+                    body.sha = sha;
+                }
+
+                const response = await fetch(
+                    `https://api.github.com/repos/${config.repo}/contents/${config.path}`,
+                    {
+                        method: 'PUT',
+                        headers: {
+                            'Authorization': `token ${config.token}`,
+                            'Accept': 'application/vnd.github.v3+json',
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(body)
+                    }
+                );
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.message || 'Failed to push');
+                }
+
+                localStorage.setItem('lastGitHubPush', new Date().toISOString());
+                updateGitHubUI();
+                showToast('✓ Pushed to GitHub!');
+
+            } catch (err) {
+                alert('GitHub push failed: ' + err.message);
+            }
+        }
+
+        async function pullFromGitHub() {
+            const config = getGitHubConfig();
+            if (!config) {
+                openGitHubSettings();
+                return;
+            }
+
+            try {
+                showToast('Pulling from GitHub...');
+
+                const response = await fetch(
+                    `https://api.github.com/repos/${config.repo}/contents/${config.path}?ref=${config.branch}`,
+                    {
+                        headers: {
+                            'Authorization': `token ${config.token}`,
+                            'Accept': 'application/vnd.github.v3+json'
+                        }
+                    }
+                );
+
+                if (!response.ok) {
+                    if (response.status === 404) {
+                        throw new Error('Backup file not found in repository');
+                    }
+                    const error = await response.json();
+                    throw new Error(error.message || 'Failed to pull');
+                }
+
+                const fileData = await response.json();
+                const content = decodeURIComponent(escape(atob(fileData.content)));
+                const backup = JSON.parse(content);
+
+                // Validate backup
+                if (!backup.state) {
+                    throw new Error('Invalid backup file');
+                }
+
+                // Confirm import
+                const exportDate = backup.exportDate ? new Date(backup.exportDate).toLocaleString() : 'Unknown';
+                if (!confirm(`Import backup from GitHub?\n\nBackup date: ${exportDate}\n\nThis will replace all current data.`)) {
+                    return;
+                }
+
+                // Import the state
+                Object.assign(state, backup.state);
+                saveState();
+
+                localStorage.setItem('lastGitHubPull', new Date().toISOString());
+
+                // Refresh everything
+                location.reload();
+
+            } catch (err) {
+                alert('GitHub pull failed: ' + err.message);
+            }
+        }
+
         // ===== ENHANCED INIT =====
         function initAll() {
             try {
@@ -9315,6 +10350,8 @@
 
                 renderInventory();
                 renderNotes();
+                updateBackupInfo();
+                updateGitHubUI();
 
                 // Update all displays with current state
                 updateHPDisplay();
