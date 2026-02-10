@@ -2557,24 +2557,26 @@
 
         // Get current ability scores (considers Wild Shape)
         function getCurrentAbilityScores() {
-            if (state.activeForm && state.activeForm.type === 'wild-shape') {
-                const beast = BEAST_FORMS ? BEAST_FORMS.find(b => b.id === state.activeForm.beastId) : null;
-                if (beast) {
+            // Only use beast scores if actively in wild shape AND beast exists
+            if (state.activeForm && state.activeForm.type === 'wild-shape' && state.activeForm.beastId) {
+                const beast = (typeof BEAST_FORMS !== 'undefined') ? BEAST_FORMS.find(b => b.id === state.activeForm.beastId) : null;
+                if (beast && beast.str && beast.dex) {
                     return {
                         str: beast.str,
                         dex: beast.dex,
-                        con: beast.con || 12, // Default if not specified
-                        int: BASE_ABILITY_SCORES.int,  // Keep mental stats
+                        con: beast.con || 12,
+                        int: BASE_ABILITY_SCORES.int,
                         wis: BASE_ABILITY_SCORES.wis,
                         cha: BASE_ABILITY_SCORES.cha
                     };
                 }
             }
+            // Always fall back to base scores
             return { ...BASE_ABILITY_SCORES };
         }
 
         // ===== STATE MANAGEMENT =====
-        const STATE_VERSION = 2; // Increment to force state reset
+        const STATE_VERSION = 3; // Increment to force state reset
 
         const DEFAULT_STATE = {
             version: STATE_VERSION,
