@@ -5398,7 +5398,7 @@
                                 <p><strong>Attacks:</strong> ${b.attacks}</p>
                                 <p><strong>Senses:</strong> ${b.senses}</p>
                                 <p><strong>Special:</strong> ${b.special}</p>
-                                <p><strong>Stats:</strong> STR ${b.str} (${formatMod(b.str)}) | DEX ${b.dex} (${formatMod(b.dex)}) | CON ${b.con} (${formatMod(b.con)})</p>
+                                <p><strong>Stats:</strong> STR ${b.str} (${formatScoreAsMod(b.str)}) | DEX ${b.dex} (${formatScoreAsMod(b.dex)}) | CON ${b.con} (${formatScoreAsMod(b.con)})</p>
                             </div>
                         </div>
                     `;
@@ -5409,7 +5409,7 @@
             container.innerHTML = html;
         }
 
-        function formatMod(score) {
+        function formatScoreAsMod(score) {
             const mod = Math.floor((score - 10) / 2);
             return mod >= 0 ? '+' + mod : '' + mod;
         }
