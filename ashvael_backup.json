@@ -1,6 +1,6 @@
 {
   "version": 3,
-  "exportDate": "2026-02-10T17:33:25.453Z",
+  "exportDate": "2026-02-11T00:34:02.766Z",
   "characterName": "Ashvael",
   "state": {
     "version": 3,
@@ -18,8 +18,8 @@
         false
       ],
       "2": [
-        false,
-        false,
+        true,
+        true,
         false
       ],
       "3": [
@@ -28,8 +28,8 @@
       ]
     },
     "resources": {
-      "guidingBolt": 4,
-      "wildShape": 2,
+      "guidingBolt": 3,
+      "wildShape": 1,
       "healingHands": 1,
       "healingWordFree": 1,
       "celestialRevelation": 1
@@ -83,20 +83,51 @@
     ],
     "knownBeastForms": [
       "cat",
-      "wolf",
       "panther",
       "giant-wolf-spider",
-      "black-bear",
-      "ape"
+      "ape",
+      "warhorse",
+      "spider"
     ],
     "activeForm": null,
     "inBattle": false,
-    "battleRound": 1,
+    "battleRound": 2,
     "battleLog": [],
-    "battleHistory": [],
+    "battleHistory": [
+      {
+        "date": "10/02/2026",
+        "rounds": 2,
+        "log": [
+          {
+            "time": "21:43:59",
+            "text": "Combat started!"
+          },
+          {
+            "time": "22:07:56",
+            "text": "Activated Starry Form: Chalice"
+          },
+          {
+            "time": "22:08:45",
+            "text": "Cast Cure Wounds using 2nd level slot"
+          },
+          {
+            "time": "22:27:44",
+            "text": "--- Round 2 ---"
+          },
+          {
+            "time": "22:29:34",
+            "text": "Cast Healing Word using 2nd level slot"
+          },
+          {
+            "time": "22:33:39",
+            "text": "Cast Guiding Bolt (free)"
+          }
+        ]
+      }
+    ],
     "actionsUsed": {
-      "action": false,
-      "bonus": false,
+      "action": true,
+      "bonus": true,
       "reaction": false
     },
     "equipment": [],
@@ -207,11 +238,74 @@
       }
     ],
     "notes": {
-      "sessions": [],
+      "sessions": [
+        {
+          "type": "note",
+          "name": "Session 1",
+          "content": "Woke up on a meteor, nautili ship broken in front of me. Remembering parts of the attack, green-yellow skinned specie, cutting off the heads of the mindflare. \n\nHearing a magical message in my head, projected from a ship that came close to inspect the area. \nMeteor got hooked and met my new party member. The meteor got moved into the nautili, meeting more party members in the ship.\n\nWe found mindflares with heads cut off and missing. Found a prisoner who was still alive, bonobo or what his name was, I am not a fan of him. We explored a bit more, I collected some strange bugs that got burned, but looked useful.\n\n"
+        }
+      ],
       "cities": [],
       "npcs": [],
-      "battles": [],
-      "other": []
+      "battles": [
+        {
+          "type": "battle",
+          "id": 1770760322810,
+          "name": "Battle - 10/02/2026 (2 rounds)",
+          "date": "2026-02-10T21:52:02.810Z",
+          "totalRounds": 2,
+          "log": [
+            {
+              "time": "21:43:59",
+              "text": "Combat started!"
+            },
+            {
+              "time": "22:07:56",
+              "text": "Activated Starry Form: Chalice"
+            },
+            {
+              "time": "22:08:45",
+              "text": "Cast Cure Wounds using 2nd level slot"
+            },
+            {
+              "time": "22:27:44",
+              "text": "--- Round 2 ---"
+            },
+            {
+              "time": "22:29:34",
+              "text": "Cast Healing Word using 2nd level slot"
+            },
+            {
+              "time": "22:33:39",
+              "text": "Cast Guiding Bolt (free)"
+            }
+          ],
+          "notes": "",
+          "content": "Woke up on a meteor, nautili ship broken in front of me. Remembering parts of the attack, green-yellow skinned specie, cutting off the heads of the mindflare. \n\nHearing a magical message in my head, projected from a ship that came close to inspect the area. \nMeteor got hooked and met my new party member. The meteor got moved into the nautili, meeting more party members in the ship.\n\nWe found mindflares with heads cut off and missing. Found a prisoner who was still alive, bonobo or what his name was, I am not a fan of him. We explored a bit more, I collected some strange bugs that got burned, but looked useful.\n\n"
+        }
+      ],
+      "other": [
+        {
+          "type": "note",
+          "name": "Spelljammer ships",
+          "content": "Spelljammer ships don’t have a weel to control the ship. They uses chair that control the ship"
+        },
+        {
+          "type": "note",
+          "name": "Player: Kai sunborn (Monk)",
+          "content": "Race: Monkey\nSize: Normal\nPosition: Front line damage\n\nExtra info:\n- fire is his specialty \n- curious and doesn’t like standing still"
+        },
+        {
+          "type": "note",
+          "name": "Player: Duke shystalker (wizard)",
+          "content": "Race: Rabbit\nSize: Small\nRole: ranged magic damage\n\nExtra information:\n- Always searching for loot\n- can go ahead of the team\n- fireball!! "
+        },
+        {
+          "type": "note",
+          "name": "Player: Dawan Andoly (artificer)",
+          "content": "Race: Gnome\nSize: Small\nRole: support front line\n\nExtra information:\n- Can make things\n- bit oblivious "
+        }
+      ]
     },
     "concentration": null,
     "companions": [],
@@ -331,7 +425,19 @@
           "Navigate unfamiliar terrain"
         ],
         "checks": "Nature, Survival, Investigation - add proficiency bonus when using tools for these checks"
+      },
+      {
+        "id": "gear-1770754687812",
+        "name": "Burned bug residu (pouch)",
+        "qty": 1,
+        "gearType": "material",
+        "desc": "Strange burned bug part found a nautili ship.",
+        "worth": 0,
+        "currency": "gp",
+        "consumable": false,
+        "isTool": false
       }
-    ]
+    ],
+    "originalStats": null
   }
 }
