@@ -881,10 +881,39 @@ IF inStarryForm:
 
 1. ~~**Druid Skill Proficiencies**~~ → **ANSWERED**: Nature + Perception
 
-2. **Currently Prepared Spells**: What 9 spells are currently prepared?
+2. ~~**Currently Prepared Spells**~~ → **ANSWERED** (from Session 1 backup):
+   - **1st Level**: Cure Wounds, Purify Food and Drink, Longstrider, Jump, Goodberry
+   - **2nd Level**: Pass Without Trace, Barkskin
+   - **3rd Level**: Conjure Animals, Call Lightning
 
 3. **Shortbow/Dagger**: Did you add these separately, or should they not be in inventory?
    - Official Druid starting equipment doesn't include ranged weapons
    - (Keeping them as common simple weapon additions)
 
 4. **Tiefling Traits**: What specific Infernal Legacy features (if any) from the Tiefling half?
+
+---
+
+# PART 9: CAMPAIGN INFO (from Session Backups)
+
+## Campaign Setting
+**Type**: Spelljammer (space/astral travel)
+- Ships use magical chairs instead of wheels for control
+- Nautiloid ships (mindflayer vessels)
+
+## Party Members
+
+| Player | Race | Class | Role | Notes |
+|--------|------|-------|------|-------|
+| Kai Sunborn | Monkey | Monk | Front line damage | Fire specialist, curious, doesn't like standing still |
+| Duke Shystalker | Rabbit | Wizard | Ranged magic | Always searching for loot, fireball enthusiast |
+| Dawan Andoly | Gnome | Artificer | Support front line | Can make things, bit oblivious |
+
+## Session 1 Summary
+- Ashvael woke up on a meteor with a broken nautiloid ship
+- Witnessed green-yellow skinned species cutting off mindflayer heads
+- Received magical message from approaching ship
+- Meteor hooked and brought aboard, met party members
+- Found mindflayers with heads cut off and missing
+- Found a prisoner named "Bonobo" (not a fan)
+- Collected strange bugs that got burned (kept residue as material)
