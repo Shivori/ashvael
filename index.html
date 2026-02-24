@@ -2628,12 +2628,6 @@
                 <div class="feature-list" id="skillsFeatures"></div>
             </div>
 
-            <!-- Level Up Button -->
-            <div class="card" id="levelUpCard" style="display: none;">
-                <button class="action-button level-up-button" onclick="openLevelUp()">
-                    ⬆️ Level Up
-                </button>
-            </div>
         </div>
 
         <!-- BACKSTORY SECTION -->
@@ -3179,17 +3173,12 @@
             const config = getLevelConfig();
             const topBarEl = document.getElementById('topBarLevel');
             const classTitle = document.getElementById('classLevelTitle');
-            const levelUpCard = document.getElementById('levelUpCard');
 
             if (topBarEl) {
                 topBarEl.textContent = `Level ${level} Druid (Circle of Stars) ▼`;
             }
             if (classTitle) {
                 classTitle.textContent = `Class: Druid (Level ${level})`;
-            }
-            if (levelUpCard) {
-                // Show level up button if not at max level (8)
-                levelUpCard.style.display = level < 8 ? 'block' : 'none';
             }
             // Hit Dice badge is handled by updateHitDiceBadge()
         }
@@ -3805,27 +3794,30 @@
             }
 
             const body = `
-                <div class="form-options">
-                    <div class="form-option" onclick="selectForm('starry-archer')">
-                        <div class="form-option-title">⭐ Starry Form: Archer</div>
-                        <div class="form-option-desc">Bonus action: Ranged spell attack, 60ft, 1d8+4 radiant</div>
-                    </div>
-                    <div class="form-option" onclick="selectForm('starry-chalice')">
-                        <div class="form-option-title">🏆 Starry Form: Chalice</div>
-                        <div class="form-option-desc">Healing spells also heal 1d8+4 to you or ally within 30ft</div>
-                    </div>
-                    <div class="form-option" onclick="selectForm('starry-dragon')">
-                        <div class="form-option-title">🐉 Starry Form: Dragon</div>
-                        <div class="form-option-desc">Concentration checks: treat 9 or lower as 10</div>
-                    </div>
+                <p><strong>Bonus Action</strong> | Uses Wild Shape</p>
+                <p style="margin-top: 10px;">Choose a form to take:</p>
+
+                <div style="margin-top: 15px;">
+                    <button class="modal-btn" onclick="selectForm('starry-archer')" style="width: 100%; padding: 12px; margin-bottom: 8px; text-align: left;">
+                        <strong>⭐ Starry Form: Archer</strong><br>
+                        <span style="font-size: 0.9em; color: var(--text-muted);">Bonus action: Ranged spell attack, 60ft, 1d8+4 radiant</span>
+                    </button>
+                    <button class="modal-btn" onclick="selectForm('starry-chalice')" style="width: 100%; padding: 12px; margin-bottom: 8px; text-align: left;">
+                        <strong>🏆 Starry Form: Chalice</strong><br>
+                        <span style="font-size: 0.9em; color: var(--text-muted);">Healing spells also heal 1d8+4 to you or ally within 30ft</span>
+                    </button>
+                    <button class="modal-btn" onclick="selectForm('starry-dragon')" style="width: 100%; padding: 12px; margin-bottom: 8px; text-align: left;">
+                        <strong>🐉 Starry Form: Dragon</strong><br>
+                        <span style="font-size: 0.9em; color: var(--text-muted);">Concentration checks: treat 9 or lower as 10</span>
+                    </button>
                     <hr style="border-color: var(--border-color); margin: 15px 0;">
-                    <div class="form-option" onclick="openBeastSelection()">
-                        <div class="form-option-title">🐺 Wild Shape (Beast Form)</div>
-                        <div class="form-option-desc">Transform into a beast (CR 1/2 max, ${Math.floor((state.characterLevel || 6) / 2)} hours, +${state.characterLevel || 6} temp HP)</div>
-                    </div>
+                    <button class="modal-btn" onclick="openBeastSelection()" style="width: 100%; padding: 12px; text-align: left; background: linear-gradient(135deg, var(--accent-green) 0%, #2d8a4e 100%);">
+                        <strong>🐺 Wild Shape (Beast Form)</strong><br>
+                        <span style="font-size: 0.9em;">Transform into a beast (CR 1/2 max, ${Math.floor((state.characterLevel || 6) / 2)} hours, +${state.characterLevel || 6} temp HP)</span>
+                    </button>
                 </div>
             `;
-            showModal('Select Form', body);
+            showModal('Wild Shape / Starry Form', body);
         }
 
         function openBeastSelection() {
@@ -4514,7 +4506,7 @@
 
             const level = state.characterLevel || 6;
             const hitDiceRemaining = state.hitDiceRemaining ?? level;
-            const conMod = 2;  // Ashvael's CON modifier
+            const conMod = 2;  // Ashvael's CON modifier (+2 from CON 15)
 
             // Show modal asking about Hit Dice
             const body = `
@@ -4687,19 +4679,21 @@
         // ===== COSMIC OMEN (Level 6+) =====
         function openCosmicOmenSelection() {
             const body = `
-                <div class="form-options">
-                    <p class="text-muted" style="margin-bottom: 15px;">Choose your Cosmic Omen for today. This determines how your reaction ability works.</p>
-                    <div class="form-option" onclick="selectCosmicOmen('weal')" style="border-color: var(--accent-gold);">
-                        <div class="form-option-title" style="color: var(--accent-gold);">☀️ Weal (Good Omen)</div>
-                        <div class="form-option-desc">Reaction: Add 1d6 to an ally's attack roll, save, or check within 30 ft</div>
-                    </div>
-                    <div class="form-option" onclick="selectCosmicOmen('woe')" style="border-color: var(--accent-purple);">
-                        <div class="form-option-title" style="color: var(--accent-purple);">🌑 Woe (Bad Omen)</div>
-                        <div class="form-option-desc">Reaction: Subtract 1d6 from an enemy's attack roll, save, or check within 30 ft</div>
-                    </div>
+                <p><strong>Reaction</strong> | 30 feet | 3/Long Rest</p>
+                <p style="margin-top: 10px;">Choose your Cosmic Omen for today. This determines how your reaction ability works.</p>
+
+                <div style="margin-top: 20px;">
+                    <button class="modal-btn" onclick="selectCosmicOmen('weal')" style="width: 100%; padding: 15px; margin-bottom: 10px; background: linear-gradient(135deg, var(--accent-gold) 0%, #e6a800 100%); border: none; color: #1a1a2e;">
+                        <strong>☀️ Weal (Good Omen)</strong><br>
+                        <span style="font-size: 0.9em;">Add 1d6 to an ally's roll</span>
+                    </button>
+                    <button class="modal-btn" onclick="selectCosmicOmen('woe')" style="width: 100%; padding: 15px; background: linear-gradient(135deg, var(--accent-purple) 0%, #5a3d8a 100%); border: none;">
+                        <strong>🌑 Woe (Bad Omen)</strong><br>
+                        <span style="font-size: 0.9em;">Subtract 1d6 from an enemy's roll</span>
+                    </button>
                 </div>
             `;
-            showModal('Cosmic Omen - Choose Your Omen', body);
+            showModal('Cosmic Omen', body);
         }
 
         function selectCosmicOmen(omenType) {
@@ -5844,19 +5838,21 @@
             }
             showModal('Celestial Revelation', `
                 <p><strong>Bonus Action</strong> | 1 minute | 1/Long Rest</p>
-                <div class="form-options" style="margin-top:15px;">
-                    <div class="form-option" onclick="useCelestialRevelation('radiant-soul')">
-                        <div class="form-option-title">Radiant Soul</div>
-                        <div class="form-option-desc">Spectral wings (fly 30ft), +3 radiant damage once/turn</div>
-                    </div>
-                    <div class="form-option" onclick="useCelestialRevelation('necrotic-shroud')">
-                        <div class="form-option-title">Necrotic Shroud</div>
-                        <div class="form-option-desc">Frighten enemies within 10ft (Cha save), +3 necrotic damage once/turn</div>
-                    </div>
-                    <div class="form-option" onclick="useCelestialRevelation('inner-radiance')">
-                        <div class="form-option-title">Inner Radiance</div>
-                        <div class="form-option-desc">Bright light 10ft, creatures ending turn within 10ft take 3 radiant</div>
-                    </div>
+                <p style="margin-top: 10px;">Transform and gain one of the following benefits:</p>
+
+                <div style="margin-top: 15px;">
+                    <button class="modal-btn" onclick="useCelestialRevelation('radiant-soul')" style="width: 100%; padding: 12px; margin-bottom: 8px; text-align: left;">
+                        <strong>Radiant Soul</strong><br>
+                        <span style="font-size: 0.9em; color: var(--text-muted);">Spectral wings (fly 30ft), +3 radiant damage once/turn</span>
+                    </button>
+                    <button class="modal-btn" onclick="useCelestialRevelation('necrotic-shroud')" style="width: 100%; padding: 12px; margin-bottom: 8px; text-align: left;">
+                        <strong>Necrotic Shroud</strong><br>
+                        <span style="font-size: 0.9em; color: var(--text-muted);">Frighten enemies within 10ft (Cha save), +3 necrotic damage once/turn</span>
+                    </button>
+                    <button class="modal-btn" onclick="useCelestialRevelation('inner-radiance')" style="width: 100%; padding: 12px; text-align: left;">
+                        <strong>Inner Radiance</strong><br>
+                        <span style="font-size: 0.9em; color: var(--text-muted);">Bright light 10ft, creatures ending turn within 10ft take 3 radiant</span>
+                    </button>
                 </div>
             `);
         }
