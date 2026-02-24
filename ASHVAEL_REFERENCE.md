@@ -470,10 +470,11 @@ Instead of Wild Shape, can expend a use to cast **Find Familiar** (as a Fey, no 
 ### Level 6 Features
 
 #### Cosmic Omen (Circle of Stars)
-- After each Long Rest, roll a die to determine omen type
-- **Even = Weal**: Add 1d6 to ally's roll within 30 ft (Reaction)
-- **Odd = Woe**: Subtract 1d6 from enemy's roll within 30 ft (Reaction)
+- After each Long Rest, **choose** your omen type (Weal or Woe)
+- **☀️ Weal**: Add 1d6 to an ally's roll within 30 ft (Reaction)
+- **🌑 Woe**: Subtract 1d6 from an enemy's roll within 30 ft (Reaction)
 - Uses: 3 per Long Rest (Proficiency Bonus)
+- Your chosen omen appears in the Reactions menu during battle
 
 #### Additional Spell Slot
 - Gained 1 additional 3rd-level spell slot (now 3 total)
@@ -524,14 +525,15 @@ Instead of Wild Shape, can expend a use to cast **Find Familiar** (as a Fey, no 
 
 ### Level 6: Cosmic Omen (Current)
 
-After each Long Rest, roll a die to determine your omen for the day:
+After each Long Rest, **choose** your omen for the day:
 
-| Roll | Omen | Effect |
-|------|------|--------|
-| Even | Weal (Good) | Reaction: When a creature you can see within 30 ft makes an attack roll, saving throw, or ability check, you can **add 1d6** to the roll |
-| Odd | Woe (Bad) | Reaction: When a creature you can see within 30 ft makes an attack roll, saving throw, or ability check, you can **subtract 1d6** from the roll |
+| Choice | Omen | Effect |
+|--------|------|--------|
+| ☀️ | **Weal (Good)** | Reaction: When a creature you can see within 30 ft makes an attack roll, saving throw, or ability check, you can **add 1d6** to the roll |
+| 🌑 | **Woe (Bad)** | Reaction: When a creature you can see within 30 ft makes an attack roll, saving throw, or ability check, you can **subtract 1d6** from the roll |
 
 **Uses**: Proficiency Bonus per Long Rest = **3 uses**
+**Note**: The chosen omen appears in your Reactions menu during battle
 
 ### Level 10: Twinkling Constellations (Future)
 

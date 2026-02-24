@@ -2361,6 +2361,7 @@
                             <div class="action-list" id="reactionList">
                                 <div class="action-item" onclick="openOpportunityAttack()">Opportunity Attack</div>
                                 <div class="action-item" onclick="useAbsorbElements()">Absorb Elements</div>
+                                <div class="action-item cosmic-omen-action" id="cosmicOmenReaction" style="display:none" onclick="useCosmicOmen()">Cosmic Omen</div>
                             </div>
                         </div>
                     </div>
@@ -2915,6 +2916,7 @@
             hpHistory: [],
             slots: { 1: [false,false,false,false], 2: [false,false,false], 3: [false,false,false] },
             resources: { guidingBolt: 4, wildShape: 2, healingHands: 1, healingWordFree: 1, celestialRevelation: 1, cosmicOmen: 3 },
+            cosmicOmenType: null,  // 'weal' or 'woe' - chosen after Long Rest
             preparedSpells: [],
             knownBeastForms: ['cat', 'wolf', 'panther', 'giant-wolf-spider', 'black-bear', 'ape'],
             activeForm: null,
@@ -2949,7 +2951,7 @@
                         name: "Cosmic Omen",
                         source: "Circle of Stars Level 6",
                         category: "stars",
-                        desc: "<strong>After Long Rest</strong> | Uses: 3 per Long Rest (Proficiency Bonus)<br><br>After each Long Rest, roll a die to determine your cosmic omen:<br><br><strong style='color: var(--accent-gold);'>Even = Weal (Good Omen):</strong><br>Reaction: When a creature you can see within 30 feet makes an attack roll, saving throw, or ability check, you can add 1d6 to the roll.<br><br><strong style='color: var(--accent-purple);'>Odd = Woe (Bad Omen):</strong><br>Reaction: When a creature you can see within 30 feet makes an attack roll, saving throw, or ability check, you can subtract 1d6 from the roll.<br><br>You can use this feature a number of times equal to your proficiency bonus."
+                        desc: "<strong>After Long Rest</strong> | Uses: 3 per Long Rest (Proficiency Bonus)<br><br>After each Long Rest, <strong>choose</strong> your cosmic omen:<br><br><strong style='color: var(--accent-gold);'>☀️ Weal (Good Omen):</strong><br>Reaction: When a creature you can see within 30 feet makes an attack roll, saving throw, or ability check, you can add 1d6 to the roll.<br><br><strong style='color: var(--accent-purple);'>🌑 Woe (Bad Omen):</strong><br>Reaction: When a creature you can see within 30 feet makes an attack roll, saving throw, or ability check, you can subtract 1d6 from the roll.<br><br>You can use this feature a number of times equal to your proficiency bonus. Your chosen omen appears in the Reactions menu."
                     }
                 ],
                 newResource: { cosmicOmen: 3 },
@@ -3335,6 +3337,7 @@
                 renderInventory();
                 updateReclaimButton();
                 updateLevelDisplay();
+                updateCosmicOmenDisplay();
             } catch (e) {
                 console.error('Error in updateAllDisplays:', e);
             }
@@ -3580,7 +3583,7 @@
                     <hr style="border-color: var(--border-color); margin: 15px 0;">
                     <div class="form-option" onclick="openBeastSelection()">
                         <div class="form-option-title">🐺 Wild Shape (Beast Form)</div>
-                        <div class="form-option-desc">Transform into a beast (CR 1/2 max, 2 hours, +5 temp HP)</div>
+                        <div class="form-option-desc">Transform into a beast (CR 1/2 max, ${Math.floor((state.characterLevel || 6) / 2)} hours, +${state.characterLevel || 6} temp HP)</div>
                     </div>
                 </div>
             `;
@@ -3590,7 +3593,8 @@
         function openBeastSelection() {
             const knownForms = getKnownBeastForms();
             let body = '<div class="form-options">';
-            body += '<p class="text-muted" style="margin-bottom:15px;">Choose a beast form. You gain 5 temp HP. Your STR/DEX/CON are replaced. You keep Int/Wis/Cha and skill/save proficiencies. Cannot cast spells.</p>';
+            const tempHpGain = state.characterLevel || 6;
+            body += `<p class="text-muted" style="margin-bottom:15px;">Choose a beast form. You gain ${tempHpGain} temp HP. Your STR/DEX/CON are replaced. You keep Int/Wis/Cha and skill/save proficiencies. Cannot cast spells.</p>`;
 
             knownForms.forEach(b => {
                 body += `
@@ -3623,8 +3627,9 @@
                 };
             }
 
-            // Add 5 temp HP (druid level)
-            state.hp.temp += 5;
+            // Add temp HP equal to druid level
+            const wildShapeTempHp = state.characterLevel || 6;
+            state.hp.temp += wildShapeTempHp;
 
             state.activeForm = {
                 type: 'wild-shape',
@@ -3638,7 +3643,7 @@
 
             if (state.inBattle) {
                 state.actionsUsed.bonus = true;
-                addBattleLog(`Transformed into ${beast.name} (+5 temp HP)`);
+                addBattleLog(`Transformed into ${beast.name} (+${wildShapeTempHp} temp HP)`);
             }
 
             closeModal();
@@ -4301,7 +4306,7 @@
             Object.keys(state.slots).forEach(k => state.slots[k].fill(false));
 
             // Reset resources (including level-based ones)
-            const currentLevel = state.characterLevel || 5;
+            const currentLevel = state.characterLevel || 6;
             state.resources = {
                 guidingBolt: 4,
                 wildShape: 2,
@@ -4314,6 +4319,7 @@
             state.activeForm = null;
             state.originalStats = null;
             state.celestialForm = null;
+            state.cosmicOmenType = null;  // Reset omen choice
 
             // Recharge magic items (both longRest and dawn items)
             const rechargedLR = rechargeItems('longRest');
@@ -4331,7 +4337,99 @@
                     msg += `\n• ${r.item}: +${r.gained} charges (${r.current}/${r.max})`;
                 });
             }
-            alert(msg);
+
+            // Show Cosmic Omen selection if level 6+
+            if (currentLevel >= 6) {
+                alert(msg);
+                openCosmicOmenSelection();
+            } else {
+                alert(msg);
+            }
+        }
+
+        // ===== COSMIC OMEN (Level 6+) =====
+        function openCosmicOmenSelection() {
+            const body = `
+                <div class="form-options">
+                    <p class="text-muted" style="margin-bottom: 15px;">Choose your Cosmic Omen for today. This determines how your reaction ability works.</p>
+                    <div class="form-option" onclick="selectCosmicOmen('weal')" style="border-color: var(--accent-gold);">
+                        <div class="form-option-title" style="color: var(--accent-gold);">☀️ Weal (Good Omen)</div>
+                        <div class="form-option-desc">Reaction: Add 1d6 to an ally's attack roll, save, or check within 30 ft</div>
+                    </div>
+                    <div class="form-option" onclick="selectCosmicOmen('woe')" style="border-color: var(--accent-purple);">
+                        <div class="form-option-title" style="color: var(--accent-purple);">🌑 Woe (Bad Omen)</div>
+                        <div class="form-option-desc">Reaction: Subtract 1d6 from an enemy's attack roll, save, or check within 30 ft</div>
+                    </div>
+                </div>
+            `;
+            showModal('Cosmic Omen - Choose Your Omen', body);
+        }
+
+        function selectCosmicOmen(omenType) {
+            state.cosmicOmenType = omenType;
+            updateCosmicOmenDisplay();
+            saveState();
+            closeModal();
+
+            const omenName = omenType === 'weal' ? '☀️ Weal (Good Omen)' : '🌑 Woe (Bad Omen)';
+            const omenDesc = omenType === 'weal'
+                ? 'Add 1d6 to ally rolls'
+                : 'Subtract 1d6 from enemy rolls';
+            showToast(`Cosmic Omen set: ${omenName}`);
+        }
+
+        function updateCosmicOmenDisplay() {
+            const currentLevel = state.characterLevel || 6;
+            const cosmicOmenReaction = document.getElementById('cosmicOmenReaction');
+
+            if (cosmicOmenReaction) {
+                if (currentLevel >= 6 && state.cosmicOmenType && state.resources.cosmicOmen > 0) {
+                    cosmicOmenReaction.style.display = 'block';
+                    const omenIcon = state.cosmicOmenType === 'weal' ? '☀️' : '🌑';
+                    const omenName = state.cosmicOmenType === 'weal' ? 'Weal' : 'Woe';
+                    cosmicOmenReaction.textContent = `${omenIcon} Cosmic Omen: ${omenName} (${state.resources.cosmicOmen}/3)`;
+                } else {
+                    cosmicOmenReaction.style.display = 'none';
+                }
+            }
+        }
+
+        function useCosmicOmen() {
+            if (!state.cosmicOmenType) {
+                showToast('Choose your Cosmic Omen first!');
+                openCosmicOmenSelection();
+                return;
+            }
+
+            if (state.resources.cosmicOmen <= 0) {
+                showToast('No Cosmic Omen uses remaining!');
+                return;
+            }
+
+            if (state.inBattle && state.actionsUsed.reaction) {
+                showToast('Reaction already used this round!');
+                return;
+            }
+
+            saveForUndo();
+            state.resources.cosmicOmen--;
+
+            const omenIcon = state.cosmicOmenType === 'weal' ? '☀️' : '🌑';
+            const omenEffect = state.cosmicOmenType === 'weal'
+                ? 'Added 1d6 to roll (roll: ' + (Math.floor(Math.random() * 6) + 1) + ')'
+                : 'Subtracted 1d6 from roll (roll: ' + (Math.floor(Math.random() * 6) + 1) + ')';
+
+            if (state.inBattle) {
+                state.actionsUsed.reaction = true;
+                addBattleLog(`${omenIcon} Cosmic Omen: ${omenEffect}`);
+            }
+
+            updateCosmicOmenDisplay();
+            updateResourceSlots();
+            updateBattleUI();
+            saveState();
+
+            showToast(`${omenIcon} ${omenEffect}`);
         }
 
         // ===== NAVIGATION =====
@@ -6712,9 +6810,9 @@
                     name: 'Cosmic Omen',
                     source: 'Circle of Stars Level 6',
                     levelReq: 6,
-                    desc: '<strong>Reaction</strong> | 30 feet | 3 Uses per Long Rest (Proficiency Bonus)<br><br>After each Long Rest, roll any die. The result determines your omen for the day:<br><br><strong style="color: var(--accent-gold);">☀️ Even = Weal (Good Omen):</strong><br>When a creature you can see within 30 feet makes an attack roll, saving throw, or ability check, you can use your Reaction to <strong>add 1d6</strong> to the roll.<br><br><strong style="color: var(--accent-purple);">🌑 Odd = Woe (Bad Omen):</strong><br>When a creature you can see within 30 feet makes an attack roll, saving throw, or ability check, you can use your Reaction to <strong>subtract 1d6</strong> from the roll.<br><br><strong style="color: var(--text-muted);">Uses:</strong> Equal to your proficiency bonus (3/long rest at level 6).',
+                    desc: '<strong>Reaction</strong> | 30 feet | 3 Uses per Long Rest (Proficiency Bonus)<br><br>After each Long Rest, <strong>choose</strong> your omen for the day:<br><br><strong style="color: var(--accent-gold);">☀️ Weal (Good Omen):</strong><br>When a creature you can see within 30 feet makes an attack roll, saving throw, or ability check, you can use your Reaction to <strong>add 1d6</strong> to the roll.<br><br><strong style="color: var(--accent-purple);">🌑 Woe (Bad Omen):</strong><br>When a creature you can see within 30 feet makes an attack roll, saving throw, or ability check, you can use your Reaction to <strong>subtract 1d6</strong> from the roll.<br><br><strong style="color: var(--text-muted);">Uses:</strong> Equal to your proficiency bonus (3/long rest at level 6).<br><br><strong>Note:</strong> Your chosen omen appears in the Reactions menu during battle.',
                     hasChoices: true,
-                    choices: ['Weal (Even roll - add 1d6)', 'Woe (Odd roll - subtract 1d6)']
+                    choices: ['Weal (add 1d6 to ally)', 'Woe (subtract 1d6 from enemy)']
                 }
             ],
             feats: [
