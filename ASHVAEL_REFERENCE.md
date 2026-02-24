@@ -3,7 +3,7 @@
 ## Campaign & Rules
 - **Rules Version**: D&D 2024 (2024 Player's Handbook)
 - **Campaign**: Spelljammer (no spoilers requested)
-- **Character Level**: 5
+- **Character Level**: 6
 
 ---
 
@@ -144,12 +144,12 @@ Ashvael's Saving Throw Proficiencies (Druid):
 
 Spell slots are expended when casting spells and recover on Long Rest.
 
-**Ashvael's Slots (Level 5 Druid):**
+**Ashvael's Slots (Level 6 Druid):**
 | Level | Slots |
 |-------|-------|
 | 1st | 4 |
 | 2nd | 3 |
-| 3rd | 2 |
+| 3rd | 3 |
 
 ### Upcasting
 
@@ -183,7 +183,7 @@ Cantrips increase in power at levels 5, 11, and 17.
 | 11-16 | 3 dice |
 | 17+ | 4 dice |
 
-**Ashvael (Level 5):**
+**Ashvael (Level 6):**
 - Produce Flame: 2d8 fire
 - Thorn Whip: 2d6 piercing
 - Starry Wisp: 2d8 radiant
@@ -194,10 +194,10 @@ Cantrips increase in power at levels 5, 11, and 17.
 
 ## Basic Information
 - **Name**: Ashvael
-- **Class**: Druid 5 (Circle of Stars)
+- **Class**: Druid 6 (Circle of Stars)
 - **Species**: Half-Aasimar / Half-Tiefling (Homebrew)
 - **Background**: Guide
-- **Level**: 5
+- **Level**: 6
 - **Proficiency Bonus**: +3
 
 ---
@@ -310,8 +310,8 @@ As half-Tiefling, specific traits are determined by DM. Currently using:
 - **Hit Die**: d8
 - **HP at 1st Level**: 8 + CON modifier (10 HP)
 - **HP at Higher Levels**: 1d8 (or 5) + CON modifier per level
-- **Current Max HP at Level 5**: 8 + 5 + 5 + 5 + 5 + (CON mod x 5) = 38 HP
-  - (8 + 4x5 + 2x5 = 8 + 20 + 10 = 38 HP)
+- **Current Max HP at Level 6**: 8 + 5×5 + (CON mod × 6) = 45 HP
+  - (8 + 25 + 12 = 45 HP)
 
 ### Proficiencies
 
@@ -401,7 +401,7 @@ Choose Option A or B:
 - **Spellcasting Focus**: Druidic Focus (Star Map)
 - **Ritual Casting**: Can cast prepared ritual spells without slot (takes 10 min longer)
 - **Preparing Spells**: Can prepare WIS mod + Druid level spells after Long Rest
-  - Ashvael can prepare: 4 + 5 = **9 spells**
+  - Ashvael can prepare: 4 + 6 = **10 spells**
 
 #### Primal Order
 Druids choose Magician or Warden at level 1.
@@ -422,16 +422,16 @@ Druids choose Magician or Warden at level 1.
 #### Wild Shape
 **Uses**: 2 per Short or Long Rest
 
-**Transformation Rules (Level 5):**
+**Transformation Rules (Level 6):**
 - Max CR: 1/2 (was 1/4 at levels 2-4)
 - No flying speed allowed (until level 8)
 - No swimming speed unless you've seen the beast
-- Duration: Druid level / 2 hours = 2.5 hours
+- Duration: Druid level / 2 hours = 3 hours
 - Bonus Action to activate OR use action for Wild Companion
 
 **What Changes in Wild Shape:**
 - Gain beast's STR, DEX, CON
-- Gain **Temp HP equal to Druid level** (5 temp HP at level 5)
+- Gain **Temp HP equal to Druid level** (6 temp HP at level 6)
 - Gain beast's AC (natural armor)
 - Gain beast's Speed
 - Gain beast's attacks and special abilities
@@ -464,8 +464,22 @@ Instead of Wild Shape, can expend a use to cast **Find Familiar** (as a Fey, no 
 
 #### Wild Shape Improvement
 - Max CR increases to 1/2
-- Gain temporary HP equal to Druid level (5)
+- Gain temporary HP equal to Druid level (6 at current level)
 - Can transform into beasts with swimming speed
+
+### Level 6 Features
+
+#### Cosmic Omen (Circle of Stars)
+- After each Long Rest, roll a die to determine omen type
+- **Even = Weal**: Add 1d6 to ally's roll within 30 ft (Reaction)
+- **Odd = Woe**: Subtract 1d6 from enemy's roll within 30 ft (Reaction)
+- Uses: 3 per Long Rest (Proficiency Bonus)
+
+#### Additional Spell Slot
+- Gained 1 additional 3rd-level spell slot (now 3 total)
+
+#### Max Prepared Spells
+- Can now prepare 10 spells (WIS mod + Druid level)
 
 ---
 
@@ -508,16 +522,16 @@ Instead of Wild Shape, can expend a use to cast **Find Familiar** (as a Fey, no 
 > - If Chalice: Add healing bonus to Cast Spell
 > - If Dragon: Apply minimum 10 to relevant rolls
 
-### Level 6: Cosmic Omen (Future)
+### Level 6: Cosmic Omen (Current)
 
-After Long Rest, roll a die. Result determines feature:
+After each Long Rest, roll a die to determine your omen for the day:
 
 | Roll | Omen | Effect |
 |------|------|--------|
-| Even | Weal | Reaction: Creature in 30 ft adds d6 to attack/save/check |
-| Odd | Woe | Reaction: Creature in 30 ft subtracts d6 from attack/save/check |
+| Even | Weal (Good) | Reaction: When a creature you can see within 30 ft makes an attack roll, saving throw, or ability check, you can **add 1d6** to the roll |
+| Odd | Woe (Bad) | Reaction: When a creature you can see within 30 ft makes an attack roll, saving throw, or ability check, you can **subtract 1d6** from the roll |
 
-Uses = Proficiency Bonus per Long Rest
+**Uses**: Proficiency Bonus per Long Rest = **3 uses**
 
 ### Level 10: Twinkling Constellations (Future)
 
@@ -571,6 +585,7 @@ Uses = Proficiency Bonus per Long Rest
 | Healing Hands | 1 | Long Rest | Aasimar | Touch, heal 1d4 x Prof Bonus (3d4) HP |
 | Celestial Revelation | 1 | Long Rest | Aasimar (3+) | Transform 1 min (Wings/Radiance/Shroud) |
 | Wild Shape | 2 | Short/Long Rest | Druid | Transform into beast or use for Starry Form/Wild Companion |
+| Cosmic Omen | 3 | Long Rest | Circle of Stars (6+) | Reaction: Add/subtract 1d6 to/from roll in 30 ft |
 
 ---
 
@@ -769,11 +784,11 @@ Removing duplicates from overlapping packs:
 | Guiding Bolt | 1st | Star Map | 4/Long Rest |
 | Healing Word | 1st | Magic Initiate | 1/Long Rest |
 
-## Prepared Spells (Level 5: 9 slots)
+## Prepared Spells (Level 6: 10 slots)
 
 Druids can change prepared spells after each Long Rest.
 
-> **CURRENT PREPARED SPELLS**: (to be confirmed with player)
+> **CURRENT PREPARED SPELLS**: Cure Wounds, Purify Food and Drink, Longstrider, Jump, Goodberry, Pass Without Trace, Barkskin, Conjure Animals, Call Lightning (9/10 slots used)
 
 ---
 

@@ -80,7 +80,7 @@
   - AC (use beast's AC)
   - Speed (use beast's speed)
 - **DO NOT show beast HP** - keep showing character's HP
-- **Add 5 temp HP** when transforming (druid level)
+- **Add 6 temp HP** when transforming (druid level)
 - Keep INT, WIS, CHA and proficiency bonuses
 - Show beast's attack information
 - **DISABLE spell casting** while in Wild Shape beast form
@@ -102,15 +102,16 @@
 3. Changes go live automatically on GitHub Pages
 
 ## Character Details (Ashvael)
-- Level 5 Circle of Stars Druid
+- Level 6 Circle of Stars Druid
 - Half-Aasimar/Half-Tiefling
-- Key features: Star Map, Starry Form, Wild Shape, Wild Companion
+- Key features: Star Map, Starry Form, Wild Shape, Wild Companion, Cosmic Omen
 - Free resources:
   - Guiding Bolt: 4/long rest (Star Map)
   - Healing Word: 1/long rest (Magic Initiate)
   - Healing Hands: 1/long rest (Ancestry)
   - Celestial Revelation: 1/long rest (Ancestry)
   - Wild Shape: 2/short rest
+  - Cosmic Omen: 3/long rest (Circle of Stars Lvl 6)
 
 ## Character Corrections to Apply
 - **Druid Armor Proficiency**: NO medium armor proficiency (only Light armor + shields)

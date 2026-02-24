@@ -4,9 +4,10 @@
   "characterName": "Ashvael",
   "state": {
     "version": 3,
+    "characterLevel": 6,
     "hp": {
-      "current": 38,
-      "max": 38,
+      "current": 45,
+      "max": 45,
       "temp": 0
     },
     "hpHistory": [],
@@ -18,21 +19,23 @@
         false
       ],
       "2": [
-        true,
-        true,
+        false,
+        false,
         false
       ],
       "3": [
+        false,
         false,
         false
       ]
     },
     "resources": {
-      "guidingBolt": 3,
-      "wildShape": 1,
+      "guidingBolt": 4,
+      "wildShape": 2,
       "healingHands": 1,
       "healingWordFree": 1,
-      "celestialRevelation": 1
+      "celestialRevelation": 1,
+      "cosmicOmen": 3
     },
     "preparedSpells": [
       {
