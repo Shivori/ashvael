@@ -2441,7 +2441,8 @@
                 <div class="prepared-counter-display">
                     <span>Prepared: </span>
                     <span id="spellPreparedCount" class="prepared-count-value">0</span>
-                    <span> / 9</span>
+                    <span> / </span>
+                    <span id="spellPreparedMax">10</span>
                 </div>
             </div>
 
@@ -2932,7 +2933,8 @@
             itemCharges: {},  // Track charges for magic items: { itemId: { current: N, usedToday: [] } }
             itemSpellsUsed: {},  // Track 1/day spell usage: { itemId_spellName: true }
             thrownWeapons: [],  // Track weapons that have been thrown and can be reclaimed
-            movementUsed: 0  // Track movement used in current round
+            movementUsed: 0,  // Track movement used in current round
+            hitDiceRemaining: 6  // Hit Dice remaining for short rest healing
         };
 
         let state = JSON.parse(JSON.stringify(DEFAULT_STATE));
@@ -3056,6 +3058,9 @@
                 }
             }
 
+            // Reset Hit Dice to new level max
+            state.hitDiceRemaining = newLevel;
+
             // Update all displays
             updateAllDisplays();
             renderSpells();  // Re-render to show/hide 4th level spells
@@ -3175,7 +3180,6 @@
             const topBarEl = document.getElementById('topBarLevel');
             const classTitle = document.getElementById('classLevelTitle');
             const levelUpCard = document.getElementById('levelUpCard');
-            const hitDiceBadge = document.getElementById('hitDiceBadge');
 
             if (topBarEl) {
                 topBarEl.textContent = `Level ${level} Druid (Circle of Stars) ▼`;
@@ -3187,9 +3191,7 @@
                 // Show level up button if not at max level (8)
                 levelUpCard.style.display = level < 8 ? 'block' : 'none';
             }
-            if (hitDiceBadge) {
-                hitDiceBadge.textContent = `${level}d8 HD`;
-            }
+            // Hit Dice badge is handled by updateHitDiceBadge()
         }
 
         function openLevelUp() {
@@ -3506,6 +3508,8 @@
                 updateReclaimButton();
                 updateLevelDisplay();
                 updateCosmicOmenDisplay();
+                updateSpellCount();
+                updateHitDiceBadge();
             } catch (e) {
                 console.error('Error in updateAllDisplays:', e);
             }
@@ -3563,6 +3567,72 @@
             input.value = '';
             updateHPDisplay();
             saveState();
+
+            // Check for concentration save
+            if (state.concentration && remaining > 0) {
+                promptConcentrationSave(remaining);
+            }
+        }
+
+        function promptConcentrationSave(damageTaken) {
+            const dc = Math.max(10, Math.floor(damageTaken / 2));
+            const conMod = 2;  // Ashvael's CON modifier
+            const profBonus = 3;  // Proficiency bonus (level 5-8)
+            const isProficient = false;  // Not proficient in CON saves
+            const saveBonus = conMod + (isProficient ? profBonus : 0);
+
+            const body = `
+                <div style="margin-bottom: 15px; padding: 15px; background: rgba(255, 107, 107, 0.1); border-radius: 8px; border-left: 4px solid var(--accent-red);">
+                    <p style="font-weight: 600; color: var(--accent-red); margin-bottom: 10px;">Concentration Check Required!</p>
+                    <p>You took <strong>${damageTaken} damage</strong> while concentrating on:</p>
+                    <p style="font-size: 1.2em; color: var(--accent-purple); margin: 10px 0;"><strong>${state.concentration}</strong></p>
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <p><strong>DC:</strong> ${dc} (half of ${damageTaken} damage, minimum 10)</p>
+                    <p><strong>Save:</strong> Constitution</p>
+                    <p><strong>Your bonus:</strong> +${saveBonus} (CON ${conMod >= 0 ? '+' : ''}${conMod})</p>
+                    <p style="margin-top: 10px; color: var(--text-muted);">Roll 1d20 + ${saveBonus}. Need ${dc} or higher to maintain concentration.</p>
+                </div>
+
+                <div style="display: flex; gap: 10px;">
+                    <button class="modal-btn primary" onclick="passConcentrationSave()" style="flex: 1; padding: 12px;">
+                        ✓ Passed (Maintain)
+                    </button>
+                    <button class="modal-btn" onclick="failConcentrationSave()" style="flex: 1; padding: 12px; background: var(--accent-red);">
+                        ✗ Failed (Drop)
+                    </button>
+                </div>
+            `;
+            showModal('Concentration Save', body);
+        }
+
+        function passConcentrationSave() {
+            closeModal();
+            showToast('Concentration maintained!');
+            if (state.inBattle) addBattleLog(`Passed concentration save for ${state.concentration}`);
+        }
+
+        function failConcentrationSave() {
+            const spellName = state.concentration;
+            state.concentration = null;
+
+            // Remove any companions that were from concentration spells
+            const concentrationCompanions = state.companions.filter(c =>
+                c.fromSpell === spellName || c.isConcentration
+            );
+            if (concentrationCompanions.length > 0) {
+                state.companions = state.companions.filter(c =>
+                    c.fromSpell !== spellName && !c.isConcentration
+                );
+                updateCompanionDisplay();
+            }
+
+            updateConcentrationDisplay();
+            saveState();
+            closeModal();
+            showToast(`Concentration on ${spellName} dropped!`);
+            if (state.inBattle) addBattleLog(`Failed concentration save - ${spellName} ended`);
         }
 
         function applyHeal() {
@@ -4441,7 +4511,81 @@
         // ===== RESTS =====
         function shortRest() {
             if (state.inBattle) return alert('Cannot rest during battle!');
+
+            const level = state.characterLevel || 6;
+            const hitDiceRemaining = state.hitDiceRemaining ?? level;
+            const conMod = 2;  // Ashvael's CON modifier
+
+            // Show modal asking about Hit Dice
+            const body = `
+                <div style="margin-bottom: 15px;">
+                    <p style="color: var(--text-muted);">During a short rest, you can spend Hit Dice to recover HP.</p>
+                    <p style="margin-top: 10px;"><strong>Available:</strong> ${hitDiceRemaining}d8 HD (of ${level}d8)</p>
+                    <p><strong>Per die:</strong> 1d8 + ${conMod} (CON)</p>
+                </div>
+
+                ${hitDiceRemaining > 0 ? `
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 8px; font-weight: 500;">How many Hit Dice to spend?</label>
+                    <select id="hitDiceToSpend" style="width: 100%; padding: 12px; border-radius: 8px; background: var(--bg-lighter); border: 1px solid var(--border-color); color: var(--text-primary); font-size: 1em;">
+                        <option value="0">None (just rest)</option>
+                        ${Array.from({length: hitDiceRemaining}, (_, i) => i + 1).map(n =>
+                            `<option value="${n}">${n}d8 + ${n * conMod}</option>`
+                        ).join('')}
+                    </select>
+                </div>
+
+                <div id="hitDiceHealingInput" style="display: none; margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 8px; font-weight: 500;">Enter HP healed (roll your dice!):</label>
+                    <input type="number" id="hitDiceHealAmount" min="1" placeholder="Total healing"
+                           style="width: 100%; padding: 12px; border-radius: 8px; background: var(--bg-lighter); border: 1px solid var(--border-color); color: var(--text-primary); font-size: 1em;">
+                </div>
+                ` : '<p style="color: var(--accent-red);">No Hit Dice remaining! Take a Long Rest to recover them.</p>'}
+
+                <button class="modal-btn primary" onclick="confirmShortRest()" style="width: 100%; padding: 12px; font-size: 1.1em;">
+                    Complete Short Rest
+                </button>
+            `;
+            showModal('Short Rest', body);
+
+            // Add event listener to show/hide healing input
+            setTimeout(() => {
+                const select = document.getElementById('hitDiceToSpend');
+                const healingDiv = document.getElementById('hitDiceHealingInput');
+                if (select && healingDiv) {
+                    select.addEventListener('change', () => {
+                        healingDiv.style.display = parseInt(select.value) > 0 ? 'block' : 'none';
+                    });
+                }
+            }, 100);
+        }
+
+        function confirmShortRest() {
             saveForUndo();
+            const level = state.characterLevel || 6;
+
+            // Get Hit Dice spent
+            const selectEl = document.getElementById('hitDiceToSpend');
+            const diceSpent = selectEl ? parseInt(selectEl.value) || 0 : 0;
+
+            // Get healing amount
+            const healInput = document.getElementById('hitDiceHealAmount');
+            const healAmount = healInput ? parseInt(healInput.value) || 0 : 0;
+
+            // Apply healing
+            if (healAmount > 0 && state.hp.current < state.hp.max) {
+                const oldHp = state.hp.current;
+                state.hp.current = Math.min(state.hp.max, state.hp.current + healAmount);
+                const actualHeal = state.hp.current - oldHp;
+                showToast(`Healed ${actualHeal} HP!`);
+            }
+
+            // Spend Hit Dice
+            if (diceSpent > 0) {
+                state.hitDiceRemaining = (state.hitDiceRemaining ?? level) - diceSpent;
+            }
+
+            // Restore Wild Shape
             state.resources.wildShape = 2;
             state.activeForm = null;
             state.originalStats = null;
@@ -4453,10 +4597,16 @@
             updateResourceSlots();
             updateWildShapeDisplay();
             updateItemChargesDisplay();
+            updateHitDiceBadge();
+            updateAllDisplays();
             saveState();
+            closeModal();
 
             // Build message
             let msg = 'Short rest complete! Wild Shape restored.';
+            if (diceSpent > 0) {
+                msg += `\n\nSpent ${diceSpent}d8 Hit Dice. ${state.hitDiceRemaining}d8 remaining.`;
+            }
             if (recharged.length > 0) {
                 msg += '\n\nMagic items recharged:';
                 recharged.forEach(r => {
@@ -4464,6 +4614,23 @@
                 });
             }
             alert(msg);
+        }
+
+        function updateHitDiceBadge() {
+            const level = state.characterLevel || 6;
+            const remaining = state.hitDiceRemaining ?? level;
+            const badge = document.getElementById('hitDiceBadge');
+            if (badge) {
+                badge.textContent = `${remaining}d8 HD`;
+                // Color based on remaining
+                if (remaining === 0) {
+                    badge.style.background = 'var(--accent-red)';
+                } else if (remaining < level) {
+                    badge.style.background = 'var(--accent-gold)';
+                } else {
+                    badge.style.background = 'var(--accent-green)';
+                }
+            }
         }
 
         function longRest() {
@@ -4489,6 +4656,7 @@
             state.originalStats = null;
             state.celestialForm = null;
             state.cosmicOmenType = null;  // Reset omen choice
+            state.hitDiceRemaining = config.level;  // Reset Hit Dice to max
 
             // Recharge magic items (both longRest and dawn items)
             const rechargedLR = rechargeItems('longRest');
@@ -4580,13 +4748,40 @@
                 return;
             }
 
+            // Show info modal with Use button
+            const omenIcon = state.cosmicOmenType === 'weal' ? '☀️' : '🌑';
+            const omenName = state.cosmicOmenType === 'weal' ? 'Weal (Good Omen)' : 'Woe (Bad Omen)';
+            const omenEffect = state.cosmicOmenType === 'weal'
+                ? '<strong>Add 1d6</strong> to a creature\'s roll'
+                : '<strong>Subtract 1d6</strong> from a creature\'s roll';
+
+            const body = `
+                <div style="margin-bottom: 15px;">
+                    <p style="font-size: 1.2em; color: ${state.cosmicOmenType === 'weal' ? 'var(--accent-gold)' : 'var(--accent-purple)'};">
+                        ${omenIcon} ${omenName}
+                    </p>
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <p><strong>Reaction</strong> | 30 feet</p>
+                    <p style="margin-top: 10px;">When a creature you can see within 30 feet makes an attack roll, saving throw, or ability check, you can use your Reaction to ${omenEffect}.</p>
+                    <p style="margin-top: 10px; color: var(--text-muted);">Roll 1d6 and tell your DM the result.</p>
+                </div>
+                <div style="margin-bottom: 15px; padding: 10px; background: rgba(123, 104, 238, 0.1); border-radius: 8px;">
+                    <p><strong>Uses Remaining:</strong> ${state.resources.cosmicOmen} / 3</p>
+                </div>
+                <button class="modal-btn primary" onclick="confirmUseCosmicOmen()" style="width: 100%; padding: 12px; font-size: 1.1em;">
+                    Use Cosmic Omen (1 use)
+                </button>
+            `;
+            showModal('Cosmic Omen', body);
+        }
+
+        function confirmUseCosmicOmen() {
             saveForUndo();
             state.resources.cosmicOmen--;
 
             const omenIcon = state.cosmicOmenType === 'weal' ? '☀️' : '🌑';
-            const omenEffect = state.cosmicOmenType === 'weal'
-                ? 'Added 1d6 to roll (roll: ' + (Math.floor(Math.random() * 6) + 1) + ')'
-                : 'Subtracted 1d6 from roll (roll: ' + (Math.floor(Math.random() * 6) + 1) + ')';
+            const omenEffect = state.cosmicOmenType === 'weal' ? 'Added 1d6 to roll' : 'Subtracted 1d6 from roll';
 
             if (state.inBattle) {
                 state.actionsUsed.reaction = true;
@@ -4597,8 +4792,9 @@
             updateResourceSlots();
             updateBattleUI();
             saveState();
+            closeModal();
 
-            showToast(`${omenIcon} ${omenEffect}`);
+            showToast(`${omenIcon} Cosmic Omen used! (${state.resources.cosmicOmen} remaining)`);
         }
 
         // ===== NAVIGATION =====
@@ -6843,6 +7039,9 @@
             const maxPrep = getMaxPreparedSpells();
             document.getElementById('spellPreparedCount').textContent = count;
             document.getElementById('spellPreparedCount').className = 'prepared-count-value' + (count > maxPrep ? ' over' : '');
+            // Also update the max display
+            const maxEl = document.getElementById('spellPreparedMax');
+            if (maxEl) maxEl.textContent = maxPrep;
         }
 
         function showBeastInfo(beastId) {
