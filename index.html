@@ -2090,7 +2090,7 @@
     <div class="top-bar">
         <div class="top-bar-left">
             <span class="character-name-small">Ashvael</span>
-            <span id="topBarLevel" style="font-size: 0.8em; color: var(--text-secondary);">Level 5 Druid (Circle of Stars)</span>
+            <span id="topBarLevel" onclick="openLevelSelector()" style="font-size: 0.8em; color: var(--text-secondary); cursor: pointer; padding: 4px 8px; border-radius: 4px; transition: background 0.2s;" onmouseover="this.style.background='rgba(201,162,39,0.2)'" onmouseout="this.style.background='transparent'">Level 6 Druid (Circle of Stars) ▼</span>
         </div>
         <div class="rest-buttons">
             <button class="undo-btn" onclick="undoLastAction()" title="Undo">↶</button>
@@ -2902,11 +2902,10 @@
             return 1;
         }
 
-        // Helper: Get max prepared spells (WIS mod + Druid level)
+        // Helper: Get max prepared spells from level config
         function getMaxPreparedSpells() {
-            const level = state.characterLevel || 5;
-            const wisMod = 4; // Ashvael's WIS modifier
-            return wisMod + level;
+            const config = getLevelConfig();
+            return config.maxPreparedSpells;
         }
 
         const DEFAULT_STATE = {
@@ -2938,7 +2937,175 @@
 
         let state = JSON.parse(JSON.stringify(DEFAULT_STATE));
 
-        // ===== LEVEL UP DATA =====
+        // ===== COMPREHENSIVE LEVEL CONFIG (Levels 5-8) =====
+        // Contains ALL stats for each level - when level changes, everything updates
+        const LEVEL_CONFIG = {
+            5: {
+                level: 5,
+                proficiencyBonus: 3,
+                maxHp: 38,  // 8 + (4×5) + (5×2) = 8 + 20 + 10
+                maxPreparedSpells: 9,  // WIS (4) + Level (5)
+                slots: { 1: 4, 2: 3, 3: 2 },
+                wildShapeTempHp: 5,
+                wildShapeDuration: 2.5,  // hours
+                wildShapeMaxCR: 0.5,
+                canFlyWildShape: false,
+                cosmicOmenUses: 0,  // Not available at level 5
+                features: ['starMap', 'starryForm', 'wildShape', 'wildCompanion'],
+                cantripsKnown: 4  // 3 druid + 1 magician
+            },
+            6: {
+                level: 6,
+                proficiencyBonus: 3,
+                maxHp: 45,  // 38 + 5 + 2
+                maxPreparedSpells: 10,
+                slots: { 1: 4, 2: 3, 3: 3 },
+                wildShapeTempHp: 6,
+                wildShapeDuration: 3,
+                wildShapeMaxCR: 0.5,
+                canFlyWildShape: false,
+                cosmicOmenUses: 3,  // Proficiency bonus
+                features: ['starMap', 'starryForm', 'wildShape', 'wildCompanion', 'cosmicOmen'],
+                cantripsKnown: 4
+            },
+            7: {
+                level: 7,
+                proficiencyBonus: 3,
+                maxHp: 52,  // 45 + 5 + 2
+                maxPreparedSpells: 11,
+                slots: { 1: 4, 2: 3, 3: 3, 4: 1 },
+                wildShapeTempHp: 7,
+                wildShapeDuration: 3.5,
+                wildShapeMaxCR: 0.5,
+                canFlyWildShape: false,
+                cosmicOmenUses: 3,
+                features: ['starMap', 'starryForm', 'wildShape', 'wildCompanion', 'cosmicOmen'],
+                cantripsKnown: 4,
+                newSpellLevel: 4
+            },
+            8: {
+                level: 8,
+                proficiencyBonus: 3,
+                maxHp: 59,  // 52 + 5 + 2
+                maxPreparedSpells: 12,
+                slots: { 1: 4, 2: 3, 3: 3, 4: 2 },
+                wildShapeTempHp: 8,
+                wildShapeDuration: 4,
+                wildShapeMaxCR: 0.5,
+                canFlyWildShape: true,  // Unlocked at level 8!
+                cosmicOmenUses: 3,
+                features: ['starMap', 'starryForm', 'wildShape', 'wildCompanion', 'cosmicOmen'],
+                cantripsKnown: 4,
+                asiAvailable: true
+            }
+        };
+
+        // Get current level config
+        function getLevelConfig() {
+            const level = state.characterLevel || 6;
+            return LEVEL_CONFIG[level] || LEVEL_CONFIG[6];
+        }
+
+        // ===== SET CHARACTER LEVEL =====
+        // Main function to change level - updates EVERYTHING
+        function setCharacterLevel(newLevel) {
+            if (newLevel < 5 || newLevel > 8) {
+                showToast('Level must be between 5 and 8');
+                return;
+            }
+
+            saveForUndo();
+            const oldLevel = state.characterLevel || 6;
+            const config = LEVEL_CONFIG[newLevel];
+
+            // Update level
+            state.characterLevel = newLevel;
+
+            // Update HP (set to max for the new level)
+            const hpDiff = config.maxHp - (LEVEL_CONFIG[oldLevel]?.maxHp || 38);
+            state.hp.max = config.maxHp;
+            state.hp.current = Math.min(state.hp.current + Math.max(0, hpDiff), config.maxHp);
+
+            // Update spell slots structure
+            const newSlots = {};
+            for (const [lvl, count] of Object.entries(config.slots)) {
+                // Create array of false (unused) slots
+                const existingSlots = state.slots[lvl] || [];
+                newSlots[lvl] = [];
+                for (let i = 0; i < count; i++) {
+                    // Preserve used status if slot existed before
+                    newSlots[lvl].push(existingSlots[i] || false);
+                }
+            }
+            state.slots = newSlots;
+
+            // Update resources
+            state.resources.cosmicOmen = config.cosmicOmenUses;
+
+            // Reset cosmic omen type if downgrading below level 6
+            if (newLevel < 6) {
+                state.cosmicOmenType = null;
+            }
+
+            // Remove 4th level spells from prepared if going below level 7
+            if (newLevel < 7) {
+                const removed = state.preparedSpells.filter(s => s.level >= 4);
+                if (removed.length > 0) {
+                    state.preparedSpells = state.preparedSpells.filter(s => s.level < 4);
+                    showToast(`Removed ${removed.length} spell(s) above level 3`);
+                }
+            }
+
+            // Update all displays
+            updateAllDisplays();
+            renderSpells();  // Re-render to show/hide 4th level spells
+            renderFeatures();  // Update features visibility
+            saveState();
+
+            showToast(`Level set to ${newLevel}! HP: ${state.hp.current}/${config.maxHp}`);
+        }
+
+        // Open level selector modal
+        function openLevelSelector() {
+            const currentLevel = state.characterLevel || 6;
+            const config = getLevelConfig();
+
+            let body = `
+                <div style="margin-bottom: 20px;">
+                    <p class="text-muted">Select your character level. All stats will update automatically.</p>
+                </div>
+                <div class="form-options">
+            `;
+
+            for (let lvl = 5; lvl <= 8; lvl++) {
+                const lvlConfig = LEVEL_CONFIG[lvl];
+                const isActive = lvl === currentLevel;
+                const activeStyle = isActive ? 'border-color: var(--accent-gold); background: rgba(201, 162, 39, 0.1);' : '';
+
+                let features = [];
+                if (lvl >= 6) features.push('Cosmic Omen');
+                if (lvl >= 7) features.push('4th Level Spells');
+                if (lvl >= 8) features.push('Flying Wild Shape', 'ASI/Feat');
+
+                body += `
+                    <div class="form-option" onclick="setCharacterLevel(${lvl}); closeModal();" style="${activeStyle}">
+                        <div class="form-option-title" ${isActive ? 'style="color: var(--accent-gold);"' : ''}>
+                            ${isActive ? '✓ ' : ''}Level ${lvl} ${isActive ? '(Current)' : ''}
+                        </div>
+                        <div class="form-option-desc">
+                            HP: ${lvlConfig.maxHp} | Prepared: ${lvlConfig.maxPreparedSpells} |
+                            Slots: ${Object.entries(lvlConfig.slots).map(([l,c]) => `${c}×${l}st`).join(', ')}
+                        </div>
+                        ${features.length > 0 ? `<div class="form-option-desc" style="color: var(--accent-purple); font-size: 0.8em; margin-top: 5px;">+ ${features.join(', ')}</div>` : ''}
+                    </div>
+                `;
+            }
+
+            body += '</div>';
+            showModal('Select Character Level', body);
+        }
+
+        // ===== LEVEL UP DATA (kept for reference/migration) =====
         const LEVEL_UP_DATA = {
             6: {
                 name: "Level 6",
@@ -3001,16 +3168,17 @@
             }
         };
 
-        // ===== LEVEL UP SYSTEM =====
+        // ===== LEVEL DISPLAY SYSTEM =====
         function updateLevelDisplay() {
-            const level = state.characterLevel || 5;
+            const level = state.characterLevel || 6;
+            const config = getLevelConfig();
             const topBarEl = document.getElementById('topBarLevel');
             const classTitle = document.getElementById('classLevelTitle');
             const levelUpCard = document.getElementById('levelUpCard');
             const hitDiceBadge = document.getElementById('hitDiceBadge');
 
             if (topBarEl) {
-                topBarEl.textContent = `Level ${level} Druid (Circle of Stars)`;
+                topBarEl.textContent = `Level ${level} Druid (Circle of Stars) ▼`;
             }
             if (classTitle) {
                 classTitle.textContent = `Class: Druid (Level ${level})`;
@@ -4301,19 +4469,20 @@
         function longRest() {
             if (state.inBattle) return alert('Cannot rest during battle!');
             saveForUndo();
+            const config = getLevelConfig();
+
             state.hp.current = state.hp.max;
             state.hp.temp = 0;
             Object.keys(state.slots).forEach(k => state.slots[k].fill(false));
 
-            // Reset resources (including level-based ones)
-            const currentLevel = state.characterLevel || 6;
+            // Reset resources using level config
             state.resources = {
                 guidingBolt: 4,
                 wildShape: 2,
                 healingHands: 1,
                 healingWordFree: 1,
                 celestialRevelation: 1,
-                cosmicOmen: currentLevel >= 6 ? 3 : 0  // Cosmic Omen at level 6+
+                cosmicOmen: config.cosmicOmenUses
             };
 
             state.activeForm = null;
@@ -4339,7 +4508,7 @@
             }
 
             // Show Cosmic Omen selection if level 6+
-            if (currentLevel >= 6) {
+            if (config.cosmicOmenUses > 0) {
                 alert(msg);
                 openCosmicOmenSelection();
             } else {
