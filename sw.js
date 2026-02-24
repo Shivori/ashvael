@@ -1,9 +1,10 @@
 // Ashvael Character Sheet - Service Worker
-const CACHE_NAME = 'ashvael-v66';
+const CACHE_NAME = 'ashvael-v67';
 const urlsToCache = [
   './',
   './index.html',
-  './manifest.json'
+  './manifest.json',
+  './fantasy_full_body_character_il%20(2).jpeg'
 ];
 
 // Install event - cache files

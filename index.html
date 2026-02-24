@@ -1666,6 +1666,25 @@
         }
 
         /* Backstory Styles */
+        .character-portrait {
+            width: 100%;
+            max-width: 300px;
+            margin: 0 auto 20px auto;
+            display: block;
+            border-radius: 12px;
+            border: 2px solid var(--accent-purple);
+            box-shadow: 0 4px 20px rgba(138, 92, 245, 0.3);
+        }
+
+        .character-portrait-card {
+            text-align: center;
+            padding: 15px;
+        }
+
+        .character-portrait-card h2 {
+            margin-bottom: 15px;
+        }
+
         .appearance-table {
             width: 100%;
             border-collapse: collapse;
@@ -2648,6 +2667,11 @@
 
         <!-- BACKSTORY SECTION -->
         <div id="backstory" class="section">
+            <div class="card character-portrait-card">
+                <h2 class="card-title">Ashvael</h2>
+                <img src="fantasy_full_body_character_il%20(2).jpeg" alt="Ashvael - Tiefling/Aasimar Druid" class="character-portrait">
+                <p style="color: var(--text-muted); font-style: italic; margin-top: 10px;">Circle of Stars Druid</p>
+            </div>
             <div class="card">
                 <h2 class="card-title">Appearance</h2>
                 <table class="appearance-table">
