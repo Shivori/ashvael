@@ -3584,13 +3584,9 @@
                     <p style="margin-top: 10px; color: var(--text-muted);">Roll 1d20 + ${saveBonus}. Need ${dc} or higher to maintain concentration.</p>
                 </div>
 
-                <div style="display: flex; gap: 10px;">
-                    <button class="modal-btn primary" onclick="passConcentrationSave()" style="flex: 1; padding: 12px;">
-                        ✓ Passed (Maintain)
-                    </button>
-                    <button class="modal-btn" onclick="failConcentrationSave()" style="flex: 1; padding: 12px; background: var(--accent-red);">
-                        ✗ Failed (Drop)
-                    </button>
+                <div style="display: flex; gap: 10px; margin-top: 15px;">
+                    <button class="add-item-btn" onclick="passConcentrationSave()" style="flex: 1;">✓ Passed</button>
+                    <button class="add-item-btn" onclick="failConcentrationSave()" style="flex: 1; background: var(--accent-red);">✗ Failed</button>
                 </div>
             `;
             showModal('Concentration Save', body);
@@ -4530,9 +4526,7 @@
                 </div>
                 ` : '<p style="color: var(--accent-red);">No Hit Dice remaining! Take a Long Rest to recover them.</p>'}
 
-                <button class="modal-btn primary" onclick="confirmShortRest()" style="width: 100%; padding: 12px; font-size: 1.1em;">
-                    Complete Short Rest
-                </button>
+                <button class="add-item-btn" style="width:100%; margin-top:15px;" onclick="confirmShortRest()">Complete Short Rest</button>
             `;
             showModal('Short Rest', body);
 
@@ -4744,22 +4738,12 @@
                 : '<strong>Subtract 1d6</strong> from a creature\'s roll';
 
             const body = `
-                <div style="margin-bottom: 15px;">
-                    <p style="font-size: 1.2em; color: ${state.cosmicOmenType === 'weal' ? 'var(--accent-gold)' : 'var(--accent-purple)'};">
-                        ${omenIcon} ${omenName}
-                    </p>
-                </div>
-                <div style="margin-bottom: 15px;">
-                    <p><strong>Reaction</strong> | 30 feet</p>
-                    <p style="margin-top: 10px;">When a creature you can see within 30 feet makes an attack roll, saving throw, or ability check, you can use your Reaction to ${omenEffect}.</p>
-                    <p style="margin-top: 10px; color: var(--text-muted);">Roll 1d6 and tell your DM the result.</p>
-                </div>
-                <div style="margin-bottom: 15px; padding: 10px; background: rgba(123, 104, 238, 0.1); border-radius: 8px;">
-                    <p><strong>Uses Remaining:</strong> ${state.resources.cosmicOmen} / 3</p>
-                </div>
-                <button class="modal-btn primary" onclick="confirmUseCosmicOmen()" style="width: 100%; padding: 12px; font-size: 1.1em;">
-                    Use Cosmic Omen (1 use)
-                </button>
+                <p style="color: ${state.cosmicOmenType === 'weal' ? 'var(--accent-gold)' : 'var(--accent-purple)'}; margin-bottom: 10px;">${omenIcon} ${omenName}</p>
+                <p><strong>Reaction</strong> | 30 feet</p>
+                <p style="margin-top: 10px;">When a creature you can see within 30 feet makes an attack roll, saving throw, or ability check, you can use your Reaction to ${omenEffect}.</p>
+                <p style="margin-top: 10px; color: var(--text-muted);">Roll 1d6 and tell your DM the result.</p>
+                <p style="margin-top: 15px;"><strong>Uses Remaining:</strong> ${state.resources.cosmicOmen} / 3</p>
+                <button class="add-item-btn" style="width:100%; margin-top:15px;" onclick="confirmUseCosmicOmen()">Use Cosmic Omen</button>
             `;
             showModal('Cosmic Omen', body);
         }
